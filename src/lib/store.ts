@@ -24,6 +24,8 @@ export type ViewType =
   | 'activity'
   | 'checkout'
   | 'collections'
+  | 'gift-cards'
+  | 'staff'
 
 export interface User {
   id: string

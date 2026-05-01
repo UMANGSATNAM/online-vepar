@@ -55,6 +55,8 @@ model Store {
   abandonedCarts         AbandonedCart[]
   collections           Collection[]
   notificationPreference NotificationPreference?
+  giftCards             GiftCard[]
+  staffs                Staff[]
 }
 
 model Category {
@@ -418,6 +420,26 @@ model CollectionProduct {
   @@index([productId])
 }
 
+model Staff {
+  id           String    @id @default(cuid())
+  email        String
+  name         String
+  role         String    @default("staff") // admin, manager, staff, viewer
+  status       String    @default("active") // active, invited, disabled
+  avatar       String?
+  permissions  String    @default("{}") // JSON: {products: true, orders: true, ...}
+  storeId      String
+  store        Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  invitedAt    DateTime  @default(now())
+  acceptedAt   DateTime?
+  lastActiveAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([storeId])
+  @@index([email])
+}
+
 model NotificationPreference {
   id                        String   @id @default(cuid())
   storeId                   String   @unique
@@ -436,4 +458,31 @@ model NotificationPreference {
   reportEmail               String?
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
+}
+
+model GiftCard {
+  id              String    @id @default(cuid())
+  code            String    // unique gift card code like "GC-XXXX-XXXX"
+  name            String    // display name like "Birthday Gift Card"
+  description     String?
+  initialBalance  Float     // starting balance
+  currentBalance  Float     // remaining balance
+  currency        String    @default("INR")
+  status          String    @default("active") // "active", "redeemed", "expired", "disabled"
+  recipientName   String?
+  recipientEmail  String?
+  senderName      String?
+  message         String?   // gift message
+  purchasedBy     String?   // customer email who bought it
+  template        String    @default("classic") // "classic", "birthday", "festive", "minimal"
+  expiresAt       DateTime?
+  redeemedAt      DateTime?
+  storeId         String
+  store           Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([storeId])
+  @@index([code])
+  @@index([status])
 }

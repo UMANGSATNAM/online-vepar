@@ -38,6 +38,7 @@ async function main() {
 
   // Clean existing data
   await prisma.activityLog.deleteMany();
+  await prisma.giftCard.deleteMany();
   await prisma.collectionProduct.deleteMany();
   await prisma.collection.deleteMany();
   await prisma.productVariant.deleteMany();
@@ -51,6 +52,7 @@ async function main() {
   await prisma.discount.deleteMany();
   await prisma.taxRate.deleteMany();
   await prisma.abandonedCart.deleteMany();
+  await prisma.staff.deleteMany();
   await prisma.store.deleteMany();
   await prisma.user.deleteMany();
 
@@ -1144,6 +1146,57 @@ async function main() {
   ]);
   console.log('✅ Created', productVariants.length, 'product variants');
 
+  // 13. Create staff members
+  const staffMembers = await Promise.all([
+    prisma.staff.create({
+      data: {
+        email: 'amit.sharma@vepar.com',
+        name: 'Amit Sharma',
+        role: 'admin',
+        status: 'active',
+        permissions: JSON.stringify({ products: true, orders: true, customers: true, analytics: true, discounts: true, settings: true, reviews: true, inventory: true, shipping: true, taxRates: true, abandonedCarts: true, pages: true, collections: true }),
+        storeId: store.id,
+        acceptedAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+        lastActiveAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+      },
+    }),
+    prisma.staff.create({
+      data: {
+        email: 'neha.patel@vepar.com',
+        name: 'Neha Patel',
+        role: 'manager',
+        status: 'active',
+        permissions: JSON.stringify({ products: true, orders: true, customers: true, analytics: true, discounts: true, settings: false, reviews: true, inventory: true, shipping: true, taxRates: false, abandonedCarts: true, pages: true, collections: true }),
+        storeId: store.id,
+        acceptedAt: new Date(now.getTime() - 20 * 24 * 60 * 60 * 1000),
+        lastActiveAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+      },
+    }),
+    prisma.staff.create({
+      data: {
+        email: 'rahul.verma@vepar.com',
+        name: 'Rahul Verma',
+        role: 'staff',
+        status: 'active',
+        permissions: JSON.stringify({ products: true, orders: true, customers: true, analytics: true, discounts: false, settings: false, reviews: true, inventory: true, shipping: false, taxRates: false, abandonedCarts: false, pages: false, collections: true }),
+        storeId: store.id,
+        acceptedAt: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000),
+        lastActiveAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+      },
+    }),
+    prisma.staff.create({
+      data: {
+        email: 'priya.singh@vepar.com',
+        name: 'Priya Singh',
+        role: 'viewer',
+        status: 'invited',
+        permissions: JSON.stringify({ products: true, orders: true, customers: true, analytics: true, discounts: false, settings: false, reviews: true, inventory: false, shipping: false, taxRates: false, abandonedCarts: false, pages: false, collections: false }),
+        storeId: store.id,
+      },
+    }),
+  ]);
+  console.log('✅ Created', staffMembers.length, 'staff members');
+
   // 12. Create activity logs
   const activityLogsData = [
     { action: 'product.created', entity: 'product', entityId: products[0].id, entityName: 'Banarasi Silk Saree', details: { price: 5999, status: 'active' }, daysAgo: 6 },
@@ -1182,6 +1235,98 @@ async function main() {
     });
   }
   console.log('✅ Created', activityLogsData.length, 'activity logs');
+
+  // 14. Create gift cards
+  const giftCards = await Promise.all([
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-A1B2-C3D4',
+        name: 'Birthday Special',
+        description: 'A special birthday gift card for your loved ones',
+        initialBalance: 2000,
+        currentBalance: 2000,
+        currency: 'INR',
+        status: 'active',
+        recipientName: 'Ananya Patel',
+        recipientEmail: 'ananya.patel@email.com',
+        senderName: 'Vepar Fashion Store',
+        message: 'Happy Birthday! Enjoy your special day with this gift!',
+        template: 'birthday',
+        expiresAt: new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000),
+        storeId: store.id,
+      },
+    }),
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-E5F6-G7H8',
+        name: 'Festive Offer',
+        description: 'Celebrate the festive season with our special gift card',
+        initialBalance: 5000,
+        currentBalance: 5000,
+        currency: 'INR',
+        status: 'active',
+        template: 'festive',
+        expiresAt: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000),
+        storeId: store.id,
+      },
+    }),
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-I9J0-K1L2',
+        name: 'Welcome Gift',
+        description: 'Welcome gift for new customers',
+        initialBalance: 1000,
+        currentBalance: 0,
+        currency: 'INR',
+        status: 'redeemed',
+        template: 'classic',
+        redeemedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
+        storeId: store.id,
+      },
+    }),
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-M3N4-O5P6',
+        name: 'Thank You Card',
+        description: 'A thank you gift for our valued customers',
+        initialBalance: 3000,
+        currentBalance: 3000,
+        currency: 'INR',
+        status: 'active',
+        template: 'minimal',
+        expiresAt: new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000),
+        storeId: store.id,
+      },
+    }),
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-Q7R8-S9T0',
+        name: 'Holiday Season',
+        description: 'Holiday season special gift card',
+        initialBalance: 10000,
+        currentBalance: 10000,
+        currency: 'INR',
+        status: 'expired',
+        template: 'festive',
+        expiresAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+        storeId: store.id,
+      },
+    }),
+    prisma.giftCard.create({
+      data: {
+        code: 'GC-U1V2-W3X4',
+        name: 'New Year Bonus',
+        description: 'Start the new year with a bonus gift card',
+        initialBalance: 2500,
+        currentBalance: 2500,
+        currency: 'INR',
+        status: 'disabled',
+        template: 'classic',
+        storeId: store.id,
+      },
+    }),
+  ]);
+  console.log('✅ Created', giftCards.length, 'gift cards');
 
   console.log('\n🎉 Seeding completed successfully!');
   console.log('\n📋 Demo credentials:');

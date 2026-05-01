@@ -34,6 +34,7 @@ import {
   Receipt,
   ShoppingBag,
   Layers,
+  CreditCard,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -83,6 +84,8 @@ import AbandonedCartsPage from '@/components/abandoned-carts/AbandonedCartsPage'
 import ReviewsPage from '@/components/reviews/ReviewsPage'
 import ActivityLogPage from '@/components/activity/ActivityLogPage'
 import CollectionsPage from '@/components/collections/CollectionsPage'
+import GiftCardsPage from '@/components/gift-cards/GiftCardsPage'
+import StaffPage from '@/components/staff/StaffPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
 
@@ -90,11 +93,13 @@ const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ cla
   { view: 'dashboard', label: 'Home', icon: Home, shortcut: 'Alt+H' },
   { view: 'products', label: 'Products', icon: Package, shortcut: 'Alt+P' },
   { view: 'collections', label: 'Collections', icon: Layers, shortcut: 'Alt+L' },
+  { view: 'staff', label: 'Staff', icon: Users, shortcut: 'Alt+Shift+T' },
   { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
   { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
   { view: 'reviews', label: 'Reviews', icon: Star, shortcut: 'Alt+R' },
   { view: 'activity', label: 'Activity', icon: Clock },
   { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D' },
+  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, shortcut: 'Alt+G' },
   { view: 'inventory', label: 'Inventory', icon: Warehouse, shortcut: 'Alt+I' },
   { view: 'shipping', label: 'Shipping', icon: Truck, shortcut: 'Alt+Shift+S' },
   { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, shortcut: 'Alt+T' },
@@ -121,6 +126,7 @@ const viewLabels: Record<string, string> = {
   pages: 'Pages',
   'create-store': 'Create Store',
   discounts: 'Discounts',
+  'gift-cards': 'Gift Cards',
   inventory: 'Inventory',
   shipping: 'Shipping',
   'tax-rates': 'Tax Rates',
@@ -129,6 +135,7 @@ const viewLabels: Record<string, string> = {
   activity: 'Activity Log',
   checkout: 'Storefront',
   collections: 'Collections',
+  staff: 'Staff',
 }
 
 function ThemeToggle() {
@@ -246,6 +253,10 @@ export default function DashboardLayout() {
         return <ActivityLogPage />
       case 'collections':
         return <CollectionsPage />
+      case 'gift-cards':
+        return <GiftCardsPage />
+      case 'staff':
+        return <StaffPage />
       case 'create-store':
         return <CreateStoreDialog />
       default:
