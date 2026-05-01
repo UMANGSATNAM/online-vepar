@@ -216,16 +216,16 @@ export default function ReviewsPage() {
   }
 
   const renderStars = (rating: number, size: 'sm' | 'md' | 'lg' = 'md') => {
-    const sizeClass = size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4'
+    const sizeClass = size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-6 h-6' : 'w-4 h-4'
     return (
-      <div className="flex items-center gap-0.5">
+      <div className="rating-star">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
             className={`${sizeClass} ${
               star <= rating
-                ? 'fill-amber-400 text-amber-400'
-                : 'fill-muted text-muted-foreground/30'
+                ? 'star-filled'
+                : 'star-empty'
             }`}
           />
         ))}
@@ -255,7 +255,8 @@ export default function ReviewsPage() {
       color: 'emerald',
       bgClass: 'bg-emerald-50 dark:bg-emerald-900/20',
       textClass: 'text-emerald-600 dark:text-emerald-400',
-      borderClass: 'border-t-emerald-500',
+      borderClass: 'border-t-gradient-emerald',
+      glowClass: 'stat-glow',
     },
     {
       label: 'Average Rating',
@@ -264,8 +265,9 @@ export default function ReviewsPage() {
       color: 'amber',
       bgClass: 'bg-amber-50 dark:bg-amber-900/20',
       textClass: 'text-amber-600 dark:text-amber-400',
-      borderClass: 'border-t-amber-500',
-      extra: stats.avgRating > 0 ? renderStars(Math.round(stats.avgRating), 'sm') : null,
+      borderClass: 'border-t-gradient-amber',
+      glowClass: 'stat-glow-amber',
+      extra: stats.avgRating > 0 ? renderStars(Math.round(stats.avgRating), 'md') : null,
     },
     {
       label: 'Pending Approval',
@@ -274,7 +276,8 @@ export default function ReviewsPage() {
       color: 'orange',
       bgClass: 'bg-orange-50 dark:bg-orange-900/20',
       textClass: 'text-orange-600 dark:text-orange-400',
-      borderClass: 'border-t-orange-500',
+      borderClass: 'border-t-gradient-orange',
+      glowClass: 'stat-glow-orange',
     },
     {
       label: 'Verified Reviews',
@@ -283,7 +286,8 @@ export default function ReviewsPage() {
       color: 'green',
       bgClass: 'bg-green-50 dark:bg-green-900/20',
       textClass: 'text-green-600 dark:text-green-400',
-      borderClass: 'border-t-green-500',
+      borderClass: 'border-t-gradient-green',
+      glowClass: 'stat-glow-green',
     },
   ] : []
 
@@ -322,14 +326,14 @@ export default function ReviewsPage() {
             </Card>
           ))
         ) : (
-          summaryCards.map((card) => (
+          summaryCards.map((card, idx) => (
             <motion.div
               key={card.label}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
             >
-              <Card className={`border-t-2 ${card.borderClass} hover-lift transition-all duration-200`}>
+              <Card className={`${card.borderClass} ${card.glowClass} hover-lift transition-all duration-200`}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium text-muted-foreground">{card.label}</p>
@@ -355,26 +359,29 @@ export default function ReviewsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="text-sm font-semibold mb-3">Rating Distribution</h3>
-              <div className="space-y-2">
+          <Card className="card-premium">
+            <CardContent className="p-5">
+              <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                <Star className="w-4 h-4 text-emerald-600" />
+                Rating Distribution
+              </h3>
+              <div className="space-y-2.5">
                 {stats.distribution.map((item) => (
                   <div key={item.star} className="flex items-center gap-3">
                     <div className="flex items-center gap-1 w-12 text-sm">
                       <span className="font-medium">{item.star}</span>
-                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
                     </div>
                     <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-amber-400 rounded-full"
+                        className="rating-bar-gradient h-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${item.percentage}%` }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
+                        transition={{ duration: 0.7, delay: 0.2 }}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground w-16 text-right">
-                      {item.count} ({item.percentage}%)
+                    <span className="text-xs font-medium text-muted-foreground w-20 text-right">
+                      {item.count} <span className="text-emerald-600 dark:text-emerald-400">({item.percentage}%)</span>
                     </span>
                   </div>
                 ))}
@@ -467,14 +474,16 @@ export default function ReviewsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Card>
-              <CardContent className="p-12 text-center">
-                <StarOff className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-muted-foreground mb-1">No reviews found</h3>
-                <p className="text-sm text-muted-foreground">
+            <Card className="border-2 border-dashed border-muted-foreground/20">
+              <CardContent className="p-16 text-center">
+                <div className="empty-state-icon mb-4">
+                  <StarOff className="w-16 h-16 mx-auto text-emerald-300 dark:text-emerald-700" />
+                </div>
+                <h3 className="text-lg font-semibold text-muted-foreground mb-2">No reviews found</h3>
+                <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                   {search || statusFilter !== 'all' || ratingFilter !== 'all' || productFilter !== 'all'
                     ? 'Try adjusting your filters to find reviews'
-                    : 'Your products haven\'t received any reviews yet'}
+                    : 'Your products haven\'t received any reviews yet. Share your store link with customers to start collecting feedback!'}
                 </p>
               </CardContent>
             </Card>
@@ -488,196 +497,190 @@ export default function ReviewsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.25, delay: idx * 0.04 }}
+                className="animate-card-entrance"
+                style={{ animationDelay: `${idx * 0.06}s` }}
               >
-                <Card className="overflow-hidden">
-                  <CardContent className="p-0">
-                    {/* Color bar at top */}
-                    <div className={`h-1 ${
-                      !review.isApproved
-                        ? 'bg-amber-400'
-                        : review.isApproved
-                          ? 'bg-emerald-500'
-                          : 'bg-red-400'
-                    }`} />
-
-                    <div className="p-4 sm:p-5">
-                      {/* Header: Customer + Rating + Date */}
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                        <div className="flex items-start gap-3">
-                          {/* Avatar */}
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                            <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-                              {review.customerName.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-semibold text-sm">{review.customerName}</span>
-                              {review.isVerified && (
-                                <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
-                                  <ShieldCheck className="w-3 h-3" />
-                                  Verified Purchase
-                                </Badge>
-                              )}
-                              {!review.isApproved && (
-                                <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
-                                  <Clock className="w-3 h-3" />
-                                  Pending
-                                </Badge>
-                              )}
-                              {review.isApproved && (
-                                <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
-                                  <CheckCircle2 className="w-3 h-3" />
-                                  Approved
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 mt-1">
-                              {renderStars(review.rating, 'sm')}
-                              <span className="text-xs text-muted-foreground">{formatDate(review.createdAt)}</span>
-                            </div>
-                          </div>
+                <Card className={`overflow-hidden card-premium review-card border-l-4 ${
+                  review.rating >= 4
+                    ? 'border-l-emerald-500'
+                    : review.rating === 3
+                      ? 'border-l-amber-400'
+                      : 'border-l-red-400'
+                }`}>
+                  <CardContent className="p-4 sm:p-5">
+                    {/* Header: Customer + Rating + Date */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        {/* Avatar */}
+                        <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                          <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                            {review.customerName.charAt(0).toUpperCase()}
+                          </span>
                         </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {!review.isApproved && (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-7 text-xs gap-1 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
-                                onClick={() => handleApprove(review.id, true)}
-                              >
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-sm">{review.customerName}</span>
+                            {review.isVerified && (
+                              <Badge className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
+                                <ShieldCheck className="w-3 h-3" />
+                                Verified Purchase
+                              </Badge>
+                            )}
+                            {!review.isApproved && (
+                              <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 text-[10px] px-1.5 py-0 h-5 gap-0.5 animate-subtle-pulse">
+                                <Clock className="w-3 h-3" />
+                                Pending
+                              </Badge>
+                            )}
+                            {review.isApproved && (
+                              <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
                                 <CheckCircle2 className="w-3 h-3" />
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-7 text-xs gap-1 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30"
-                                onClick={() => handleApprove(review.id, false)}
-                              >
-                                <XCircle className="w-3 h-3" />
-                                Reject
-                              </Button>
-                            </>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-xs gap-1"
-                            onClick={() => {
-                              setRespondingTo(respondingTo === review.id ? null : review.id)
-                              setResponseText(review.response || '')
-                            }}
-                          >
-                            <MessageSquare className="w-3 h-3" />
-                            {review.response ? 'Edit Response' : 'Respond'}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-xs gap-1 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
-                            onClick={() => setDeleteId(review.id)}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
+                                Approved
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            {renderStars(review.rating, 'sm')}
+                            <span className="text-xs text-muted-foreground">{formatDate(review.createdAt)}</span>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Review Content */}
-                      <div className="mt-3">
-                        {review.title && (
-                          <h4 className="font-medium text-sm mb-1">{review.title}</h4>
+                      {/* Actions */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {!review.isApproved && (
+                          <>
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs gap-1 btn-approve"
+                              onClick={() => handleApprove(review.id, true)}
+                            >
+                              <CheckCircle2 className="w-3 h-3" />
+                              Approve
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs gap-1 btn-reject"
+                              onClick={() => handleApprove(review.id, false)}
+                            >
+                              <XCircle className="w-3 h-3" />
+                              Reject
+                            </Button>
+                          </>
                         )}
-                        {review.content && (
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {review.content}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Product reference */}
-                      <div className="mt-3 flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Product:</span>
-                        <Badge variant="outline" className="text-[10px] gap-1">
-                          {review.product?.name || 'Unknown Product'}
-                        </Badge>
-                      </div>
-
-                      {/* Merchant Response */}
-                      {review.response && !respondingTo && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="mt-3 ml-6 pl-4 border-l-2 border-emerald-300 dark:border-emerald-700"
+                        <Button
+                          size="sm"
+                          className="h-7 text-xs gap-1 btn-gradient text-white"
+                          onClick={() => {
+                            setRespondingTo(respondingTo === review.id ? null : review.id)
+                            setResponseText(review.response || '')
+                          }}
                         >
-                          <div className="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-lg p-3">
-                            <div className="flex items-center gap-1.5 mb-1">
-                              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                                Merchant Response
+                          <MessageSquare className="w-3 h-3" />
+                          {review.response ? 'Edit Response' : 'Respond'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="h-7 w-7 p-0 btn-delete-outlined"
+                          onClick={() => setDeleteId(review.id)}
+                          title="Delete review"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Review Content */}
+                    <div className="mt-3">
+                      {review.title && (
+                        <h4 className="font-medium text-sm mb-1">{review.title}</h4>
+                      )}
+                      {review.content && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {review.content}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Product reference */}
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Product:</span>
+                      <Badge variant="outline" className="text-[10px] gap-1 border-emerald-200 text-emerald-600 dark:border-emerald-800 dark:text-emerald-400">
+                        {review.product?.name || 'Unknown Product'}
+                      </Badge>
+                    </div>
+
+                    {/* Merchant Response */}
+                    {review.response && !respondingTo && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 ml-2"
+                      >
+                        <div className="merchant-response p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                              Merchant Response
+                            </span>
+                            {review.respondedAt && (
+                              <span className="text-[10px] text-muted-foreground">
+                                • {formatDate(review.respondedAt)}
                               </span>
-                              {review.respondedAt && (
-                                <span className="text-[10px] text-muted-foreground">
-                                  • {formatDate(review.respondedAt)}
-                                </span>
-                              )}
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{review.response}</p>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Respond Form */}
+                    <AnimatePresence>
+                      {respondingTo === review.id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="mt-4 overflow-hidden"
+                        >
+                          <div className="merchant-response p-4 space-y-2">
+                            <label className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                              Your Response
+                            </label>
+                            <Textarea
+                              placeholder="Write your response to this review..."
+                              value={responseText}
+                              onChange={(e) => setResponseText(e.target.value)}
+                              rows={3}
+                              className="resize-none text-sm"
+                            />
+                            <div className="flex items-center gap-2 justify-end">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 text-xs"
+                                onClick={() => {
+                                  setRespondingTo(null)
+                                  setResponseText('')
+                                }}
+                              >
+                                <X className="w-3 h-3 mr-1" />
+                                Cancel
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="h-7 text-xs gap-1 btn-gradient text-white"
+                                disabled={!responseText.trim()}
+                                onClick={() => handleRespond(review.id)}
+                              >
+                                <Send className="w-3 h-3" />
+                                Submit Response
+                              </Button>
                             </div>
-                            <p className="text-sm text-muted-foreground">{review.response}</p>
                           </div>
                         </motion.div>
                       )}
-
-                      {/* Respond Form */}
-                      <AnimatePresence>
-                        {respondingTo === review.id && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="mt-3 overflow-hidden"
-                          >
-                            <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-                              <label className="text-xs font-medium text-muted-foreground">
-                                Your Response
-                              </label>
-                              <Textarea
-                                placeholder="Write your response to this review..."
-                                value={responseText}
-                                onChange={(e) => setResponseText(e.target.value)}
-                                rows={3}
-                                className="resize-none text-sm"
-                              />
-                              <div className="flex items-center gap-2 justify-end">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-7 text-xs"
-                                  onClick={() => {
-                                    setRespondingTo(null)
-                                    setResponseText('')
-                                  }}
-                                >
-                                  <X className="w-3 h-3 mr-1" />
-                                  Cancel
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className="h-7 text-xs gap-1 bg-emerald-600 hover:bg-emerald-700"
-                                  disabled={!responseText.trim()}
-                                  onClick={() => handleRespond(review.id)}
-                                >
-                                  <Send className="w-3 h-3" />
-                                  Submit Response
-                                </Button>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                    </AnimatePresence>
                   </CardContent>
                 </Card>
               </motion.div>

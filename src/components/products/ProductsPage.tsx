@@ -1977,17 +1977,19 @@ export default function ProductsPage() {
                   ))}
                 </div>
               ) : variants.length === 0 ? (
-                <div className="text-center py-8 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
-                  <Layers className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                <div className="text-center py-10 bg-muted/20 rounded-lg border-2 border-dashed border-muted-foreground/20">
+                  <div className="empty-state-icon mb-3">
+                    <Layers className="w-14 h-14 mx-auto text-emerald-300 dark:text-emerald-700" />
+                  </div>
                   <p className="text-sm text-muted-foreground font-medium">No variants yet</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Add variants like sizes, colors, or materials
+                  <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                    Add variants like sizes, colors, or materials to offer product options to your customers
                   </p>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={openAddVariantDialog}
-                    className="mt-3 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                    className="mt-4 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
                   >
                     <Plus className="w-3.5 h-3.5 mr-1" />
                     Add First Variant
@@ -2012,23 +2014,25 @@ export default function ProductsPage() {
                         try { parsedOptions = JSON.parse(variant.options) } catch { /* empty */ }
                         const optionEntries = Object.entries(parsedOptions)
                         return (
-                          <TableRow key={variant.id} className={idx % 2 === 1 ? 'table-row-alt' : ''}>
+                          <TableRow key={variant.id} className={`table-row-hover ${idx % 2 === 1 ? 'table-row-alt' : ''}`}>
                             <TableCell>
-                              <div>
-                                <p className="font-medium text-sm">{variant.name}</p>
-                                {optionEntries.length > 0 && (
-                                  <div className="flex flex-wrap gap-1 mt-1">
-                                    {optionEntries.map(([key, value]) => (
-                                      <Badge
-                                        key={key}
-                                        variant="outline"
-                                        className="text-[10px] px-1.5 py-0 border-emerald-200 text-emerald-600 dark:border-emerald-800 dark:text-emerald-400"
-                                      >
-                                        {key}: {value}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                )}
+                              <div className="flex items-start gap-2">
+                                <span className={`variant-dot mt-1.5 ${variant.isActive ? 'variant-dot-active' : 'variant-dot-inactive'}`} />
+                                <div>
+                                  <p className="font-medium text-sm">{variant.name}</p>
+                                  {optionEntries.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                      {optionEntries.map(([key, value]) => (
+                                        <span
+                                          key={key}
+                                          className="variant-option-pill"
+                                        >
+                                          {key}: {value}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </TableCell>
                             <TableCell>
@@ -2042,7 +2046,7 @@ export default function ProductsPage() {
                                   {formatPrice(variant.price)}
                                 </span>
                               ) : (
-                                <span className="text-xs text-muted-foreground italic">
+                                <span className="text-xs text-muted-foreground/60 italic">
                                   Same as product
                                 </span>
                               )}
@@ -2053,10 +2057,10 @@ export default function ProductsPage() {
                               )}
                             </TableCell>
                             <TableCell>
-                              <span className={`text-sm font-medium ${
-                                variant.stock <= 0 ? 'text-red-600' :
-                                variant.stock <= 5 ? 'text-yellow-600' :
-                                'text-emerald-600'
+                              <span className={`text-sm ${
+                                variant.stock <= 0 ? 'stock-out' :
+                                variant.stock <= 10 ? 'stock-low' :
+                                'stock-good'
                               }`}>
                                 {variant.stock}
                               </span>
@@ -2075,6 +2079,7 @@ export default function ProductsPage() {
                                   size="sm"
                                   className="h-7 w-7 p-0 hover:text-emerald-600"
                                   onClick={() => openEditVariantDialog(variant)}
+                                  title="Edit variant"
                                 >
                                   <Pencil className="w-3.5 h-3.5" />
                                 </Button>
@@ -2084,6 +2089,7 @@ export default function ProductsPage() {
                                       variant="ghost"
                                       size="sm"
                                       className="h-7 w-7 p-0 hover:text-red-600"
+                                      title="Delete variant"
                                     >
                                       <Trash2 className="w-3.5 h-3.5" />
                                     </Button>
@@ -2263,7 +2269,7 @@ export default function ProductsPage() {
               {editingVariantId ? 'Update variant details for this product' : 'Create a new variant like a size, color, or material option'}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2 max-h-[70vh] overflow-y-auto">
+          <div className="space-y-5 py-2 max-h-[70vh] overflow-y-auto">
             {/* Variant Name */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">
@@ -2280,31 +2286,32 @@ export default function ProductsPage() {
             {/* Options */}
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-1">
-                <Tag className="w-3 h-3" /> Options
+                <Tag className="w-3 h-3 text-emerald-600" /> Options
               </Label>
               <div className="space-y-2">
                 {variantFormData.options.map((opt, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
+                  <div key={idx} className="option-field-card flex items-center gap-2">
                     <Input
                       placeholder="Option name (e.g., Color)"
                       value={opt.key}
                       onChange={(e) => handleUpdateOptionField(idx, 'key', e.target.value)}
-                      className="flex-1"
+                      className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
                     />
                     <Input
                       placeholder="Value (e.g., Red)"
                       value={opt.value}
                       onChange={(e) => handleUpdateOptionField(idx, 'value', e.target.value)}
-                      className="flex-1"
+                      className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
                     />
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="shrink-0 h-8 w-8 text-muted-foreground hover:text-red-500"
+                      className="shrink-0 h-7 w-7 p-0 text-muted-foreground hover:text-red-500"
                       onClick={() => handleRemoveOptionField(idx)}
                       disabled={variantFormData.options.length <= 1}
+                      title="Remove option"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 ))}
@@ -2314,6 +2321,7 @@ export default function ProductsPage() {
                 size="sm"
                 onClick={handleAddOptionField}
                 className="w-full border-dashed border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                title="Add another option"
               >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 Add Option
@@ -2365,17 +2373,24 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {/* Stock */}
+            {/* Stock with real-time total preview */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Stock Quantity</Label>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                value={variantFormData.stock}
-                onChange={(e) => setVariantFormData(prev => ({ ...prev, stock: e.target.value }))}
-                className="w-32"
-              />
+              <div className="flex items-center gap-3">
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={variantFormData.stock}
+                  onChange={(e) => setVariantFormData(prev => ({ ...prev, stock: e.target.value }))}
+                  className="w-32"
+                />
+                <div className="text-xs text-muted-foreground">
+                  Total across all variants: <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    {variants.reduce((sum, v) => sum + v.stock, 0) + (parseInt(variantFormData.stock) || 0) - (editingVariantId ? (variants.find(v => v.id === editingVariantId)?.stock || 0) : 0)}
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Active toggle */}
@@ -2398,7 +2413,7 @@ export default function ProductsPage() {
             <Button
               onClick={handleSaveVariant}
               disabled={isSavingVariant}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="btn-gradient text-white"
             >
               {isSavingVariant ? 'Saving...' : (editingVariantId ? 'Update Variant' : 'Create Variant')}
             </Button>

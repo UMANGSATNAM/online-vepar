@@ -1247,3 +1247,233 @@ Stage Summary:
 - `/src/components/products/ProductsPage.tsx` (added variant types, state, handlers, UI in detail view, create/edit dialog)
 - `/src/app/api/storefront/route.ts` (added variants with active filter in product select)
 - `/prisma/seed.ts` (added 16 product variant seed data + cleanup)
+---
+Task ID: 5-styling
+Agent: Frontend Styling Expert
+Task: Polish Reviews + Variants Styling
+
+Work Log:
+
+### 1. globals.css Enhancements
+- Added `.rating-star` utility class for star display with emerald fill (.star-filled, .star-empty with dark mode)
+- Added `.review-card` class for review card hover effects (translateY -2px + shadow, dark mode support)
+- Added `.variant-option-pill` class for variant option badges (emerald-50 bg, emerald-700 text, pill shape, dark mode)
+- Added `.stat-glow` generic emerald glow and `.stat-glow-amber/orange/green` variants for summary cards
+- Added `.border-t-gradient-emerald/amber/orange/green` for gradient top borders on summary cards
+- Added `.rating-bar-gradient` for rating distribution bars (emerald-500 to emerald-400 gradient, 700ms transition)
+- Added `.merchant-response` for merchant response section (emerald-tinted bg, 3px left border, dark mode)
+- Added `.variant-dot` and `.variant-dot-active/inactive` for colored dot indicators in variant table
+- Added `.stock-good/low/out` for color-coded stock values (green > 10, amber ≤ 10, red = 0)
+- Added `.option-field-card` for option key-value pair card backgrounds in variant form
+- Added `.btn-approve` for green gradient approve buttons
+- Added `.btn-reject` for red gradient reject buttons
+- Added `.btn-delete-outlined` for outlined red delete buttons (with dark mode)
+
+### 2. ReviewsPage.tsx Polish
+
+#### Summary Cards
+- Changed star colors from amber to emerald (`.rating-star` with `.star-filled/.star-empty` classes)
+- Larger star display for average rating card (size changed from `sm` to `md`)
+- Added gradient top borders using `.border-t-gradient-emerald/amber/orange/green`
+- Added stat-glow effects: `.stat-glow`, `.stat-glow-amber`, `.stat-glow-orange`, `.stat-glow-green`
+- Added `hover-lift` class for hover animation on all summary cards
+- Added staggered entrance animation (0.05s delay per card)
+
+#### Rating Distribution
+- Changed star icon color from amber to emerald-500
+- Added `.rating-bar-gradient` for gradient fill bars (emerald-500 → emerald-400)
+- Increased animation duration from 0.6s to 0.7s for smoother transitions
+- Added `.card-premium` class to distribution card
+- Added section header with Star icon
+- Percentage labels now use emerald-600 color with larger width
+
+#### Review Cards
+- Added `card-premium` class for consistent card styling
+- Added `review-card` class for hover effects (translateY -2px + shadow)
+- Added `animate-card-entrance` with staggered delay for entrance animation
+- Added colored left border based on rating: emerald-500 (4-5★), amber-400 (3★), red-400 (1-2★)
+- Star ratings now use emerald fill via `.rating-star` and `.star-filled` classes
+- Verified badge changed to emerald theme with ShieldCheck icon
+- Pending badge now has `animate-subtle-pulse` for subtle pulsing animation
+- Approved badge uses emerald-100/emerald-700 colors
+- Product reference badge now has emerald border/text colors
+
+#### Action Buttons
+- Approve button: uses `.btn-approve` class (green gradient, CheckCircle2 icon)
+- Reject button: uses `.btn-reject` class (red gradient, XCircle icon)
+- Respond button: uses `.btn-gradient` class (emerald gradient, MessageSquare icon)
+- Delete button: uses `.btn-delete-outlined` class (outlined red, icon-only with Trash2)
+- Submit Response button: uses `.btn-gradient` class
+
+#### Merchant Response
+- Uses `.merchant-response` CSS class (emerald-tinted bg, 3px emerald left border)
+- Respond form also uses `.merchant-response` styling
+- Label changed to emerald-700 font-semibold
+- Dark mode support with deeper emerald tones
+
+#### Empty State
+- Dashed border card with `.empty-state-icon` class
+- Larger StarOff icon (w-16 h-16) in emerald-300/dark:emerald-700
+- Better messaging with max-w-sm constraint
+- Improved copy encouraging customers to leave feedback
+
+### 3. ProductsPage.tsx - Variants Polish
+
+#### Variant Table
+- Added `table-row-hover` class to all variant rows
+- Added colored dot indicator (`.variant-dot` + `variant-dot-active/inactive`) before variant name
+- Option badges now use `.variant-option-pill` class (emerald-50 bg, emerald-700 text, pill shape)
+- Stock values color-coded: `.stock-good` (> 10, green), `.stock-low` (≤ 10, amber), `.stock-out` (= 0, red)
+- "Same as product" text uses muted-foreground/60 italic style
+- Edit/Delete action buttons have `title` attributes for tooltips
+
+#### Variant Form Dialog
+- Cleaner spacious layout with `space-y-5` (was `space-y-4`)
+- Option key-value pairs use `.option-field-card` class (subtle card background)
+- Inputs inside option fields are borderless with transparent bg, emerald focus ring
+- Remove option button is icon-only (h-7 w-7) with `title="Remove option"` tooltip
+- Add option button has `title="Add another option"` tooltip
+- Tag icon in Options label uses emerald-600 color
+- Stock input shows real-time total stock preview across all variants (emerald-600 text)
+- Save button uses `.btn-gradient` class instead of plain emerald bg
+
+#### Variant Empty State
+- Better dashed border card with `.empty-state-icon` class
+- Larger Layers icon (w-14 h-14) in emerald-300/dark:emerald-700
+- More descriptive text with `max-w-xs mx-auto`
+- Improved copy about offering product options to customers
+
+### Lint & Quality
+- Ran `bun run lint` - passes with 0 errors, 0 warnings
+
+### Files Modified
+- `/src/app/globals.css` (added 20+ new CSS utility classes for reviews & variants)
+- `/src/components/reviews/ReviewsPage.tsx` (polished summary cards, distribution, review cards, action buttons, empty state, merchant response)
+- `/src/components/products/ProductsPage.tsx` (polished variant table, form dialog, empty state)
+
+---
+Task ID: 16
+Agent: Main Agent (Cron Review Session 3)
+Task: QA Testing, Bug Fixes, Product Variants, Reviews/Ratings, Styling Polish
+
+Work Log:
+
+### QA Testing (agent-browser)
+- Tested all pages: Landing, Login, Dashboard, Products, Orders, Customers, Discounts, Inventory, Shipping, Analytics, Store Settings, Store Preview, Pages
+- No JavaScript errors on any page
+- Identified bug: Store Preview fetching from authenticated `/api/products` instead of public `/api/storefront` API (returned 401)
+- Identified bug: Reviews API returning 500 error due to BigInt type mismatch with SQLite COUNT()
+
+### Bug Fixes
+1. **Store Preview 401 Bug**: Updated `/src/components/store/StorePreview.tsx` to use `/api/storefront?storeId=...` (public, no auth) instead of `/api/products?storeId=...` (authenticated). Also fixed the Product type to use `images: string[]` instead of `images: string` since storefront API returns parsed image arrays.
+2. **Reviews API BigInt Error**: Fixed `/src/app/api/reviews/route.ts` line 164 - changed `Math.ceil(total / limit)` to `Math.ceil(Number(total) / limit)` to handle BigInt from SQLite's COUNT().
+
+### New Features Added
+
+#### 1. Product Variants (Full Feature)
+- **Prisma Schema**: Added `ProductVariant` model with: id, productId, storeId, name, sku, price (optional override), comparePrice, stock, options (JSON key-value), position, isActive, timestamps
+- **API Routes**:
+  - `GET/POST /api/products/[id]/variants` - List and create variants
+  - `GET/PUT/DELETE /api/products/variants/[variantId]` - Individual variant CRUD
+- **UI**: Variants section in product detail view with:
+  - Variant table: name, option badges, SKU, price override, stock, status, actions
+  - Add/Edit variant dialog with dynamic option key-value pairs
+  - Delete confirmation dialog
+  - 16 seed variants across 5 products (Banarasi Silk Saree, Cotton Kurta, Bridal Lehenga, Palazzo Set, Chiffon Gown)
+- **Storefront**: Updated to include variants in product data
+
+#### 2. Product Reviews & Ratings (Full Feature)
+- **Prisma Schema**: Added `Review` model with: id, productId, storeId, customerName, customerEmail, rating (1-5), title, content, isVerified, isApproved, response, respondedAt, timestamps
+- **API Routes**:
+  - `GET/POST /api/reviews` - List reviews (with stats) and submit review (public, no auth)
+  - `GET/PUT/DELETE /api/reviews/[id]` - Individual review management (auth required)
+  - Raw SQL fallbacks for stale Prisma Client
+- **UI**: ReviewsPage component with:
+  - 4 Summary Cards: Total Reviews, Average Rating, Pending Approval, Verified Reviews
+  - Rating distribution bar chart (5★ to 1★)
+  - Status tabs: All, Pending, Approved, Rejected
+  - Filter by search, rating, product
+  - Review cards with star display, verified badge, approval actions, merchant response
+  - 10 seed reviews across products with varied ratings and statuses
+- **Navigation**: Added to sidebar with Star icon, Alt+R shortcut
+- **Storefront**: Updated to include avgRating and reviewCount in product data
+
+### Styling Improvements
+
+#### ReviewsPage Polish
+- Summary Cards: Gradient top borders (emerald/amber/orange/green), stat-glow effects, hover-lift, staggered entrance
+- Rating Distribution: Emerald gradient bars, 700ms animated transitions
+- Review Cards: card-premium + review-card classes, animate-card-entrance stagger, colored left border by rating, emerald-filled stars, verified badge with ShieldCheck, pending badge with pulse
+- Action Buttons: btn-approve (green gradient), btn-reject (red gradient), btn-gradient (respond), btn-delete-outlined (outlined red)
+- Merchant Response: emerald-tinted bg + 3px left border
+- Empty State: Dashed border, empty-state-icon, large StarOff icon
+
+#### Product Variants Polish
+- Variant Table: table-row-hover, colored dot indicator, variant-option-pill badges, stock color-coded (stock-good/low/out), muted italic "Same as product"
+- Variant Form: Spacious layout, option-field-card backgrounds, icon-only remove buttons, stock preview
+- Empty State: empty-state-icon with Layers icon
+
+#### CSS Utilities Added
+- .rating-star, .star-filled, .star-empty
+- .review-card (hover lift + shadow)
+- .variant-option-pill (pill badges)
+- .border-t-gradient-emerald/amber/orange/green
+- .rating-bar-gradient (emerald gradient bars)
+- .merchant-response (emerald-tinted bg)
+- .variant-dot, .variant-dot-active/inactive
+- .stock-good/low/out (color-coded stock)
+- .option-field-card
+- .btn-approve, .btn-reject, .btn-delete-outlined
+
+### Quality Checks
+- `bun run lint` passes with 0 errors, 0 warnings
+- Dev server compiles successfully
+- No JavaScript errors on any page
+
+Stage Summary:
+- All QA issues resolved (Store Preview 401, Reviews BigInt error)
+- 2 major new features: Product Variants + Product Reviews/Ratings
+- Comprehensive styling polish for Reviews and Variants pages
+- 20+ new CSS utility classes added to globals.css
+- All new features have seed data and are fully integrated
+
+### Current Project Status Assessment
+**Overall: 🟢 Feature-Rich, Stable, and Polished**
+
+All features working:
+- Landing page with animated hero, dashboard mockup, floating orbs, pricing toggle, testimonials
+- Auth (login/register) with demo account
+- Dashboard with real-time stats, time-based greeting, welcome modal, quick actions
+- Products CRUD with grid/table views, search, filter, sort, bulk actions, **VARIANTS**
+- Orders management with status tabs, detail view, status updates
+- Customer management with order history
+- Inventory Management with stock tracking, low stock alerts, bulk adjustments
+- Shipping Management with zones, rates, shipments, tracking timeline
+- Discounts with 5 seed records, card-based layout, status tabs
+- **NEW: Product Variants** with size/color/material options, individual pricing
+- **NEW: Reviews & Ratings** with star ratings, merchant responses, approval workflow
+- Analytics with 4 chart types, date range picker, key insights
+- Store settings with 5 tabs
+- Store preview with device toggle (FIXED: now uses public storefront API)
+- Page/blog management
+- Notifications panel with real data
+- Dark mode with light/dark/system toggle
+- Create Store flow with theme/color selection
+- Global search (Cmd+K) across products, orders, customers
+- CSV export for products, orders, customers
+
+### Unresolved Issues / Risks
+1. Prisma Client stale after schema changes - mitigated with raw SQL fallbacks
+2. No image upload - only URL input for product images
+3. No payment gateway integration (placeholder only)
+4. Cookie-based auth is simple (no JWT/session rotation)
+5. Sidebar navigation buttons don't always register clicks via agent-browser (works with JS click)
+
+### Priority Recommendations for Next Phase
+1. Add product variant support on the storefront/checkout flow
+2. Add email notification preferences in settings
+3. Add webhook/events system for third-party integrations
+4. Add multi-language support (i18n)
+5. Improve mobile responsiveness of dashboard tables
+6. Add AI-powered product description generation using LLM skill
+7. Add customer-facing storefront with full shopping cart and checkout
