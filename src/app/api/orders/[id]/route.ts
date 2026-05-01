@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(
   request: Request,
@@ -106,6 +107,33 @@ export async function PUT(
         items: true,
       },
     });
+
+    // Log specific activity based on what changed
+    if (status !== undefined && status !== existingOrder.status) {
+      await logActivity({
+        storeId: existingOrder.storeId,
+        userId: user.id,
+        userName: user.name,
+        action: 'order.status_updated',
+        entity: 'order',
+        entityId: order.id,
+        entityName: order.orderNumber,
+        details: { from: existingOrder.status, to: status },
+      });
+    }
+
+    if (fulfillmentStatus !== undefined && fulfillmentStatus !== existingOrder.fulfillmentStatus) {
+      await logActivity({
+        storeId: existingOrder.storeId,
+        userId: user.id,
+        userName: user.name,
+        action: 'order.fulfillment_updated',
+        entity: 'order',
+        entityId: order.id,
+        entityName: order.orderNumber,
+        details: { from: existingOrder.fulfillmentStatus, to: fulfillmentStatus },
+      });
+    }
 
     return NextResponse.json({ order }, { status: 200 });
   } catch (error) {

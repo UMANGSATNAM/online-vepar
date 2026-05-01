@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(
   request: Request,
@@ -55,7 +56,7 @@ export async function PUT(
 
     const existingProduct = await db.product.findUnique({
       where: { id },
-      include: { store: { select: { ownerId: true } } },
+      include: { store: { select: { ownerId: true, id: true } } },
     });
 
     if (!existingProduct) {
@@ -103,6 +104,18 @@ export async function PUT(
       },
     });
 
+    // Log activity
+    await logActivity({
+      storeId: existingProduct.store.id,
+      userId: user.id,
+      userName: user.name,
+      action: 'product.updated',
+      entity: 'product',
+      entityId: product.id,
+      entityName: product.name,
+      details: { updatedFields: Object.keys(updateData) },
+    });
+
     return NextResponse.json({ product }, { status: 200 });
   } catch (error) {
     console.error('Update product error:', error);
@@ -124,7 +137,7 @@ export async function DELETE(
 
     const existingProduct = await db.product.findUnique({
       where: { id },
-      include: { store: { select: { ownerId: true } } },
+      include: { store: { select: { ownerId: true, id: true } } },
     });
 
     if (!existingProduct) {
@@ -134,6 +147,17 @@ export async function DELETE(
     if (existingProduct.store.ownerId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
+
+    // Log activity before deletion
+    await logActivity({
+      storeId: existingProduct.store.id,
+      userId: user.id,
+      userName: user.name,
+      action: 'product.deleted',
+      entity: 'product',
+      entityId: existingProduct.id,
+      entityName: existingProduct.name,
+    });
 
     await db.product.delete({ where: { id } });
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(request: Request) {
   try {
@@ -101,6 +102,18 @@ export async function POST(request: Request) {
         notes,
         storeId,
       },
+    });
+
+    // Log activity
+    await logActivity({
+      storeId,
+      userId: user.id,
+      userName: user.name,
+      action: 'customer.created',
+      entity: 'customer',
+      entityId: customer.id,
+      entityName: customer.name,
+      details: { email: customer.email, city: customer.city },
     });
 
     return NextResponse.json({ customer }, { status: 201 });

@@ -37,6 +37,7 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // Clean existing data
+  await prisma.activityLog.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.review.deleteMany();
   await prisma.orderItem.deleteMany();
@@ -1138,6 +1139,45 @@ async function main() {
     }),
   ]);
   console.log('✅ Created', productVariants.length, 'product variants');
+
+  // 12. Create activity logs
+  const activityLogsData = [
+    { action: 'product.created', entity: 'product', entityId: products[0].id, entityName: 'Banarasi Silk Saree', details: { price: 5999, status: 'active' }, daysAgo: 6 },
+    { action: 'product.created', entity: 'product', entityId: products[1].id, entityName: 'Cotton Printed Kurta', details: { price: 1299, status: 'active' }, daysAgo: 6 },
+    { action: 'product.created', entity: 'product', entityId: products[2].id, entityName: 'Bridal Lehenga Set', details: { price: 15999, status: 'active' }, daysAgo: 5 },
+    { action: 'customer.created', entity: 'customer', entityId: customers[0].id, entityName: 'Priya Sharma', details: { email: 'priya.sharma@email.com', city: 'Gurugram' }, daysAgo: 5 },
+    { action: 'customer.created', entity: 'customer', entityId: customers[1].id, entityName: 'Ananya Patel', details: { email: 'ananya.patel@email.com', city: 'Mumbai' }, daysAgo: 5 },
+    { action: 'order.created', entity: 'order', entityId: undefined, entityName: 'OV-20250301-0001', details: { customerName: 'Priya Sharma', total: 8139.64 }, daysAgo: 4 },
+    { action: 'order.status_updated', entity: 'order', entityId: undefined, entityName: 'OV-20250301-0001', details: { from: 'pending', to: 'confirmed' }, daysAgo: 3 },
+    { action: 'discount.created', entity: 'discount', entityId: discounts[0].id, entityName: 'WELCOME10 - Welcome Discount', details: { type: 'percentage', value: 10 }, daysAgo: 4 },
+    { action: 'discount.created', entity: 'discount', entityId: discounts[1].id, entityName: 'SUMMER500 - Summer Sale', details: { type: 'fixed_amount', value: 500 }, daysAgo: 3 },
+    { action: 'product.updated', entity: 'product', entityId: products[0].id, entityName: 'Banarasi Silk Saree', details: { updatedFields: ['price', 'stock'] }, daysAgo: 2 },
+    { action: 'order.status_updated', entity: 'order', entityId: undefined, entityName: 'OV-20250301-0001', details: { from: 'confirmed', to: 'shipped' }, daysAgo: 2 },
+    { action: 'order.fulfillment_updated', entity: 'order', entityId: undefined, entityName: 'OV-20250301-0001', details: { from: 'unfulfilled', to: 'fulfilled' }, daysAgo: 1 },
+    { action: 'discount.created', entity: 'discount', entityId: discounts[2].id, entityName: 'BRIDAL20 - Bridal Collection Discount', details: { type: 'percentage', value: 20 }, daysAgo: 1 },
+    { action: 'product.created', entity: 'product', entityId: products[5].id, entityName: 'Embroidered Palazzo Kurta Set', details: { price: 2199, status: 'active' }, daysAgo: 0.5 },
+    { action: 'customer.created', entity: 'customer', entityId: customers[2].id, entityName: 'Rahul Verma', details: { email: 'rahul.verma@email.com', city: 'Delhi' }, daysAgo: 0.3 },
+    { action: 'order.created', entity: 'order', entityId: undefined, entityName: 'OV-20250304-0002', details: { customerName: 'Rahul Verma', total: 5759.46 }, daysAgo: 0.2 },
+    { action: 'discount.deactivated', entity: 'discount', entityId: discounts[3].id, entityName: 'FLASH25 - Flash Sale', details: { isActive: false }, daysAgo: 0.1 },
+    { action: 'product.updated', entity: 'product', entityId: products[9].id, entityName: 'Mangalsutra Necklace', details: { updatedFields: ['stock'] }, daysAgo: 0.05 },
+  ];
+
+  for (const logData of activityLogsData) {
+    await prisma.activityLog.create({
+      data: {
+        storeId: store.id,
+        userId: user.id,
+        userName: user.name,
+        action: logData.action,
+        entity: logData.entity,
+        entityId: logData.entityId || null,
+        entityName: logData.entityName,
+        details: logData.details ? JSON.stringify(logData.details) : null,
+        createdAt: new Date(now.getTime() - logData.daysAgo * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+  console.log('✅ Created', activityLogsData.length, 'activity logs');
 
   console.log('\n🎉 Seeding completed successfully!');
   console.log('\n📋 Demo credentials:');

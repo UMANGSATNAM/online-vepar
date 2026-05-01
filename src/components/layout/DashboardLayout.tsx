@@ -30,6 +30,7 @@ import {
   Volume2,
   VolumeX,
   Sparkles,
+  Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -75,6 +76,7 @@ import DiscountsPage from '@/components/discounts/DiscountsPage'
 import InventoryPage from '@/components/inventory/InventoryPage'
 import ShippingPage from '@/components/shipping/ShippingPage'
 import ReviewsPage from '@/components/reviews/ReviewsPage'
+import ActivityLogPage from '@/components/activity/ActivityLogPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
 
@@ -84,6 +86,7 @@ const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ cla
   { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
   { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
   { view: 'reviews', label: 'Reviews', icon: Star, shortcut: 'Alt+R' },
+  { view: 'activity', label: 'Activity', icon: Clock },
   { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D' },
   { view: 'inventory', label: 'Inventory', icon: Warehouse, shortcut: 'Alt+I' },
   { view: 'shipping', label: 'Shipping', icon: Truck, shortcut: 'Alt+Shift+S' },
@@ -112,6 +115,7 @@ const viewLabels: Record<string, string> = {
   inventory: 'Inventory',
   shipping: 'Shipping',
   reviews: 'Reviews',
+  activity: 'Activity Log',
   checkout: 'Storefront',
 }
 
@@ -222,6 +226,8 @@ export default function DashboardLayout() {
         return <ShippingPage />
       case 'reviews':
         return <ReviewsPage />
+      case 'activity':
+        return <ActivityLogPage />
       case 'create-store':
         return <CreateStoreDialog />
       default:

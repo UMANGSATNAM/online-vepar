@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(
   _request: Request,
@@ -76,10 +77,14 @@ export async function PUT(
       appliesTo, applicableIds, startsAt, endsAt, isActive,
     } = body;
 
+    let storeId: string = '';
+    let discountCode = code;
+    let discountName = name;
+
     try {
       const existing = await db.discount.findUnique({
         where: { id },
-        include: { store: { select: { ownerId: true } } },
+        include: { store: { select: { ownerId: true, id: true } } },
       });
 
       if (!existing) {
@@ -90,10 +95,12 @@ export async function PUT(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
       }
 
+      storeId = existing.storeId || existing.store.id;
+
       // If code is being changed, check for duplicates
       if (code && code.toUpperCase() !== existing.code) {
         const duplicate = await db.discount.findFirst({
-          where: { storeId: existing.storeId, code: code.toUpperCase(), id: { not: id } },
+          where: { storeId, code: code.toUpperCase(), id: { not: id } },
         });
         if (duplicate) {
           return NextResponse.json(
@@ -146,6 +153,21 @@ export async function PUT(
         },
       });
 
+      // Log activity
+      const action = isActive !== undefined && isActive !== existing.isActive
+        ? (isActive ? 'discount.activated' : 'discount.deactivated')
+        : 'discount.updated';
+      await logActivity({
+        storeId,
+        userId: user.id,
+        userName: user.name,
+        action,
+        entity: 'discount',
+        entityId: id,
+        entityName: `${discount.code} - ${discount.name}`,
+        details: isActive !== undefined && isActive !== existing.isActive ? { isActive } : { updatedFields: Object.keys(body) },
+      });
+
       return NextResponse.json({ discount }, { status: 200 });
     } catch (modelError) {
       // Fallback to raw SQL if Prisma model is not available
@@ -165,6 +187,8 @@ export async function PUT(
       if (existing.ownerId !== user.id) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
       }
+
+      storeId = String(existing.storeId);
 
       // If code is being changed, check for duplicates
       if (code && code.toUpperCase() !== String(existing.code).toUpperCase()) {
@@ -272,6 +296,22 @@ export async function PUT(
         ...setValues
       );
 
+      // Log activity
+      const wasActive = Number(existing.isActive) === 1;
+      const action = isActive !== undefined && isActive !== wasActive
+        ? (isActive ? 'discount.activated' : 'discount.deactivated')
+        : 'discount.updated';
+      await logActivity({
+        storeId,
+        userId: user.id,
+        userName: user.name,
+        action,
+        entity: 'discount',
+        entityId: id,
+        entityName: `${code || existing.code} - ${name || existing.name}`,
+        details: isActive !== undefined && isActive !== wasActive ? { isActive } : { updatedFields: Object.keys(body) },
+      });
+
       // Fetch updated discount
       const updatedRows = await db.$queryRawUnsafe(
         `SELECT * FROM Discount WHERE id = ?`,
@@ -298,10 +338,14 @@ export async function DELETE(
 
     const { id } = await params;
 
+    let storeId = '';
+    let discountCode = '';
+    let discountName = '';
+
     try {
       const existing = await db.discount.findUnique({
         where: { id },
-        include: { store: { select: { ownerId: true } } },
+        include: { store: { select: { ownerId: true, id: true } } },
       });
 
       if (!existing) {
@@ -312,9 +356,11 @@ export async function DELETE(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
       }
 
-      await db.discount.delete({ where: { id } });
+      storeId = existing.storeId || existing.store.id;
+      discountCode = existing.code;
+      discountName = existing.name;
 
-      return NextResponse.json({ message: 'Discount deleted successfully' }, { status: 200 });
+      await db.discount.delete({ where: { id } });
     } catch (modelError) {
       // Fallback to raw SQL if Prisma model is not available
       console.warn('Discount model not available, using raw SQL fallback:', modelError);
@@ -333,13 +379,28 @@ export async function DELETE(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
       }
 
+      storeId = String(existingRows[0].storeId);
+      discountCode = String(existingRows[0].code);
+      discountName = String(existingRows[0].name);
+
       await db.$executeRawUnsafe(
         `DELETE FROM Discount WHERE id = ?`,
         id
       );
-
-      return NextResponse.json({ message: 'Discount deleted successfully' }, { status: 200 });
     }
+
+    // Log activity
+    await logActivity({
+      storeId,
+      userId: user.id,
+      userName: user.name,
+      action: 'discount.deleted',
+      entity: 'discount',
+      entityId: id,
+      entityName: `${discountCode} - ${discountName}`,
+    });
+
+    return NextResponse.json({ message: 'Discount deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Delete discount error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -159,7 +159,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       reviews,
-      total,
+      total: Number(total),
       page,
       totalPages: Math.ceil(Number(total) / limit),
       stats,

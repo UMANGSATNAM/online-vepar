@@ -19,6 +19,7 @@ export type ViewType =
   | 'inventory'
   | 'shipping'
   | 'reviews'
+  | 'activity'
   | 'checkout'
 
 export interface User {

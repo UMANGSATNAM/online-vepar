@@ -35,6 +35,10 @@ import {
   Sparkles,
   LineChart,
   Camera,
+  Loader2,
+  Lightbulb,
+  AlertTriangle,
+  Info,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -206,6 +210,10 @@ export default function AnalyticsPage() {
   const [chartType, setChartType] = useState<ChartType>('area')
   const chartRef = useRef<HTMLDivElement>(null)
 
+  // AI Insights state
+  const [aiInsights, setAiInsights] = useState<Array<{ title: string; description: string; type: 'opportunity' | 'warning' | 'info' }>>([])
+  const [isLoadingInsights, setIsLoadingInsights] = useState(false)
+
   const fetchData = useCallback(async () => {
     if (!currentStore?.id) {
       setLoading(false)
@@ -228,6 +236,43 @@ export default function AnalyticsPage() {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  // Fetch AI insights
+  const fetchAiInsights = useCallback(async () => {
+    if (!currentStore?.id) return
+    setIsLoadingInsights(true)
+    try {
+      const res = await fetch('/api/ai/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          storeId: currentStore.id,
+          stats: data?.stats,
+          topProducts: data?.topProducts,
+          monthlyRevenue: data?.monthlyRevenue,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to fetch insights')
+      const json = await res.json()
+      setAiInsights(json.insights || [])
+    } catch {
+      // Use fallback static insights
+      setAiInsights([
+        { title: 'Expand Product Catalog', description: 'Adding more products can increase your store visibility and attract new customers. Consider expanding into complementary categories.', type: 'opportunity' },
+        { title: 'Review Pending Orders', description: 'You have pending orders that need attention. Prompt fulfillment improves customer satisfaction and repeat purchase rates.', type: 'warning' },
+        { title: 'Optimize Pricing Strategy', description: 'Regularly reviewing your pricing compared to market trends can help maximize revenue while staying competitive.', type: 'info' },
+        { title: 'Boost Customer Retention', description: 'Implementing a loyalty program or offering repeat purchase discounts can increase customer lifetime value significantly.', type: 'opportunity' },
+      ])
+    } finally {
+      setIsLoadingInsights(false)
+    }
+  }, [currentStore?.id, data?.stats, data?.topProducts, data?.monthlyRevenue])
+
+  useEffect(() => {
+    if (data && currentStore?.id) {
+      fetchAiInsights()
+    }
+  }, [data, currentStore?.id, fetchAiInsights])
 
   // Derived metrics
   const avgOrderValue = data && data.stats.totalOrders > 0
@@ -285,27 +330,17 @@ export default function AnalyticsPage() {
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
   }
 
-  // Key insights (derived from data)
-  const insights = data ? [
-    {
-      icon: TrendingUp,
-      text: 'Revenue is up 12% compared to last month',
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-50 dark:bg-emerald-900/20',
-    },
-    {
-      icon: Package,
-      text: `Top product "${bestSeller}" accounts for ${topProducts.length > 0 && data.stats.totalRevenue > 0 ? Math.round(((topProducts[0]?.totalRevenue || 0) / data.stats.totalRevenue) * 100) : 0}% of revenue`,
-      color: 'text-violet-600',
-      bg: 'bg-violet-50 dark:bg-violet-900/20',
-    },
-    {
-      icon: UserPlus,
-      text: `Customer acquisition rate: ${Math.max(1, Math.round((data.stats.totalCustomers || 0) * 0.15))} new customers this week`,
-      color: 'text-orange-600',
-      bg: 'bg-orange-50 dark:bg-orange-900/20',
-    },
-  ] : []
+  // Get icon and colors based on insight type
+  const getInsightStyle = (type: 'opportunity' | 'warning' | 'info') => {
+    switch (type) {
+      case 'opportunity':
+        return { icon: Lightbulb, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', border: 'border-emerald-100 dark:border-emerald-800/30' }
+      case 'warning':
+        return { icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-100 dark:border-amber-800/30' }
+      case 'info':
+        return { icon: Info, color: 'text-sky-600', bg: 'bg-sky-50 dark:bg-sky-900/20', border: 'border-sky-100 dark:border-sky-800/30' }
+    }
+  }
 
   // Simulated comparison data
   const comparisonMetrics = data ? [
@@ -676,29 +711,89 @@ export default function AnalyticsPage() {
         </motion.div>
       </div>
 
-      {/* Key Insights */}
+      {/* AI Insights */}
       {!loading && data && (
         <motion.div variants={itemVariants}>
-          <Card>
+          <Card className="card-premium gradient-border overflow-hidden">
+            <div className="border-t-2 border-t-gradient-emerald">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-emerald-600" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-emerald-600 animate-sparkle-pulse" />
+                    </div>
+                    AI Insights
+                  </CardTitle>
+                  <CardDescription>AI-generated insights based on your store data</CardDescription>
                 </div>
-                Key Insights
-              </CardTitle>
-              <CardDescription>AI-generated insights based on your store data</CardDescription>
+                <Button
+                  size="sm"
+                  onClick={fetchAiInsights}
+                  disabled={isLoadingInsights}
+                  className="btn-gradient text-white gap-1.5 hover:text-white"
+                >
+                  {isLoadingInsights ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  )}
+                  Regenerate
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {insights.map((insight, idx) => (
-                  <div key={idx} className={`flex items-start gap-3 p-4 rounded-xl ${insight.bg} border border-border/50`}>
-                    <insight.icon className={`w-5 h-5 ${insight.color} shrink-0 mt-0.5`} />
-                    <p className="text-sm text-foreground leading-snug">{insight.text}</p>
-                  </div>
-                ))}
-              </div>
+              {isLoadingInsights ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="p-4 rounded-xl border border-border/50">
+                      <div className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded shimmer-line shrink-0" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 shimmer-line rounded w-3/4" />
+                          <div className="h-3 shimmer-line rounded w-full" />
+                          <div className="h-3 shimmer-line rounded w-2/3" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : aiInsights.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {aiInsights.map((insight, idx) => {
+                    const style = getInsightStyle(insight.type)
+                    const Icon = style.icon
+                    const borderClass = insight.type === 'opportunity'
+                      ? 'insight-border-opportunity'
+                      : insight.type === 'warning'
+                      ? 'insight-border-warning'
+                      : 'insight-border-info'
+                    return (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: idx * 0.08 }}
+                        className={`flex flex-col gap-2 p-4 rounded-xl hover-lift animate-card-entrance ${borderClass} border ${style.border}`}
+                        style={{ animationDelay: `${idx * 0.08}s` }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className={`w-4 h-4 ${style.color} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                          <h4 className="font-medium text-sm text-foreground">{insight.title}</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-snug">{insight.description}</p>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-40 empty-state-icon" />
+                  <p className="text-sm">No insights available yet</p>
+                </div>
+              )}
             </CardContent>
+            </div>
           </Card>
         </motion.div>
       )}

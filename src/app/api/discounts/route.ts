@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(request: Request) {
   try {
@@ -188,6 +189,18 @@ export async function POST(request: Request) {
       );
       discount = { code: code.toUpperCase(), name, type, value, storeId, isActive: true };
     }
+
+    // Log activity
+    await logActivity({
+      storeId,
+      userId: user.id,
+      userName: user.name,
+      action: 'discount.created',
+      entity: 'discount',
+      entityId: (discount as Record<string, unknown>).id as string | undefined,
+      entityName: `${code.toUpperCase()} - ${name}`,
+      details: { type, value, isActive: isActive !== undefined ? isActive : true },
+    });
 
     return NextResponse.json({ discount }, { status: 201 });
   } catch (error) {

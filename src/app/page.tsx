@@ -58,6 +58,7 @@ export default function Home() {
     case 'inventory':
     case 'shipping':
     case 'reviews':
+    case 'activity':
       return <DashboardLayout />
     default:
       return <LandingPage />

@@ -1477,3 +1477,414 @@ All features working:
 5. Improve mobile responsiveness of dashboard tables
 6. Add AI-powered product description generation using LLM skill
 7. Add customer-facing storefront with full shopping cart and checkout
+
+---
+Task ID: 3-ai-generator
+Agent: AI Generator Agent
+Task: Add AI Product Description Generator + AI Insights Feature
+
+Work Log:
+
+### Step 1: Backend API - AI Description Generator
+- Created `/src/app/api/ai/generate-description/route.ts`
+  - POST endpoint accepting: name (required), category, price, features (comma-separated string), tone (professional/casual/luxury/friendly, default: professional)
+  - Auth check via `getCurrentUser()`
+  - Uses z-ai-web-dev-sdk with `ZAI.create()` and `zai.chat.completions.create()`
+  - System prompt: expert e-commerce copywriter for Indian merchants, SEO-friendly, 2-3 paragraphs, no markdown headers
+  - Uses `'assistant'` role for system prompts (not 'system') as required
+  - Uses `thinking: { type: 'disabled' }` as required
+  - Error handling with try/catch and graceful error responses
+  - Returns `{ description: string }` on success
+
+### Step 2: Backend API - AI Insights
+- Created `/src/app/api/ai/insights/route.ts`
+  - POST endpoint accepting: storeId (required), stats, topProducts, monthlyRevenue
+  - Auth check via `getCurrentUser()`
+  - Sends store data summary to LLM for analysis
+  - System prompt: business analytics expert, returns JSON array of insight objects
+  - Each insight: { title, description, type: 'opportunity'|'warning'|'info' }
+  - JSON parsing with regex extraction for robustness (handles markdown wrapping)
+  - Validates insight structure and truncates long strings
+  - Falls back to 4 static insights if AI fails: Expand Product Catalog, Review Pending Orders, Optimize Pricing Strategy, Boost Customer Retention
+
+### Step 3: AI Generate Button in ProductsPage
+- Modified `/src/components/products/ProductsPage.tsx`:
+  - Added `Sparkles`, `Loader2` imports from lucide-react
+  - Added `Popover`, `PopoverContent`, `PopoverTrigger` imports from shadcn/ui
+  - Added AI description state: `aiPopoverOpen`, `aiTone`, `aiFeatures`, `isGeneratingAi`
+  - Added `handleAiGenerate` async function:
+    - Validates product name is entered (shows toast if missing)
+    - Calls `/api/ai/generate-description` POST with form data
+    - Populates description textarea with generated text
+    - Closes popover and shows success toast
+    - Error handling with toast notification
+  - Replaced simple Description label/textarea with:
+    - Flex row with Label + ✨ AI Generate button (emerald btn-gradient)
+    - Popover with tone selector (Professional/Casual/Luxury/Friendly) using shadcn Select
+    - Key Features text input with placeholder "e.g. Cotton, Handmade, Eco-friendly"
+    - Generate button with Sparkles icon and loading spinner (Loader2 + animate-spin)
+    - Warning text when product name is empty
+  - Emerald green theme (btn-gradient class) throughout
+
+### Step 4: AI Insights Section in AnalyticsPage
+- Modified `/src/components/analytics/AnalyticsPage.tsx`:
+  - Added `Loader2`, `Lightbulb`, `AlertTriangle`, `Info` imports from lucide-react
+  - Added AI insights state: `aiInsights`, `isLoadingInsights`
+  - Added `fetchAiInsights` async function:
+    - POST to `/api/ai/insights` with storeId, stats, topProducts, monthlyRevenue
+    - Falls back to 4 static insights on error
+  - Added `useEffect` to fetch AI insights when dashboard data loads
+  - Replaced static "Key Insights" section with "✨ AI Insights" card:
+    - Sparkles icon header with emerald background
+    - Regenerate button (RefreshCw icon, disabled during loading)
+    - Loading skeleton with pulse animation (3 placeholder cards)
+    - Insight cards with type-based styling:
+      - Opportunity: Lightbulb icon, emerald color
+      - Warning: AlertTriangle icon, amber color
+      - Info: Info icon, sky color
+    - Each card has title + description with colored border and background
+    - Staggered entrance animation (framer-motion)
+    - Empty state with Sparkles icon
+
+### Step 5: Lint & Quality
+- Ran `bun run lint` - passes with 0 errors, 0 warnings
+- Dev server compiles successfully
+
+Stage Summary:
+- AI Product Description Generator: Full feature with tone selection, key features input, loading states, and auto-population of description field
+- AI Insights: Real-time LLM-generated business insights on analytics page with regenerate capability and fallback static insights
+- Both features use z-ai-web-dev-sdk in backend only (API routes), never in client-side code
+- Emerald green theme consistent with platform design
+- Toast notifications for user feedback
+- Proper error handling and graceful fallbacks
+
+### Files Created
+- `/src/app/api/ai/generate-description/route.ts`
+- `/src/app/api/ai/insights/route.ts`
+
+### Files Modified
+- `/src/components/products/ProductsPage.tsx` (added AI Generate button with popover, tone/features selection, generation handler)
+- `/src/components/analytics/AnalyticsPage.tsx` (replaced static Key Insights with AI Insights section with regenerate button, type-based styling)
+
+---
+Task ID: 4-activity-log
+Agent: Activity Log Agent
+Task: Add Activity Log / Audit Trail Feature
+
+Work Log:
+
+### Step 1: Prisma Schema Update
+- Added `ActivityLog` model to `prisma/schema.prisma` with fields: id, storeId, userId, userName, action, entity, entityId, entityName, details (JSON), createdAt
+- Added `activityLogs ActivityLog[]` to Store model
+- Added indexes on storeId, entity, and createdAt
+- Ran `bun run db:push` - schema synced successfully
+
+### Step 2: Activity Logger Utility
+- Created `/src/lib/activity-logger.ts`:
+  - `logActivity()` function that creates activity log entries
+  - Try/catch with raw SQL fallback if Prisma Client doesn't have model yet
+  - Silently fails to never break operations
+  - Accepts: storeId, userId, userName, action, entity, entityId, entityName, details
+
+### Step 3: Activity Log API Route
+- Created `/src/app/api/activity-logs/route.ts`:
+  - GET endpoint with auth + store ownership verification
+  - Query params: storeId (required), entity, search, page, limit, dateRange (today/7d/30d)
+  - Returns: logs, summary (7d counts by entity), actionCounts, pagination
+  - Try/catch with raw SQL fallback for all database operations
+
+### Step 4: Logging Integration in API Routes
+- Updated `/src/app/api/products/route.ts` (POST): Added `product.created` logging with price and status details
+- Updated `/src/app/api/products/[id]/route.ts` (PUT): Added `product.updated` logging with updatedFields
+- Updated `/src/app/api/products/[id]/route.ts` (DELETE): Added `product.deleted` logging before deletion
+- Updated `/src/app/api/orders/route.ts` (POST): Added `order.created` logging with customerName, total, itemCount
+- Updated `/src/app/api/orders/[id]/route.ts` (PUT): Added `order.status_updated` and `order.fulfillment_updated` logging with from/to details
+- Updated `/src/app/api/customers/route.ts` (POST): Added `customer.created` logging with email and city
+- Updated `/src/app/api/discounts/route.ts` (POST): Added `discount.created` logging with type and value
+- Updated `/src/app/api/discounts/[id]/route.ts` (PUT): Added `discount.updated`, `discount.activated`, `discount.deactivated` logging
+- Updated `/src/app/api/discounts/[id]/route.ts` (DELETE): Added `discount.deleted` logging
+
+### Step 5: ActivityLogPage Component
+- Created `/src/components/activity/ActivityLogPage.tsx`:
+  - Header with Clock icon and Export button
+  - 4 Summary Cards: Total Activities (7d), Products (7d), Orders (7d), Customers (7d) with color-coded borders
+  - Filter Bar: Search, Entity Type dropdown (All/Products/Orders/Customers/Discounts/Inventory/Settings), Date Range (Today/7d/30d/All Time)
+  - Timeline-style layout with vertical line, color-coded dots per entity type (emerald=product, blue=order, violet=customer, amber=discount, pink=inventory)
+  - Action icons: Plus for created, Pencil for updated, Trash2 for deleted, ArrowRight for status changes
+  - Description format: "{userName} {actionVerb} {entityName}" (e.g., "Demo User created Banarasi Silk Saree")
+  - Entity type badges with matching colors
+  - Click-to-navigate: clicking a log navigates to the relevant view (products/orders/customers/discounts)
+  - Relative timestamps ("2 minutes ago", "1 hour ago")
+  - Pagination controls with page info
+  - Empty state with Clock icon
+  - Loading skeletons
+  - framer-motion entrance animations
+  - Emerald green theme throughout
+
+### Step 6: Navigation Integration
+- Updated `src/lib/store.ts`: Added 'activity' to ViewType union
+- Updated `src/components/layout/DashboardLayout.tsx`:
+  - Added Clock icon import from lucide-react
+  - Added ActivityLogPage import
+  - Added { view: 'activity', label: 'Activity', icon: Clock } to navItems (after Reviews)
+  - Added activity: 'Activity Log' to viewLabels
+  - Added case 'activity': return <ActivityLogPage /> to renderContent
+- Updated `src/app/page.tsx`: Added 'activity' to DashboardLayout switch case
+
+### Step 7: Seed Data
+- Added 18 activity log entries to `prisma/seed.ts` with variety:
+  - product.created (3), product.updated (2)
+  - order.created (2), order.status_updated (2), order.fulfillment_updated (1)
+  - customer.created (3)
+  - discount.created (3), discount.deactivated (1)
+  - Spread across 6 days with realistic timestamps
+- Added `activityLog` cleanup to seed deleteMany
+- Ran seed successfully: 18 activity logs created
+
+### Step 8: Lint & Quality
+- `bun run lint` - passes with 0 errors, 0 warnings
+- Dev server compiles and loads successfully
+
+Stage Summary:
+- Full Activity Log / Audit Trail feature implemented
+- Backend: ActivityLog model, logging utility, GET API with filters/summary/pagination, raw SQL fallback
+- Logging integrated into: Products (create/update/delete), Orders (create/status/fulfillment), Customers (create), Discounts (create/update/delete/activate/deactivate)
+- Frontend: Timeline-style page with summary cards, filters, color-coded entity types, click-to-navigate, pagination
+- Navigation: Activity accessible from sidebar with Clock icon (after Reviews)
+- Seed data: 18 activity log entries with varied actions and timestamps
+- All existing patterns followed (emerald theme, shadcn/ui, framer-motion, dark mode support)
+
+### Files Created
+- `/src/lib/activity-logger.ts`
+- `/src/app/api/activity-logs/route.ts`
+- `/src/components/activity/ActivityLogPage.tsx`
+
+### Files Modified
+- `/prisma/schema.prisma` (added ActivityLog model + activityLogs relation on Store)
+- `/src/app/api/products/route.ts` (added product.created logging)
+- `/src/app/api/products/[id]/route.ts` (added product.updated/deleted logging)
+- `/src/app/api/orders/route.ts` (added order.created logging)
+- `/src/app/api/orders/[id]/route.ts` (added order.status_updated/fulfillment_updated logging)
+- `/src/app/api/customers/route.ts` (added customer.created logging)
+- `/src/app/api/discounts/route.ts` (added discount.created logging)
+- `/src/app/api/discounts/[id]/route.ts` (added discount.updated/deleted/activated/deactivated logging)
+- `/src/lib/store.ts` (added 'activity' to ViewType)
+- `/src/components/layout/DashboardLayout.tsx` (added Clock nav item, ActivityLogPage import, renderContent case, viewLabel)
+- `/src/app/page.tsx` (added 'activity' case)
+- `/prisma/seed.ts` (added activity log seed data + cleanup)
+
+---
+Task ID: 5-styling-polish
+Agent: Styling Polish Agent
+Task: Polish Styling for Activity Log, AI Insights, and AI Description Generator
+
+Work Log:
+
+### 1. globals.css — New CSS Utility Classes
+- Added `.hover-lift` — Consistent hover lift effect (translateY -2px + emerald shadow, with dark mode variant)
+- Added `.glass-effect` — Backdrop blur glass (12px blur, semi-transparent bg, both light/dark)
+- Added `.gradient-border` — Animated gradient border using pseudo-element with emerald gradient mask
+- Added `.shimmer-line` — Loading shimmer line (gradient sweep animation with dark mode)
+- Added `.animate-sparkle-pulse` — Subtle pulse animation for Sparkles icons (scale + opacity cycle, 2s)
+- Added `.timeline-line-gradient` — Gradient vertical line for activity timeline (emerald→teal→transparent)
+- Added `.timeline-item-hover` — Timeline item hover background (emerald tint + inset border, dark mode)
+- Added `.stat-glow-blue` — Blue variant stat card inset glow
+- Added `.stat-glow-violet` — Violet variant stat card inset glow
+- Added `.border-t-gradient-blue` — Blue gradient top border
+- Added `.border-t-gradient-violet` — Violet gradient top border
+- Added `.insight-border-opportunity` — Emerald left border + tinted bg for opportunity insights
+- Added `.insight-border-warning` — Amber left border + tinted bg for warning insights
+- Added `.insight-border-info` — Sky left border + tinted bg for info insights
+- All new classes include `.dark` variants
+
+### 2. ActivityLogPage.tsx — Full Styling Polish
+- **Summary Cards**: Added `card-premium`, `hover-lift`, `stat-glow`/`stat-glow-blue`/`stat-glow-violet`, replaced inline `style={{ borderTopColor }}` with `border-t-gradient-emerald`/`border-t-gradient-blue`/`border-t-gradient-violet` CSS classes
+- **Timeline Vertical Line**: Replaced `bg-border` with `timeline-line-gradient` for emerald gradient
+- **Timeline Items**: Added `animate-row-appear` CSS class with staggered `animationDelay` for entrance animation; added `hover-lift` on each item
+- **Timeline Item Hover**: Replaced `hover:bg-muted/30` with `timeline-item-hover` CSS class for emerald-tinted background + inset border on hover
+- **Filter Bar Card**: Added `card-premium` class
+- **Empty State**: Added `empty-state-icon` class on Clock icon; wrapped content in dashed border card (`border-2 border-dashed border-emerald-200 dark:border-emerald-800/50`)
+- **Pagination**: Added emerald accent on page display (`text-emerald-600 dark:text-emerald-400`); styled prev/next buttons with emerald border + hover (`border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700`)
+
+### 3. AnalyticsPage.tsx — AI Insights Polish
+- **AI Insights Card**: Added `card-premium` and `gradient-border` classes; wrapped content in `border-t-gradient-emerald` for animated gradient top border
+- **Sparkles Icon**: Added `animate-sparkle-pulse` for subtle pulsing animation
+- **Regenerate Button**: Changed from `variant="outline"` to `btn-gradient` with `text-white hover:text-white`
+- **Loading Skeletons**: Replaced `animate-pulse` with `shimmer-line` class for gradient sweep effect
+- **Insight Cards**: Added `hover-lift` and `animate-card-entrance` with staggered delays; added distinct left border per type:
+  - Opportunity: `insight-border-opportunity` (emerald left border + emerald-50 bg)
+  - Warning: `insight-border-warning` (amber left border + amber-50 bg)
+  - Info: `insight-border-info` (sky left border + sky-50 bg)
+- **Empty State**: Added `empty-state-icon` class on Sparkles icon
+- **Icon Hover**: Added `transition-transform duration-200 group-hover:scale-110` on insight icons
+
+### 4. ProductsPage.tsx — AI Description Generator Polish
+- **AI Generate Button**: Added `animate-sparkle-pulse` on Sparkles icon for attention-drawing pulse
+- **Popover Container**: Changed from `className="w-80 p-4"` to `className="w-80 p-0 glass-effect"` for backdrop blur glass effect
+- **Popover Content**: Wrapped in `p-5 space-y-5` for better spacing
+- **Header**: Added Sparkles icon in emerald-100 container with `animate-sparkle-pulse` and subtitle "Let AI write your product description"
+- **Tone Selector**: Wrapped in card-like container (`p-3 rounded-lg bg-muted/50 border border-border/50`)
+- **Inputs**: Added emerald-themed borders (`border-emerald-200 dark:border-emerald-800/50 focus:ring-emerald-500/20`) on SelectTrigger and Input
+- **Generate Button**: Made larger (`h-9`) and confirmed `btn-gradient` styling
+
+### Lint & Quality
+- Ran `bun run lint` — passes with 0 errors, 0 warnings
+
+### Files Modified
+- `/src/app/globals.css` (added 14 new CSS utility classes with dark mode variants)
+- `/src/components/activity/ActivityLogPage.tsx` (summary cards, timeline, filter bar, empty state, pagination polish)
+- `/src/components/analytics/AnalyticsPage.tsx` (AI Insights card, insight cards, regenerate button polish)
+- `/src/components/products/ProductsPage.tsx` (AI generator button, popover glass effect, input styling polish)
+
+---
+Task ID: 17
+Agent: Main Agent (Cron Review Session 4)
+Task: QA Testing, BigInt Fix, AI Features, Activity Log, Styling Polish
+
+Work Log:
+
+### Critical Bug Fix: Reviews API BigInt Serialization
+- **Problem**: Reviews API was returning 500 errors with `TypeError: Do not know how to serialize a BigInt`
+- **Root Cause**: SQLite's `COUNT()` returns BigInt, and `NextResponse.json()` calls `JSON.stringify()` which cannot serialize BigInt
+- **Fix 1**: Changed `total` to `Number(total)` in `/src/app/api/reviews/route.ts` response
+- **Fix 2 (Global)**: Added `BigInt.prototype.toJSON` override in `/src/lib/db.ts` that converts BigInt to Number for all JSON serialization
+- **Impact**: This fix prevents BigInt errors across ALL API routes that use `.count()` or `$queryRawUnsafe`
+
+### QA Testing (agent-browser)
+- Tested all 14+ pages: Landing, Login, Dashboard, Products, Orders, Customers, Reviews, Discounts, Inventory, Shipping, Analytics, Store Settings, Store Preview, Pages, Activity Log
+- No JavaScript errors after BigInt fix
+- All API routes returning 200
+
+### New Features Added
+
+#### 1. AI Product Description Generator (LLM Integration)
+- **Backend API**: `/api/ai/generate-description/route.ts`
+  - POST endpoint using z-ai-web-dev-sdk
+  - Accepts: name (required), category, price, features, tone (professional/casual/luxury/friendly)
+  - System prompt instructs LLM to act as expert e-commerce copywriter for Indian merchants
+  - Uses `'assistant'` role for system prompts, `thinking: { type: 'disabled' }`
+  - Auth required via getCurrentUser()
+- **Backend API**: `/api/ai/insights/route.ts`
+  - POST endpoint for AI-generated business insights
+  - Accepts: storeId, stats, topProducts, monthlyRevenue
+  - Returns JSON array of insights with title, description, type (opportunity/warning/info)
+  - Falls back to 4 static insights if AI fails
+- **ProductsPage**: Added ✨ AI Generate button next to description textarea
+  - Popover with tone selector, key features input, generate button
+  - Auto-populates description field with generated text
+  - Loading spinner during generation
+  - Toast notifications for success/error
+- **AnalyticsPage**: Replaced static "Key Insights" with AI-powered "✨ AI Insights"
+  - Sparkles icon header with emerald background
+  - Regenerate button
+  - Loading skeleton with shimmer
+  - Insight cards with type-based styling (opportunity/warning/info)
+
+#### 2. Activity Log / Audit Trail
+- **Prisma Schema**: Added `ActivityLog` model with: id, storeId, userId, userName, action, entity, entityId, entityName, details, createdAt
+- **Logging Utility**: Created `/src/lib/activity-logger.ts`
+  - `logActivity()` function with Prisma create + raw SQL fallback
+  - Silently fails to never break operations
+- **API Route**: `/api/activity-logs/route.ts`
+  - GET with filters (entity, search, dateRange), summary counts, pagination
+  - Raw SQL fallback for all operations
+- **Integrated into 8 API Routes**:
+  - Products: created, updated, deleted
+  - Orders: created, status_updated, fulfillment_updated
+  - Customers: created
+  - Discounts: created, updated, activated, deactivated, deleted
+- **ActivityLogPage Component**:
+  - 4 Summary Cards (Total 7d, Products, Orders, Customers)
+  - Filter bar (search, entity type, date range)
+  - Timeline-style list with vertical line, color-coded dots, action icons
+  - Click-to-navigate to relevant views
+  - Pagination, loading skeletons, empty state
+- **Seed Data**: 18 activity log entries spanning 6 days
+
+### Styling Improvements (Mandatory)
+
+#### ActivityLogPage Polish
+- Summary Cards: card-premium + hover-lift + stat-glow variants + gradient top borders
+- Timeline Line: timeline-line-gradient (emerald gradient)
+- Timeline Items: animate-row-appear with staggered delays + hover-lift + timeline-item-hover
+- Filter Bar: card-premium
+- Empty State: Dashed border card + empty-state-icon
+- Pagination: Emerald-accented display
+
+#### Analytics AI Insights Polish
+- AI Insights Card: card-premium + gradient-border + border-t-gradient-emerald
+- Sparkles Icon: animate-sparkle-pulse
+- Regenerate Button: btn-gradient
+- Loading: shimmer-line
+- Insight Cards: hover-lift + animate-card-entrance + insight-border-opportunity/warning/info
+- Empty State: empty-state-icon
+
+#### Products AI Generator Polish
+- AI Generate Button: animate-sparkle-pulse on Sparkles icon
+- Popover: glass-effect for backdrop blur
+- Content: Better spacing, card-like tone selector, btn-gradient generate button
+
+#### globals.css Additions
+- 14 new CSS utility classes including:
+  - animate-sparkle-pulse, timeline-line-gradient, timeline-item-hover
+  - stat-glow-blue, stat-glow-violet
+  - border-t-gradient-blue, border-t-gradient-violet
+  - insight-border-opportunity/warning/info
+
+### Quality Checks
+- `bun run lint` passes with 0 errors, 0 warnings
+- Dev server compiles successfully
+- No JavaScript errors on any page
+- All new features verified via agent-browser
+
+Stage Summary:
+- Critical BigInt bug fixed globally across all API routes
+- 2 major new features: AI Product Description Generator + Activity Log/Audit Trail
+- LLM integration via z-ai-web-dev-sdk for AI-powered content generation
+- Comprehensive styling polish for all new features
+- 14 new CSS utility classes added to globals.css
+
+### Current Project Status Assessment
+**Overall: 🟢 Feature-Rich, AI-Enhanced, and Stable**
+
+All features working:
+- Landing page with animated hero, dashboard mockup, floating orbs, pricing toggle, testimonials
+- Auth (login/register) with demo account
+- Dashboard with real-time stats, sparklines, time-based greeting, welcome modal
+- Products CRUD with grid/table views, search, filter, sort, bulk actions, **VARIANTS**, **AI DESCRIPTION GENERATOR**
+- Orders management with status tabs, detail view, status updates
+- Customer management with order history
+- Inventory Management with stock tracking, low stock alerts, bulk adjustments
+- Shipping Management with zones, rates, shipments, tracking timeline
+- Discounts with 5 seed records, card-based layout, status tabs
+- Product Variants with size/color/material options, individual pricing
+- Reviews & Ratings with star ratings, merchant responses, approval workflow
+- **NEW: AI Product Description Generator** with LLM integration (tone selection, key features)
+- **NEW: Activity Log / Audit Trail** with timeline, filtering, click-to-navigate
+- **NEW: AI Insights** on Analytics page (AI-generated business recommendations)
+- Analytics with 4 chart types, date range picker, AI insights
+- Store settings with 5 tabs
+- Store preview with device toggle (using public storefront API)
+- Page/blog management
+- Notifications panel with real data
+- Dark mode with light/dark/system toggle
+- Create Store flow with theme/color selection
+- Global search (Cmd+K) across products, orders, customers
+- CSV export for products, orders, customers
+
+### Unresolved Issues / Risks
+1. Prisma Client stale after schema changes - mitigated with raw SQL fallbacks
+2. No image upload - only URL input for product images
+3. No payment gateway integration (placeholder only)
+4. Cookie-based auth is simple (no JWT/session rotation)
+5. AI insights may occasionally fail - falls back to static insights
+6. Activity logging is fire-and-forget (may miss some logs if DB is busy)
+
+### Priority Recommendations for Next Phase
+1. Add customer-facing storefront with full shopping cart and checkout
+2. Add product variant support on the storefront/checkout flow
+3. Add email notification preferences in settings
+4. Add multi-language support (i18n)
+5. Improve mobile responsiveness of dashboard tables
+6. Add AI-powered SEO meta tag generator
+7. Add webhook/events system for third-party integrations

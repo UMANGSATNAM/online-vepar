@@ -7,7 +7,7 @@ import {
   Eye, Filter, ChevronLeft, ChevronRight, X, ImageIcon, Upload, GripVertical,
   Tag, ArrowUpDown, CheckCircle2, Archive, CircleDot, Star, ArrowLeft,
   IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download, Layers,
-  GripVertical as DragHandle, Minus, Copy
+  GripVertical as DragHandle, Minus, Copy, Sparkles, Loader2
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -23,6 +23,9 @@ import { Separator } from '@/components/ui/separator'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
@@ -271,6 +274,12 @@ export default function ProductsPage() {
   const [newCategoryImage, setNewCategoryImage] = useState('')
   const [isCreatingCategory, setIsCreatingCategory] = useState(false)
 
+  // AI Description state
+  const [aiPopoverOpen, setAiPopoverOpen] = useState(false)
+  const [aiTone, setAiTone] = useState<string>('professional')
+  const [aiFeatures, setAiFeatures] = useState('')
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false)
+
   // Variant state
   const [variants, setVariants] = useState<VariantData[]>([])
   const [isLoadingVariants, setIsLoadingVariants] = useState(false)
@@ -508,6 +517,45 @@ export default function ProductsPage() {
       ...prev,
       options: prev.options.map((opt, i) => i === index ? { ...opt, [field]: val } : opt),
     }))
+  }
+
+  // ─── AI Description Generator ──────────────────────────────────
+
+  const handleAiGenerate = async () => {
+    if (!formData.name.trim()) {
+      toast({ title: 'Product Name Required', description: 'Please enter a product name before generating a description.', variant: 'destructive' })
+      return
+    }
+    setIsGeneratingAi(true)
+    try {
+      const res = await fetch('/api/ai/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          category: formData.category || '',
+          price: formData.price || '',
+          features: aiFeatures.trim(),
+          tone: aiTone,
+        }),
+      })
+      if (!res.ok) {
+        const errData = await res.json()
+        throw new Error(errData.error || 'Failed to generate description')
+      }
+      const data = await res.json()
+      setFormData(prev => ({ ...prev, description: data.description }))
+      setAiPopoverOpen(false)
+      toast({ title: 'Description Generated', description: 'AI has generated a product description for you.' })
+    } catch (err) {
+      toast({
+        title: 'Generation Failed',
+        description: err instanceof Error ? err.message : 'Failed to generate description. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsGeneratingAi(false)
+    }
   }
 
   // ─── Handlers ────────────────────────────────────────────────
@@ -1375,7 +1423,83 @@ export default function ProductsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="product-desc" className="text-sm font-medium">Description</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="product-desc" className="text-sm font-medium">Description</Label>
+                    <Popover open={aiPopoverOpen} onOpenChange={setAiPopoverOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="btn-gradient text-white h-7 px-2.5 text-xs gap-1.5 hover:text-white"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 animate-sparkle-pulse" />
+                          AI Generate
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-0 glass-effect" align="end">
+                        <div className="p-5 space-y-5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 animate-sparkle-pulse" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-sm">AI Description Generator</h4>
+                              <p className="text-[10px] text-muted-foreground">Let AI write your product description</p>
+                            </div>
+                          </div>
+                          <div className="space-y-2 p-3 rounded-lg bg-muted/50 dark:bg-muted/30 border border-border/50">
+                            <Label className="text-xs font-medium">Tone</Label>
+                            <Select value={aiTone} onValueChange={setAiTone}>
+                              <SelectTrigger className="h-8 text-xs border-emerald-200 dark:border-emerald-800/50 focus:ring-emerald-500/20">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="professional">Professional</SelectItem>
+                                <SelectItem value="casual">Casual</SelectItem>
+                                <SelectItem value="luxury">Luxury</SelectItem>
+                                <SelectItem value="friendly">Friendly</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-medium">Key Features</Label>
+                            <Input
+                              placeholder="e.g. Cotton, Handmade, Eco-friendly"
+                              value={aiFeatures}
+                              onChange={(e) => setAiFeatures(e.target.value)}
+                              className="h-8 text-xs border-emerald-200 dark:border-emerald-800/50 focus:ring-emerald-500/20"
+                            />
+                            <p className="text-[10px] text-muted-foreground">Comma-separated features to highlight</p>
+                          </div>
+                          <Button
+                            type="button"
+                            onClick={handleAiGenerate}
+                            disabled={isGeneratingAi || !formData.name.trim()}
+                            className="btn-gradient text-white w-full h-9 gap-2 hover:text-white"
+                            size="sm"
+                          >
+                            {isGeneratingAi ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Generating...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4" />
+                                Generate Description
+                              </>
+                            )}
+                          </Button>
+                          {!formData.name.trim() && (
+                            <p className="text-[10px] text-amber-600 dark:text-amber-400 text-center">
+                              Enter a product name first to generate
+                            </p>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <Textarea
                     id="product-desc"
                     placeholder="Add a description for your product..."

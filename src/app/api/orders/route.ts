@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser, generateOrderNumber } from '@/lib/auth';
+import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(request: Request) {
   try {
@@ -149,6 +150,18 @@ export async function POST(request: Request) {
       include: {
         items: true,
       },
+    });
+
+    // Log activity
+    await logActivity({
+      storeId,
+      userId: user.id,
+      userName: user.name,
+      action: 'order.created',
+      entity: 'order',
+      entityId: order.id,
+      entityName: order.orderNumber,
+      details: { customerName, total: order.total, itemCount: order.items.length },
     });
 
     return NextResponse.json({ order }, { status: 201 });

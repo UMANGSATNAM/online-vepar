@@ -50,6 +50,7 @@ model Store {
   shipments      Shipment[]
   reviews        Review[]
   variants       ProductVariant[]
+  activityLogs   ActivityLog[]
 }
 
 model Category {
@@ -305,4 +306,22 @@ model Shipment {
 
   @@index([orderId])
   @@index([storeId])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId      String?
+  userName    String?
+  action      String   // e.g., "product.created", "order.status_updated", "discount.activated"
+  entity      String   // e.g., "product", "order", "customer", "discount"
+  entityId    String?  // ID of the affected entity
+  entityName  String?  // Human-readable name of the entity
+  details     String?  // JSON string with additional context
+  createdAt   DateTime @default(now())
+
+  @@index([storeId])
+  @@index([entity])
+  @@index([createdAt])
 }
