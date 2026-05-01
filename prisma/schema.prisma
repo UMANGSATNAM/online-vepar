@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  role      String   @default("owner") // owner, staff
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  stores    Store[]
+  orders    Order[]
+}
+
+model Store {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  logo        String?
+  banner      String?
+  theme       String   @default("modern") // modern, classic, minimal, bold
+  primaryColor String  @default("#10b981") // emerald green for Online Vepar
+  currency    String   @default("INR")
+  domain      String?
+  isActive    Boolean  @default(true)
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    Product[]
+  orders      Order[]
+  customers   Customer[]
+  categories  Category[]
+  pages       Page[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  image     String?
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  price       Float
+  comparePrice Float?
+  cost        Float?
+  images      String   @default("[]") // JSON array of image URLs
+  category    String?
+  tags        String   @default("[]") // JSON array of tags
+  sku         String?
+  barcode     String?
+  stock       Int      @default(0)
+  trackInventory Boolean @default(true)
+  weight      Float?
+  weightUnit  String   @default("kg")
+  status      String   @default("draft") // draft, active, archived
+  featured    Boolean  @default(false)
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  categoryRef Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  orderNumber   String
+  status        String   @default("pending") // pending, confirmed, processing, shipped, delivered, cancelled, refunded
+  paymentStatus String   @default("unpaid") // unpaid, paid, partially_refunded, refunded
+  fulfillmentStatus String @default("unfulfilled") // unfulfilled, partial, fulfilled
+  subtotal      Float
+  tax           Float    @default(0)
+  shipping      Float    @default(0)
+  discount      Float    @default(0)
+  total         Float
+  currency      String   @default("INR")
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  shippingAddress String?
+  billingAddress  String?
+  notes         String?
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  price     Float
+  quantity  Int
+  total     Float
+  createdAt DateTime @default(now())
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  zip       String?
+  notes     String?
+  totalOrders Int    @default(0)
+  totalSpent  Float  @default(0)
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String
+  content   String?
+  type      String   @default("page") // page, blog
+  published Boolean  @default(false)
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
