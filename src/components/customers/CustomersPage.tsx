@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Users, Plus, Search, MoreHorizontal, Trash2, Pencil,
   MapPin, Phone, Mail, ChevronLeft, ChevronRight, ArrowLeft,
-  FileText, ShoppingCart, Calendar
+  FileText, ShoppingCart, Calendar, Download
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -640,13 +640,22 @@ export default function CustomersPage() {
             </h1>
             <p className="text-muted-foreground mt-1">View and manage your customer base</p>
           </div>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={openCreateDialog}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Customer
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={openCreateDialog}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Customer
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=customers`)}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
         </div>
       </motion.div>
 
@@ -735,7 +744,7 @@ export default function CustomersPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="hover:bg-muted/50 border-b transition-colors cursor-pointer"
+                            className="table-row-hover border-b transition-colors cursor-pointer"
                             onClick={() => setSelectedCustomerId(customer.id)}
                           >
                             <TableCell>
@@ -804,7 +813,7 @@ export default function CustomersPage() {
                       key={customer.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="p-4 hover:bg-muted/50 cursor-pointer"
+                      className="p-4 table-row-hover cursor-pointer"
                       onClick={() => setSelectedCustomerId(customer.id)}
                     >
                       <div className="flex items-start justify-between mb-2">

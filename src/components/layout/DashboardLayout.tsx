@@ -23,6 +23,10 @@ import {
   Moon,
   Monitor,
   Plus,
+  Tag,
+  Volume2,
+  VolumeX,
+  Sparkles,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -43,6 +47,7 @@ import {
 } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import {
   Breadcrumb,
@@ -63,17 +68,21 @@ import StorePreview from '@/components/store/StorePreview'
 import AnalyticsPage from '@/components/analytics/AnalyticsPage'
 import PagesPage from '@/components/pages/PagesPage'
 import CreateStoreDialog from '@/components/store/CreateStoreDialog'
+import DiscountsPage from '@/components/discounts/DiscountsPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
+import GlobalSearch from '@/components/layout/GlobalSearch'
 
-const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { view: 'dashboard', label: 'Home', icon: Home },
-  { view: 'products', label: 'Products', icon: Package },
-  { view: 'orders', label: 'Orders', icon: ShoppingCart },
-  { view: 'customers', label: 'Customers', icon: Users },
-  { view: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { view: 'store-settings', label: 'Store Settings', icon: Settings },
+const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; shortcut?: string }[] = [
+  { view: 'dashboard', label: 'Home', icon: Home, shortcut: 'Alt+H' },
+  { view: 'products', label: 'Products', icon: Package, shortcut: 'Alt+P' },
+  { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
+  { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
+  { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D' },
+  { view: 'analytics', label: 'Analytics', icon: BarChart3, shortcut: 'Alt+A' },
+  { view: 'store-settings', label: 'Store Settings', icon: Settings, shortcut: 'Alt+S' },
   { view: 'store-preview', label: 'Store Preview', icon: Globe },
   { view: 'pages', label: 'Pages', icon: FileText },
+  { view: 'checkout', label: 'Visit Store', icon: Globe },
 ]
 
 // Map views to breadcrumb labels
@@ -90,6 +99,8 @@ const viewLabels: Record<string, string> = {
   analytics: 'Analytics',
   pages: 'Pages',
   'create-store': 'Create Store',
+  discounts: 'Discounts',
+  checkout: 'Storefront',
 }
 
 function ThemeToggle() {
@@ -146,7 +157,21 @@ export default function DashboardLayout() {
   } = useAppStore()
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+
+  // Keyboard shortcut for global search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(prev => !prev)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // Track scroll for header shadow
   useEffect(() => {
@@ -177,6 +202,8 @@ export default function DashboardLayout() {
         return <StorePreview />
       case 'pages':
         return <PagesPage />
+      case 'discounts':
+        return <DiscountsPage />
       case 'create-store':
         return <CreateStoreDialog />
       default:
@@ -210,34 +237,57 @@ export default function DashboardLayout() {
         </AnimatePresence>
 
         {/* Sidebar */}
-        <aside
-          className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col transition-all duration-300 ease-in-out ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0 lg:w-16'
-          }`}
+        <motion.aside
+          className="fixed lg:static inset-y-0 left-0 z-50 flex flex-col border-r border-border overflow-hidden"
+          animate={{
+            width: sidebarOpen ? 256 : 64,
+            translateX: sidebarOpen ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? -256 : 0),
+          }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           style={{
             background: sidebarOpen
-              ? 'linear-gradient(to bottom, oklch(0.96 0.02 155 / 0.5), var(--card))'
+              ? 'linear-gradient(180deg, oklch(0.96 0.04 155 / 0.6) 0%, oklch(0.94 0.02 155 / 0.3) 40%, var(--card) 100%)'
               : undefined,
           }}
         >
+          {/* Dark mode gradient */}
+          <div className="absolute inset-0 dark:hidden pointer-events-none" />
+          <div className="absolute inset-0 hidden dark:block pointer-events-none"
+            style={{
+              background: sidebarOpen
+                ? 'linear-gradient(180deg, oklch(0.2 0.03 155 / 0.8) 0%, oklch(0.16 0.02 155 / 0.4) 40%, var(--card) 100%)'
+                : undefined,
+            }}
+          />
+
           {/* Sidebar header */}
-          <div className="h-16 flex items-center gap-2 px-4 border-b border-border">
+          <div className="relative h-16 flex items-center gap-2 px-4 border-b border-border">
             <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <Store className="w-5 h-5 text-white" />
             </div>
-            {sidebarOpen && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-lg font-bold text-emerald-900 dark:text-emerald-100 whitespace-nowrap"
-              >
-                Online Vepar
-              </motion.span>
-            )}
+            <AnimatePresence>
+              {sidebarOpen && (
+                <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-1.5 overflow-hidden"
+                >
+                  <span className="text-lg font-bold text-emerald-900 dark:text-emerald-100 whitespace-nowrap">
+                    Online Vepar
+                  </span>
+                  <Badge className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[9px] px-1.5 py-0 h-4 font-semibold shrink-0">
+                    <Sparkles className="w-2.5 h-2.5 mr-0.5" />
+                    PRO
+                  </Badge>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <Button
               variant="ghost"
               size="icon"
-              className="ml-auto lg:hidden"
+              className="ml-auto lg:hidden relative z-10"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="w-4 h-4" />
@@ -245,48 +295,56 @@ export default function DashboardLayout() {
           </div>
 
           {/* Store selector with + button */}
-          {sidebarOpen && (
-            <div className="px-3 py-3">
-              <div className="flex items-center gap-1.5">
-                <Select
-                  value={currentStore?.id || ''}
-                  onValueChange={(value) => {
-                    const store = stores.find((s) => s.id === value)
-                    if (store) setStore(store)
-                  }}
-                >
-                  <SelectTrigger className="flex-1 border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/20">
-                    <SelectValue placeholder="Select store" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {stores.map((store) => (
-                      <SelectItem key={store.id} value={store.id}>
-                        {store.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-9 w-9 shrink-0 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300"
-                      onClick={() => setView('create-store')}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Create Store</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {sidebarOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="px-3 py-3 relative z-10"
+              >
+                <div className="flex items-center gap-1.5">
+                  <Select
+                    value={currentStore?.id || ''}
+                    onValueChange={(value) => {
+                      const store = stores.find((s) => s.id === value)
+                      if (store) setStore(store)
+                    }}
+                  >
+                    <SelectTrigger className="flex-1 border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/20">
+                      <SelectValue placeholder="Select store" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {stores.map((store) => (
+                        <SelectItem key={store.id} value={store.id}>
+                          {store.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-9 w-9 shrink-0 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200 hover:scale-105"
+                        onClick={() => setView('create-store')}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Create Store</TooltipContent>
+                  </Tooltip>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Navigation */}
-          <ScrollArea className="flex-1 px-3 py-2">
+          <ScrollArea className="flex-1 px-3 py-2 relative z-10">
             <nav className="space-y-1">
-              {navItems.map((item) => {
+              {navItems.map((item, idx) => {
                 const isActive = currentView === item.view
 
                 // Collapsed sidebar: show tooltip
@@ -296,11 +354,12 @@ export default function DashboardLayout() {
                       <TooltipTrigger asChild>
                         <Button
                           variant="ghost"
-                          className={`w-full justify-center h-10 relative transition-all duration-200 ${
+                          className={`w-full justify-center h-10 relative transition-all duration-200 hover:scale-105 ${
                             isActive
                               ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium'
                               : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                           }`}
+                          style={{ animationDelay: `${idx * 30}ms` }}
                           onClick={() => {
                             setView(item.view)
                             if (window.innerWidth < 1024) setSidebarOpen(false)
@@ -315,39 +374,85 @@ export default function DashboardLayout() {
                       </TooltipTrigger>
                       <TooltipContent side="right" sideOffset={8}>
                         {item.label}
+                        {item.shortcut && (
+                          <span className="ml-2 text-[10px] text-muted-foreground opacity-70">({item.shortcut})</span>
+                        )}
                       </TooltipContent>
                     </Tooltip>
                   )
                 }
 
                 return (
-                  <Button
+                  <motion.div
                     key={item.view}
-                    variant={isActive ? 'secondary' : 'ghost'}
-                    className={`w-full justify-start gap-3 h-10 relative transition-all duration-200 ${
-                      isActive
-                        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 font-medium pl-5'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                    }`}
-                    onClick={() => {
-                      setView(item.view)
-                      if (window.innerWidth < 1024) setSidebarOpen(false)
-                    }}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: idx * 20 }}
                   >
-                    {/* Active indicator bar */}
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-emerald-600 rounded-r" />
-                    )}
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="whitespace-nowrap">{item.label}</span>
-                  </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={isActive ? 'secondary' : 'ghost'}
+                          className={`w-full justify-start gap-3 h-10 relative transition-all duration-200 hover:scale-[1.02] ${
+                            isActive
+                              ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 font-medium pl-5'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                          }`}
+                          onClick={() => {
+                            setView(item.view)
+                            if (window.innerWidth < 1024) setSidebarOpen(false)
+                          }}
+                        >
+                          {/* Active indicator bar */}
+                          {isActive && (
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-emerald-600 rounded-r" />
+                          )}
+                          <item.icon className="w-4 h-4 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{item.label}</span>
+                        </Button>
+                      </TooltipTrigger>
+                      {item.shortcut && (
+                        <TooltipContent side="right" sideOffset={8}>
+                          <span className="text-[10px] text-muted-foreground">{item.shortcut}</span>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </motion.div>
                 )
               })}
             </nav>
           </ScrollArea>
 
+          {/* Sound toggle */}
+          {sidebarOpen && (
+            <div className="px-3 py-1 relative z-10">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-2 h-8 text-muted-foreground hover:text-foreground text-xs"
+                onClick={() => setSoundEnabled(!soundEnabled)}
+              >
+                {soundEnabled ? (
+                  <Volume2 className="w-3.5 h-3.5" />
+                ) : (
+                  <VolumeX className="w-3.5 h-3.5" />
+                )}
+                {soundEnabled ? 'Sound On' : 'Sound Off'}
+              </Button>
+            </div>
+          )}
+
+          {/* Sidebar footer */}
+          {sidebarOpen && (
+            <div className="px-3 py-2 border-t border-border relative z-10">
+              <p className="text-[10px] text-muted-foreground text-center">
+                Online Vepar v1.0
+              </p>
+            </div>
+          )}
+
           {/* User profile at bottom */}
-          <div className="border-t border-border p-3">
+          <div className="border-t border-border p-3 relative z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -356,11 +461,18 @@ export default function DashboardLayout() {
                     !sidebarOpen ? 'lg:justify-center lg:px-0' : ''
                   }`}
                 >
-                  <Avatar className="h-8 w-8 flex-shrink-0">
-                    <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                    {/* Online status indicator */}
+                    <div className="absolute -bottom-0.5 -right-0.5">
+                      <div className="w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800" />
+                      <div className="absolute inset-0 w-3 h-3 bg-emerald-500 rounded-full animate-pulse-ring" />
+                    </div>
+                  </div>
                   {sidebarOpen && (
                     <div className="text-left flex-1 min-w-0">
                       <div className="text-sm font-medium truncate">
@@ -393,7 +505,7 @@ export default function DashboardLayout() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </aside>
+        </motion.aside>
 
         {/* Main content */}
         <div className="flex-1 flex flex-col min-w-0">
@@ -439,13 +551,17 @@ export default function DashboardLayout() {
 
             {/* Search with command palette look */}
             <div className="flex-1 max-w-md mx-auto lg:mx-0">
-              <div className="relative group">
+              <div
+                className="relative group cursor-pointer"
+                onClick={() => setSearchOpen(true)}
+              >
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
                 <Input
                   placeholder="Search products, orders..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-12 bg-background border-border h-9 focus:ring-1 focus:ring-emerald-500 transition-shadow"
+                  className="pl-9 pr-12 bg-background border-border h-9 focus:ring-1 focus:ring-emerald-500 transition-shadow pointer-events-none"
+                  readOnly
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 pointer-events-none">
                   <kbd className="inline-flex h-5 select-none items-center gap-0.5 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
@@ -456,6 +572,17 @@ export default function DashboardLayout() {
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
+              {/* Visit Store button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden sm:flex gap-1.5 h-8 text-xs border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                onClick={() => setView('checkout')}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                Visit Store
+              </Button>
+
               {/* Theme toggle */}
               <ThemeToggle />
 
@@ -488,6 +615,9 @@ export default function DashboardLayout() {
             </div>
           </main>
         </div>
+
+        {/* Global Search Dialog */}
+        <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
         {/* Collapse toggle for desktop */}
         <Button

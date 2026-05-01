@@ -25,7 +25,7 @@ interface Product {
 }
 
 export default function StorePreview() {
-  const { currentStore } = useAppStore()
+  const { currentStore, setView } = useAppStore()
   const [viewport, setViewport] = useState<ViewportSize>('desktop')
   const [products, setProducts] = useState<Product[]>([])
   const [loadingProducts, setLoadingProducts] = useState(true)
@@ -176,6 +176,14 @@ export default function StorePreview() {
               Preview how your store looks to customers
             </p>
           </div>
+          <Button
+            className="gap-2 text-white"
+            style={{ backgroundColor: currentStore?.primaryColor || '#10b981' }}
+            onClick={() => setView('checkout')}
+          >
+            <ExternalLink className="w-4 h-4" />
+            Open Live Store
+          </Button>
         </div>
       </motion.div>
 
@@ -233,7 +241,12 @@ export default function StorePreview() {
                   </Button>
                 </div>
 
-                <Button variant="ghost" size="sm" disabled className="h-7 text-xs gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs gap-1 hover:text-emerald-700 dark:hover:text-emerald-300"
+                  onClick={() => setView('checkout')}
+                >
                   <ExternalLink className="w-3 h-3" />
                   Open
                 </Button>

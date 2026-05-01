@@ -237,3 +237,333 @@ textarea,
 .animate-subtle-pulse {
   animation: subtle-pulse 2s ease-in-out infinite;
 }
+
+/* ===== NEW LANDING PAGE ANIMATIONS ===== */
+
+/* Animated hero gradient background - emerald to teal to cyan and back */
+@keyframes hero-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-hero-gradient {
+  background: linear-gradient(-45deg, #ecfdf5, #ccfbf1, #cffafe, #d1fae5, #f0fdfa, #ecfdf5);
+  background-size: 400% 400%;
+  animation: hero-gradient 12s ease infinite;
+}
+
+/* Floating orb animation */
+@keyframes orb-float-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  50% {
+    transform: translate(-10px, 15px) scale(0.95);
+  }
+  75% {
+    transform: translate(-25px, -10px) scale(1.02);
+  }
+}
+
+@keyframes orb-float-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-20px, 25px) scale(1.03);
+  }
+  50% {
+    transform: translate(15px, -15px) scale(0.97);
+  }
+  75% {
+    transform: translate(20px, 10px) scale(1.01);
+  }
+}
+
+@keyframes orb-float-3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(20px, -30px) scale(1.04);
+  }
+  66% {
+    transform: translate(-15px, 20px) scale(0.96);
+  }
+}
+
+.animate-orb-1 {
+  animation: orb-float-1 8s ease-in-out infinite;
+}
+
+.animate-orb-2 {
+  animation: orb-float-2 10s ease-in-out infinite;
+}
+
+.animate-orb-3 {
+  animation: orb-float-3 12s ease-in-out infinite;
+}
+
+/* Icon bounce on hover */
+@keyframes icon-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.15);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+}
+
+.group:hover .group-hover\:icon-bounce {
+  animation: icon-bounce 0.5s ease;
+}
+
+/* Flowing gradient for "How It Works" section */
+@keyframes flow-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-flow-gradient {
+  background: linear-gradient(90deg, #ecfdf5, #f0fdfa, #ccfbf1, #ecfdf5);
+  background-size: 200% 100%;
+  animation: flow-gradient 6s linear infinite;
+}
+
+/* Glow pulse for popular pricing card */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px oklch(0.55 0.16 155 / 0.15), 0 0 60px oklch(0.55 0.16 155 / 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px oklch(0.55 0.16 155 / 0.25), 0 0 80px oklch(0.55 0.16 155 / 0.1);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Ribbon style for "Most Popular" */
+.pricing-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+}
+
+.pricing-ribbon span {
+  position: absolute;
+  display: block;
+  width: 160px;
+  padding: 6px 0;
+  background-color: #059669;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  right: -40px;
+  top: 24px;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 8px oklch(0.45 0.16 155 / 0.3);
+}
+
+/* Footer gradient border */
+.footer-gradient-border {
+  position: relative;
+}
+
+.footer-gradient-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #059669, #0d9488, #06b6d4, #0d9488, #059669);
+  background-size: 200% 100%;
+  animation: flow-gradient 4s linear infinite;
+}
+
+/* Stagger animation for page load */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-1 { animation: fade-in-up 0.6s ease-out 0.1s both; }
+.animate-stagger-2 { animation: fade-in-up 0.6s ease-out 0.3s both; }
+.animate-stagger-3 { animation: fade-in-up 0.6s ease-out 0.5s both; }
+.animate-stagger-4 { animation: fade-in-up 0.6s ease-out 0.7s both; }
+
+/* Grid pattern for features section */
+.grid-pattern {
+  background-image:
+    linear-gradient(oklch(0.55 0.16 155 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.55 0.16 155 / 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Checkmark animation for pricing features */
+@keyframes checkmark-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* Back to top button */
+@keyframes back-to-top-show {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-back-to-top {
+  animation: back-to-top-show 0.3s ease-out;
+}
+
+/* Parallax helper */
+.parallax-slow {
+  will-change: transform;
+}
+
+/* Social icon hover scale */
+.social-icon-hover {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-icon-hover:hover {
+  transform: scale(1.2);
+}
+
+/* Mini chart bar animation */
+@keyframes chart-bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.animate-chart-bar {
+  transform-origin: bottom;
+  animation: chart-bar-grow 0.8s ease-out both;
+}
+
+/* Connecting line animation for How It Works */
+@keyframes line-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Scroll spy active link */
+.nav-link-active {
+  color: oklch(0.45 0.16 155) !important;
+  font-weight: 600;
+}
+
+/* Feature card gradient overlays */
+.feature-overlay-emerald {
+  background: linear-gradient(135deg, oklch(0.55 0.16 155 / 0.05) 0%, transparent 60%);
+}
+
+.feature-overlay-orange {
+  background: linear-gradient(135deg, oklch(0.65 0.2 50 / 0.05) 0%, transparent 60%);
+}
+
+.feature-overlay-violet {
+  background: linear-gradient(135deg, oklch(0.6 0.2 300 / 0.05) 0%, transparent 60%);
+}
+
+.feature-overlay-sky {
+  background: linear-gradient(135deg, oklch(0.65 0.15 220 / 0.05) 0%, transparent 60%);
+}
+
+.feature-overlay-rose {
+  background: linear-gradient(135deg, oklch(0.6 0.2 10 / 0.05) 0%, transparent 60%);
+}
+
+.feature-overlay-amber {
+  background: linear-gradient(135deg, oklch(0.7 0.18 80 / 0.05) 0%, transparent 60%);
+}
+
+/* Pricing toggle */
+.pricing-toggle-active {
+  background-color: oklch(0.45 0.16 155);
+  color: white;
+}
+
+/* Verified badge */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: oklch(0.55 0.16 155);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: oklch(0.55 0.16 155 / 0.1);
+}
+
+/* Testimonial card hover */
+.testimonial-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: 0 12px 40px oklch(0.55 0.16 155 / 0.1);
+}

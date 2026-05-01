@@ -6,7 +6,7 @@ import {
   ShoppingCart, Plus, Search, Filter, MoreHorizontal, Eye, Trash2,
   Package, Truck, CheckCircle2, XCircle, Clock, ArrowLeft,
   MapPin, Phone, Mail, FileText, ChevronLeft, ChevronRight,
-  StickyNote, Calendar
+  StickyNote, Calendar, Download
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -774,13 +774,22 @@ export default function OrdersPage() {
             </h1>
             <p className="text-muted-foreground mt-1">Track and manage customer orders</p>
           </div>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={() => setShowCreateDialog(true)}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Order
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={() => setShowCreateDialog(true)}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Order
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=orders`)}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
         </div>
       </motion.div>
 
@@ -918,7 +927,7 @@ export default function OrdersPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="hover:bg-muted/50 border-b transition-colors cursor-pointer"
+                            className="table-row-hover border-b transition-colors cursor-pointer"
                             onClick={() => setSelectedOrderId(order.id)}
                           >
                             <TableCell className="font-medium text-emerald-700">

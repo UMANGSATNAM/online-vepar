@@ -15,6 +15,8 @@ export type ViewType =
   | 'analytics'
   | 'pages'
   | 'create-store'
+  | 'discounts'
+  | 'checkout'
 
 export interface User {
   id: string
@@ -41,6 +43,15 @@ export interface Store {
   updatedAt?: string
 }
 
+export interface CartItem {
+  productId: string
+  name: string
+  price: number
+  quantity: number
+  image?: string
+  sku?: string
+}
+
 interface AppState {
   // View state
   currentView: ViewType
@@ -56,6 +67,9 @@ interface AppState {
   selectedOrderId: string | null
   selectedCustomerId: string | null
 
+  // Cart
+  cart: CartItem[]
+
   // Actions
   setView: (view: ViewType) => void
   setUser: (user: User | null) => void
@@ -67,6 +81,10 @@ interface AppState {
   setSelectedOrderId: (id: string | null) => void
   setSelectedCustomerId: (id: string | null) => void
   logout: () => void
+  addToCart: (item: CartItem) => void
+  removeFromCart: (productId: string) => void
+  updateCartQuantity: (productId: string, quantity: number) => void
+  clearCart: () => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -79,6 +97,7 @@ export const useAppStore = create<AppState>((set) => ({
   selectedProductId: null,
   selectedOrderId: null,
   selectedCustomerId: null,
+  cart: [],
 
   // Actions
   setView: (view) => set({ currentView: view }),
@@ -100,5 +119,36 @@ export const useAppStore = create<AppState>((set) => ({
       selectedProductId: null,
       selectedOrderId: null,
       selectedCustomerId: null,
+      cart: [],
     }),
+  addToCart: (item) =>
+    set((state) => {
+      const existing = state.cart.find((c) => c.productId === item.productId)
+      if (existing) {
+        return {
+          cart: state.cart.map((c) =>
+            c.productId === item.productId
+              ? { ...c, quantity: c.quantity + item.quantity }
+              : c
+          ),
+        }
+      }
+      return { cart: [...state.cart, item] }
+    }),
+  removeFromCart: (productId) =>
+    set((state) => ({
+      cart: state.cart.filter((c) => c.productId !== productId),
+    })),
+  updateCartQuantity: (productId, quantity) =>
+    set((state) => {
+      if (quantity <= 0) {
+        return { cart: state.cart.filter((c) => c.productId !== productId) }
+      }
+      return {
+        cart: state.cart.map((c) =>
+          c.productId === productId ? { ...c, quantity } : c
+        ),
+      }
+    }),
+  clearCart: () => set({ cart: [] }),
 }))

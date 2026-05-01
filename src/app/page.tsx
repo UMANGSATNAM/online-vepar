@@ -6,6 +6,7 @@ import LandingPage from '@/components/landing/LandingPage'
 import LoginPage from '@/components/auth/LoginPage'
 import RegisterPage from '@/components/auth/RegisterPage'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import CheckoutPage from '@/components/checkout/CheckoutPage'
 
 export default function Home() {
   const { currentView, setUser, setStore, setStores, setView } = useAppStore()
@@ -42,6 +43,8 @@ export default function Home() {
       return <LoginPage />
     case 'register':
       return <RegisterPage />
+    case 'checkout':
+      return <CheckoutPage />
     case 'dashboard':
     case 'products':
     case 'orders':
@@ -51,6 +54,7 @@ export default function Home() {
     case 'analytics':
     case 'pages':
     case 'create-store':
+    case 'discounts':
       return <DashboardLayout />
     default:
       return <LandingPage />

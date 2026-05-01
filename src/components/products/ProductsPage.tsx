@@ -6,7 +6,7 @@ import {
   Package, Plus, Search, LayoutGrid, List, MoreHorizontal, Pencil, Trash2,
   Eye, Filter, ChevronLeft, ChevronRight, X, ImageIcon, Upload, GripVertical,
   Tag, ArrowUpDown, CheckCircle2, Archive, CircleDot, Star, ArrowLeft,
-  IndianRupee, Calculator, Barcode, Scale, FolderPlus
+  IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -630,13 +630,22 @@ export default function ProductsPage() {
           </h1>
           <p className="text-muted-foreground mt-1">Manage your product catalog</p>
         </div>
-        <Button
-          onClick={openAddForm}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Product
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={openAddForm}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Product
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=products`)}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+        </div>
       </div>
 
       {/* Filter Bar */}
@@ -860,7 +869,7 @@ export default function ProductsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
           >
-            <Card className="group overflow-hidden hover:shadow-md transition-all duration-200 border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800">
+            <Card className="group overflow-hidden hover:shadow-md transition-all duration-200 border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800 hover-lift">
               {/* Image */}
               <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                 {images.length > 0 ? (
@@ -1000,7 +1009,7 @@ export default function ProductsPage() {
           {products.map((product) => {
             const images = parseJSONField(product.images)
             return (
-              <TableRow key={product.id} className="group">
+              <TableRow key={product.id} className="group table-row-hover">
                 <TableCell>
                   <Checkbox
                     checked={selectedIds.has(product.id)}

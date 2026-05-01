@@ -44,6 +44,7 @@ model Store {
   customers   Customer[]
   categories  Category[]
   pages       Page[]
+  discounts   Discount[]
 }
 
 model Category {
@@ -155,4 +156,27 @@ model Page {
   store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Discount {
+  id          String   @id @default(cuid())
+  code        String   // e.g. "SUMMER2025"
+  name        String   // Display name e.g. "Summer Sale 20% Off"
+  description String?
+  type        String   // "percentage" or "fixed_amount"
+  value       Float    // e.g. 20 for 20% or 500 for ₹500 off
+  minOrderAmount Float? // Minimum order value to apply
+  maxDiscount Float?   // Maximum discount cap for percentage type
+  usageLimit  Int?     // Total number of times this can be used
+  usedCount   Int      @default(0)
+  perCustomerLimit Int? // Max uses per customer
+  appliesTo   String   @default("all") // "all", "specific_categories", "specific_products"
+  applicableIds String @default("[]") // JSON array of category/product IDs
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isActive    Boolean  @default(true)
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
