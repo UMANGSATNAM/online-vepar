@@ -50,6 +50,7 @@ export default function Home() {
     case 'store-preview':
     case 'analytics':
     case 'pages':
+    case 'create-store':
       return <DashboardLayout />
     default:
       return <LandingPage />

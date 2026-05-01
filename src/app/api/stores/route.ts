@@ -34,13 +34,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, description, logo, banner, theme, primaryColor, currency, domain } = body;
+    const { name, slug: customSlug, description, logo, banner, theme, primaryColor, currency, domain } = body;
 
     if (!name) {
       return NextResponse.json({ error: 'Store name is required' }, { status: 400 });
     }
 
-    const slug = generateSlug(name);
+    const slug = customSlug || generateSlug(name);
 
     // Check if slug already exists
     const existingStore = await db.store.findUnique({ where: { slug } });

@@ -370,9 +370,9 @@ export default function AnalyticsPage() {
                   <CardDescription>Monthly revenue for the last 12 months</CardDescription>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <div className="text-2xl font-bold text-emerald-600">
                     {loading ? <Skeleton className="h-7 w-24 inline-block" /> : formatCurrencyShort(data?.stats.totalRevenue || 0)}
-                  </p>
+                  </div>
                   <p className="text-xs text-muted-foreground">Total Revenue</p>
                 </div>
               </div>

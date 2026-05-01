@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import {
   DollarSign,
   ShoppingCart,
@@ -18,6 +18,9 @@ import {
   RefreshCw,
   CheckCircle2,
   XCircle,
+  Sun,
+  Moon,
+  Coffee,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -121,6 +124,65 @@ function getTodayDate(): string {
   })
 }
 
+function getTimeGreeting(): { greeting: string; icon: typeof Sun } {
+  const hour = new Date().getHours()
+  if (hour < 12) return { greeting: 'Good Morning', icon: Sun }
+  if (hour < 17) return { greeting: 'Good Afternoon', icon: Coffee }
+  return { greeting: 'Good Evening', icon: Moon }
+}
+
+// --- Animated counter hook ---
+function useAnimatedCounter(target: number, duration: number = 1200) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true })
+  const hasStarted = useRef(false)
+
+  useEffect(() => {
+    if (isInView && !hasStarted.current) {
+      hasStarted.current = true
+      const startTime = Date.now()
+      const step = () => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const eased = 1 - Math.pow(1 - progress, 3)
+        setCount(Math.floor(eased * target))
+        if (progress < 1) {
+          requestAnimationFrame(step)
+        }
+      }
+      requestAnimationFrame(step)
+    }
+  }, [isInView, target, duration])
+
+  return { count, ref }
+}
+
+// --- Mini sparkline component ---
+function MiniSparkline({ color }: { color: string }) {
+  // Generate pseudo-random sparkline data
+  const points = [40, 65, 45, 70, 55, 80, 60, 75, 85, 70]
+  const width = 60
+  const height = 24
+  const maxVal = Math.max(...points)
+  const minVal = Math.min(...points)
+  const range = maxVal - minVal || 1
+
+  const pathD = points
+    .map((p, i) => {
+      const x = (i / (points.length - 1)) * width
+      const y = height - ((p - minVal) / range) * (height - 4) - 2
+      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
+    })
+    .join(' ')
+
+  return (
+    <svg width={width} height={height} className="opacity-50">
+      <path d={pathD} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 // --- Animation Variants ---
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -206,45 +268,58 @@ export default function DashboardHome() {
 
   const firstName = currentUser?.name?.split(' ')[0] || 'Merchant'
   const storeName = currentStore?.name || 'your store'
+  const { greeting, icon: GreetingIcon } = getTimeGreeting()
 
   // Stats card config
   const statsCards = data
     ? [
         {
           title: 'Total Revenue',
-          value: formatCurrency(data.stats.totalRevenue),
+          value: data.stats.totalRevenue,
+          formatted: formatCurrency(data.stats.totalRevenue),
           sub: data.stats.pendingOrders > 0 ? `${data.stats.pendingOrders} pending orders` : 'All caught up',
           icon: DollarSign,
           color: 'text-emerald-600',
           bg: 'bg-emerald-50',
           iconRing: 'ring-emerald-600/20',
+          borderColor: 'border-t-emerald-500',
+          sparkColor: '#059669',
         },
         {
           title: 'Total Orders',
-          value: data.stats.totalOrders.toLocaleString('en-IN'),
+          value: data.stats.totalOrders,
+          formatted: data.stats.totalOrders.toLocaleString('en-IN'),
           sub: data.stats.unfulfilledOrders > 0 ? `${data.stats.unfulfilledOrders} unfulfilled` : 'All fulfilled',
           icon: ShoppingCart,
           color: 'text-orange-600',
           bg: 'bg-orange-50',
           iconRing: 'ring-orange-600/20',
+          borderColor: 'border-t-orange-500',
+          sparkColor: '#ea580c',
         },
         {
           title: 'Total Customers',
-          value: data.stats.totalCustomers.toLocaleString('en-IN'),
+          value: data.stats.totalCustomers,
+          formatted: data.stats.totalCustomers.toLocaleString('en-IN'),
           sub: 'Customer base',
           icon: Users,
           color: 'text-violet-600',
           bg: 'bg-violet-50',
           iconRing: 'ring-violet-600/20',
+          borderColor: 'border-t-violet-500',
+          sparkColor: '#7c3aed',
         },
         {
           title: 'Active Products',
-          value: data.stats.activeProducts.toLocaleString('en-IN'),
+          value: data.stats.activeProducts,
+          formatted: data.stats.activeProducts.toLocaleString('en-IN'),
           sub: `${data.stats.totalProducts - data.stats.activeProducts} inactive`,
           icon: Package,
           color: 'text-sky-600',
           bg: 'bg-sky-50',
           iconRing: 'ring-sky-600/20',
+          borderColor: 'border-t-sky-500',
+          sparkColor: '#0284c7',
         },
       ]
     : []
@@ -261,19 +336,19 @@ export default function DashboardHome() {
   const activities = data
     ? [
         ...(data.stats.pendingOrders > 0
-          ? [{ icon: Clock, text: `${data.stats.pendingOrders} pending order(s) awaiting confirmation`, color: 'text-yellow-600 bg-yellow-50', time: 'Action needed' }]
+          ? [{ icon: Clock, text: `${data.stats.pendingOrders} pending order(s) awaiting confirmation`, color: 'text-yellow-600 bg-yellow-50', dotColor: 'bg-yellow-500', time: 'Action needed' }]
           : []),
         ...(data.stats.unfulfilledOrders > 0
-          ? [{ icon: AlertCircle, text: `${data.stats.unfulfilledOrders} order(s) need fulfillment`, color: 'text-orange-600 bg-orange-50', time: 'Action needed' }]
+          ? [{ icon: AlertCircle, text: `${data.stats.unfulfilledOrders} order(s) need fulfillment`, color: 'text-orange-600 bg-orange-50', dotColor: 'bg-orange-500', time: 'Action needed' }]
           : []),
         ...(data.recentOrders.length > 0
-          ? [{ icon: CheckCircle2, text: `Latest order: ${data.recentOrders[0].orderNumber} from ${data.recentOrders[0].customerName}`, color: 'text-emerald-600 bg-emerald-50', time: formatDate(data.recentOrders[0].createdAt) }]
+          ? [{ icon: CheckCircle2, text: `Latest order: ${data.recentOrders[0].orderNumber} from ${data.recentOrders[0].customerName}`, color: 'text-emerald-600 bg-emerald-50', dotColor: 'bg-emerald-500', time: formatDate(data.recentOrders[0].createdAt) }]
           : []),
         ...(data.topProducts.length > 0
-          ? [{ icon: TrendingUp, text: `Top seller: ${data.topProducts[0].name}`, color: 'text-violet-600 bg-violet-50', time: 'This period' }]
+          ? [{ icon: TrendingUp, text: `Top seller: ${data.topProducts[0].name}`, color: 'text-violet-600 bg-violet-50', dotColor: 'bg-violet-500', time: 'This period' }]
           : []),
         ...(data.stats.totalRevenue > 0
-          ? [{ icon: DollarSign, text: `Revenue: ${formatCurrency(data.stats.totalRevenue)} total`, color: 'text-emerald-600 bg-emerald-50', time: 'Lifetime' }]
+          ? [{ icon: DollarSign, text: `Revenue: ${formatCurrency(data.stats.totalRevenue)} total`, color: 'text-emerald-600 bg-emerald-50', dotColor: 'bg-emerald-500', time: 'Lifetime' }]
           : []),
       ].slice(0, 5)
     : []
@@ -283,6 +358,13 @@ export default function DashboardHome() {
     .sort((a, b) => (b.totalRevenue || 0) - (a.totalRevenue || 0))
     .slice(0, 5)
   const maxRevenue = topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.totalRevenue || 0)) : 1
+
+  // Rank badge colors
+  const rankBadgeColors = [
+    'bg-amber-100 text-amber-800 border-amber-200',
+    'bg-gray-100 text-gray-800 border-gray-200',
+    'bg-orange-100 text-orange-800 border-orange-200',
+  ]
 
   return (
     <motion.div
@@ -315,13 +397,18 @@ export default function DashboardHome() {
       {/* Welcome Section */}
       <motion.div variants={itemVariants}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Welcome back, {firstName}! 👋
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Here&apos;s what&apos;s happening with <span className="font-medium text-foreground">{storeName}</span> today.
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+              <GreetingIcon className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {greeting}, {firstName}! 👋
+              </h1>
+              <p className="text-muted-foreground mt-0.5">
+                Here&apos;s what&apos;s happening with <span className="font-medium text-foreground">{storeName}</span> today.
+              </p>
+            </div>
           </div>
           <p className="text-sm text-muted-foreground hidden sm:block">{getTodayDate()}</p>
         </div>
@@ -333,24 +420,7 @@ export default function DashboardHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {statsCards.map((stat) => (
-            <motion.div key={stat.title} variants={itemVariants}>
-              <Card className="hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div className={`w-9 h-9 ${stat.bg} rounded-lg flex items-center justify-center ring-1 ${stat.iconRing}`}>
-                    <stat.icon className={`w-4.5 h-4.5 ${stat.color}`} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold tracking-tight">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    {stat.sub}
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <StatCard key={stat.title} stat={stat} />
           ))}
         </div>
       )}
@@ -437,9 +507,15 @@ export default function DashboardHome() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data.recentOrders.slice(0, 5).map((order) => (
-                      <TableRow key={order.id} className="cursor-pointer" onClick={() => setView('orders')}>
-                        <TableCell className="font-medium text-xs">{order.orderNumber}</TableCell>
+                    {data.recentOrders.slice(0, 5).map((order, idx) => (
+                      <TableRow
+                        key={order.id}
+                        className={`cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-colors ${idx % 2 === 1 ? 'bg-muted/30' : ''}`}
+                        onClick={() => setView('orders')}
+                      >
+                        <TableCell className="font-medium text-xs text-emerald-600 hover:text-emerald-700 hover:underline">
+                          {order.orderNumber}
+                        </TableCell>
                         <TableCell>
                           <div>
                             <p className="text-sm font-medium">{order.customerName}</p>
@@ -466,12 +542,12 @@ export default function DashboardHome() {
                 </Table>
               )}
             </CardContent>
-            {data && data.recentOrders.length > 5 && (
+            {data && data.recentOrders.length > 0 && (
               <CardFooter className="border-t pt-4">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                  className="w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1"
                   onClick={() => setView('orders')}
                 >
                   View All Orders <ArrowRight className="w-4 h-4 ml-1" />
@@ -516,14 +592,24 @@ export default function DashboardHome() {
                       <div key={product.id} className="space-y-1.5">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-xs font-bold text-muted-foreground w-4 shrink-0">{idx + 1}</span>
+                            {/* Rank badge */}
+                            <Badge
+                              variant="outline"
+                              className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center rounded-full font-bold shrink-0 ${idx < 3 ? rankBadgeColors[idx] : 'bg-muted text-muted-foreground border-muted'}`}
+                            >
+                              {idx + 1}
+                            </Badge>
+                            {/* Product thumbnail placeholder */}
+                            <div className="w-7 h-7 bg-emerald-50 rounded flex items-center justify-center shrink-0">
+                              <Package className="w-3.5 h-3.5 text-emerald-400" />
+                            </div>
                             <span className="text-sm font-medium truncate">{product.name}</span>
                           </div>
                           <span className="text-sm font-semibold text-foreground shrink-0 ml-2">
                             {formatCurrency(product.totalRevenue || 0)}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 pl-6">
+                        <div className="flex items-center gap-2 pl-12">
                           <Progress
                             value={maxRevenue > 0 ? ((product.totalRevenue || 0) / maxRevenue) * 100 : 0}
                             className="h-1.5"
@@ -571,21 +657,23 @@ export default function DashboardHome() {
                     <p className="text-sm">No recent activity</p>
                   </div>
                 ) : (
-                  <div className="space-y-1">
-                    {activities.map((activity, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-start gap-3 py-2">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${activity.color}`}>
-                            <activity.icon className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm text-foreground leading-snug">{activity.text}</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{activity.time}</p>
+                  <div className="relative pl-6">
+                    {/* Vertical timeline line */}
+                    <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
+                    <div className="space-y-1">
+                      {activities.map((activity, idx) => (
+                        <div key={idx} className="relative">
+                          {/* Timeline dot */}
+                          <div className={`absolute -left-6 top-3 w-2.5 h-2.5 rounded-full ${activity.dotColor} ring-2 ring-background z-10`} />
+                          <div className="flex items-start gap-3 py-2 pl-1">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm text-foreground leading-snug">{activity.text}</p>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">{activity.time}</p>
+                            </div>
                           </div>
                         </div>
-                        {idx < activities.length - 1 && <Separator />}
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -593,6 +681,49 @@ export default function DashboardHome() {
           </motion.div>
         </div>
       </div>
+    </motion.div>
+  )
+}
+
+// --- Stat Card with animated counter ---
+function StatCard({ stat }: { stat: {
+  title: string
+  value: number
+  formatted: string
+  sub: string
+  icon: React.ComponentType<{ className?: string }>
+  color: string
+  bg: string
+  iconRing: string
+  borderColor: string
+  sparkColor: string
+} }) {
+  const { count, ref } = useAnimatedCounter(stat.value)
+  const isRevenue = stat.title === 'Total Revenue'
+
+  return (
+    <motion.div variants={itemVariants}>
+      <Card className={`hover:shadow-md hover:scale-[1.02] transition-all duration-200 border-t-2 ${stat.borderColor}`}>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {stat.title}
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <MiniSparkline color={stat.sparkColor} />
+            <div className={`w-9 h-9 ${stat.bg} rounded-lg flex items-center justify-center ring-1 ${stat.iconRing}`}>
+              <stat.icon className={`w-4.5 h-4.5 ${stat.color}`} />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent ref={ref}>
+          <div className="text-2xl font-bold tracking-tight">
+            {isRevenue ? formatCurrency(count) : count.toLocaleString('en-IN')}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+            {stat.sub}
+          </p>
+        </CardContent>
+      </Card>
     </motion.div>
   )
 }

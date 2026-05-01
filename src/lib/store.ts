@@ -14,6 +14,7 @@ export type ViewType =
   | 'store-preview'
   | 'analytics'
   | 'pages'
+  | 'create-store'
 
 export interface User {
   id: string
