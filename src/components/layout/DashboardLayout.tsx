@@ -24,6 +24,9 @@ import {
   Monitor,
   Plus,
   Tag,
+  Warehouse,
+  Truck,
+  Star,
   Volume2,
   VolumeX,
   Sparkles,
@@ -69,6 +72,9 @@ import AnalyticsPage from '@/components/analytics/AnalyticsPage'
 import PagesPage from '@/components/pages/PagesPage'
 import CreateStoreDialog from '@/components/store/CreateStoreDialog'
 import DiscountsPage from '@/components/discounts/DiscountsPage'
+import InventoryPage from '@/components/inventory/InventoryPage'
+import ShippingPage from '@/components/shipping/ShippingPage'
+import ReviewsPage from '@/components/reviews/ReviewsPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
 
@@ -77,7 +83,10 @@ const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ cla
   { view: 'products', label: 'Products', icon: Package, shortcut: 'Alt+P' },
   { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
   { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
+  { view: 'reviews', label: 'Reviews', icon: Star, shortcut: 'Alt+R' },
   { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D' },
+  { view: 'inventory', label: 'Inventory', icon: Warehouse, shortcut: 'Alt+I' },
+  { view: 'shipping', label: 'Shipping', icon: Truck, shortcut: 'Alt+Shift+S' },
   { view: 'analytics', label: 'Analytics', icon: BarChart3, shortcut: 'Alt+A' },
   { view: 'store-settings', label: 'Store Settings', icon: Settings, shortcut: 'Alt+S' },
   { view: 'store-preview', label: 'Store Preview', icon: Globe },
@@ -100,6 +109,9 @@ const viewLabels: Record<string, string> = {
   pages: 'Pages',
   'create-store': 'Create Store',
   discounts: 'Discounts',
+  inventory: 'Inventory',
+  shipping: 'Shipping',
+  reviews: 'Reviews',
   checkout: 'Storefront',
 }
 
@@ -204,6 +216,12 @@ export default function DashboardLayout() {
         return <PagesPage />
       case 'discounts':
         return <DiscountsPage />
+      case 'inventory':
+        return <InventoryPage />
+      case 'shipping':
+        return <ShippingPage />
+      case 'reviews':
+        return <ReviewsPage />
       case 'create-store':
         return <CreateStoreDialog />
       default:

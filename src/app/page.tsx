@@ -55,6 +55,9 @@ export default function Home() {
     case 'pages':
     case 'create-store':
     case 'discounts':
+    case 'inventory':
+    case 'shipping':
+    case 'reviews':
       return <DashboardLayout />
     default:
       return <LandingPage />

@@ -392,7 +392,7 @@ export default function OrdersPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
         >
-          <Card>
+          <Card className="card-premium">
             <CardContent className="p-4">
               <div className="flex flex-wrap gap-2">
                 {selectedOrder.status !== 'confirmed' && selectedOrder.status !== 'delivered' && selectedOrder.status !== 'cancelled' && (
@@ -479,7 +479,7 @@ export default function OrdersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Order Items</CardTitle>
                 </CardHeader>
@@ -514,7 +514,7 @@ export default function OrdersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Order Summary</CardTitle>
                 </CardHeader>
@@ -552,7 +552,7 @@ export default function OrdersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <StickyNote className="w-4 h-4" />
@@ -582,7 +582,7 @@ export default function OrdersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Customer</CardTitle>
                 </CardHeader>
@@ -618,7 +618,7 @@ export default function OrdersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
               >
-                <Card>
+                <Card className="card-premium">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
@@ -641,7 +641,7 @@ export default function OrdersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.18 }}
               >
-                <Card>
+                <Card className="card-premium">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <FileText className="w-4 h-4" />
@@ -663,7 +663,7 @@ export default function OrdersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Status</CardTitle>
                 </CardHeader>
@@ -776,7 +776,7 @@ export default function OrdersPage() {
           </div>
           <div className="flex items-center gap-2">
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="btn-gradient text-white"
               onClick={() => setShowCreateDialog(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -803,11 +803,11 @@ export default function OrdersPage() {
           <Tabs value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
             <TabsList className="h-auto flex-wrap">
               <TabsTrigger value="all" className="gap-1">
-                All <span className="text-xs text-muted-foreground ml-1">{statusCounts.all || 0}</span>
+                All <Badge variant="secondary" className="ml-1.5 text-[10px] h-5 px-1.5">{statusCounts.all || 0}</Badge>
               </TabsTrigger>
               {ORDER_STATUSES.map((s) => (
                 <TabsTrigger key={s} value={s} className="gap-1">
-                  {capitalizeFirst(s)} <span className="text-xs text-muted-foreground ml-1">{statusCounts[s] || 0}</span>
+                  {capitalizeFirst(s)} <Badge variant="secondary" className="ml-1.5 text-[10px] h-5 px-1.5">{statusCounts[s] || 0}</Badge>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -865,7 +865,7 @@ export default function OrdersPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
       >
-        <Card>
+        <Card className="card-premium">
           <CardContent className="p-0">
             {loading ? (
               <div className="p-6 space-y-4">
@@ -924,10 +924,11 @@ export default function OrdersPage() {
                         {orders.map((order) => (
                           <motion.tr
                             key={order.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0 }}
-                            className="table-row-hover border-b transition-colors cursor-pointer"
+                            transition={{ duration: 0.2, delay: orders.indexOf(order) * 0.03 }}
+                            className={`table-row-hover animate-row-appear border-b transition-colors cursor-pointer ${orders.indexOf(order) % 2 === 1 ? 'table-row-alt' : ''}`}
                             onClick={() => setSelectedOrderId(order.id)}
                           >
                             <TableCell className="font-medium text-emerald-700">

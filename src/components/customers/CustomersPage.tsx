@@ -290,8 +290,10 @@ export default function CustomersPage() {
                 Back
               </Button>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg">
-                  {selectedCustomer.name.charAt(0).toUpperCase()}
+                <div className="w-12 h-12 rounded-full avatar-gradient-border">
+                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg">
+                    {selectedCustomer.name.charAt(0).toUpperCase()}
+                  </div>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">{selectedCustomer.name}</h1>
@@ -328,7 +330,7 @@ export default function CustomersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4" />
@@ -390,7 +392,7 @@ export default function CustomersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Contact Info</CardTitle>
                 </CardHeader>
@@ -434,7 +436,7 @@ export default function CustomersPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
             >
-              <Card>
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Stats</CardTitle>
                 </CardHeader>
@@ -466,7 +468,7 @@ export default function CustomersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
               >
-                <Card>
+                <Card className="card-premium">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <FileText className="w-4 h-4" />
@@ -565,7 +567,7 @@ export default function CustomersPage() {
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
               <Button
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="btn-gradient text-white"
                 onClick={handleSave}
                 disabled={saving}
               >
@@ -642,7 +644,7 @@ export default function CustomersPage() {
           </div>
           <div className="flex items-center gap-2">
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="btn-gradient text-white"
               onClick={openCreateDialog}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -684,7 +686,7 @@ export default function CustomersPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
       >
-        <Card>
+        <Card className="card-premium">
           <CardContent className="p-0">
             {loading ? (
               <div className="p-6 space-y-4">
@@ -701,7 +703,7 @@ export default function CustomersPage() {
             ) : customers.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-emerald-600" />
+                  <Users className="w-8 h-8 text-emerald-600 empty-state-icon" />
                 </div>
                 <h3 className="text-lg font-medium">No customers found</h3>
                 <p className="text-muted-foreground text-sm mt-1">
@@ -741,16 +743,19 @@ export default function CustomersPage() {
                         {customers.map((customer) => (
                           <motion.tr
                             key={customer.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0 }}
-                            className="table-row-hover border-b transition-colors cursor-pointer"
+                            transition={{ duration: 0.2 }}
+                            className={`table-row-hover animate-row-appear border-b transition-colors cursor-pointer ${customers.indexOf(customer) % 2 === 1 ? 'table-row-alt' : ''}`}
                             onClick={() => setSelectedCustomerId(customer.id)}
                           >
                             <TableCell>
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs">
-                                  {customer.name.charAt(0).toUpperCase()}
+                                <div className="avatar-gradient-border w-8 h-8">
+                                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs">
+                                    {customer.name.charAt(0).toUpperCase()}
+                                  </div>
                                 </div>
                                 <span className="font-medium">{customer.name}</span>
                               </div>
@@ -1009,7 +1014,7 @@ export default function CustomersPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="btn-gradient text-white"
               onClick={handleSave}
               disabled={saving}
             >

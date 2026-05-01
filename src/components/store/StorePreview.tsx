@@ -19,7 +19,7 @@ interface Product {
   name: string
   price: number
   comparePrice?: number
-  images: string
+  images: string[]
   status: string
   featured: boolean
 }
@@ -56,25 +56,19 @@ export default function StorePreview() {
     }
     setLoadingProducts(true)
     try {
-      const [storeRes, productsRes] = await Promise.all([
-        fetch(`/api/stores/${currentStore.id}`),
-        fetch(`/api/products?storeId=${currentStore.id}&status=active&limit=6`),
-      ])
-      if (storeRes.ok) {
-        const data = await storeRes.json()
+      const res = await fetch(`/api/storefront?storeId=${currentStore.id}`)
+      if (res.ok) {
+        const data = await res.json()
         setStoreData({
-          name: data.store.name || '',
-          slug: data.store.slug || '',
-          description: data.store.description || '',
-          logo: data.store.logo || '',
-          banner: data.store.banner || '',
-          theme: data.store.theme || 'modern',
-          primaryColor: data.store.primaryColor || '#10b981',
-          currency: data.store.currency || 'INR',
+          name: data.store?.name || '',
+          slug: data.store?.slug || '',
+          description: data.store?.description || '',
+          logo: data.store?.logo || '',
+          banner: data.store?.banner || '',
+          theme: data.store?.theme || 'modern',
+          primaryColor: data.store?.primaryColor || '#10b981',
+          currency: data.store?.currency || 'INR',
         })
-      }
-      if (productsRes.ok) {
-        const data = await productsRes.json()
         setProducts(data.products || [])
       }
     } catch {
@@ -154,9 +148,10 @@ export default function StorePreview() {
 
   const currentTheme = themeStyles[(storeData.theme as keyof typeof themeStyles) || 'modern'] || themeStyles.modern
 
-  const parseImages = (imagesStr: string): string[] => {
+  const getImages = (images: string[] | string): string[] => {
+    if (Array.isArray(images)) return images
     try {
-      return JSON.parse(imagesStr || '[]')
+      return JSON.parse(images || '[]')
     } catch {
       return []
     }
@@ -374,7 +369,7 @@ export default function StorePreview() {
                 ) : products.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {products.map((product) => {
-                      const images = parseImages(product.images)
+                      const images = getImages(product.images)
                       return (
                         <div
                           key={product.id}

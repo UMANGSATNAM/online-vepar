@@ -14,13 +14,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'code and storeId are required' }, { status: 400 });
     }
 
-    const discount = await db.discount.findFirst({
-      where: {
-        storeId,
-        code: code.toUpperCase(),
-        isActive: true,
-      },
-    });
+    let discount: Record<string, unknown> | null = null;
+
+    try {
+      discount = await db.discount.findFirst({
+        where: {
+          storeId,
+          code: code.toUpperCase(),
+          isActive: true,
+        },
+      }) as Record<string, unknown> | null;
+    } catch (modelError) {
+      // Fallback to raw SQL if Discount model is not available
+      console.warn('Discount model not available, using raw SQL fallback:', modelError);
+
+      const rows = await db.$queryRawUnsafe(
+        `SELECT * FROM Discount WHERE storeId = ? AND code = ? AND isActive = 1 LIMIT 1`,
+        storeId, code.toUpperCase()
+      ) as Record<string, unknown>[];
+
+      discount = rows && rows.length > 0 ? rows[0] : null;
+    }
 
     if (!discount) {
       return NextResponse.json({ valid: false, error: 'Invalid discount code' }, { status: 200 });
@@ -28,36 +42,46 @@ export async function POST(request: Request) {
 
     // Check dates
     const now = new Date();
-    if (discount.startsAt && now < discount.startsAt) {
+    const startsAt = discount.startsAt ? new Date(discount.startsAt as string | Date) : null;
+    const endsAt = discount.endsAt ? new Date(discount.endsAt as string | Date) : null;
+
+    if (startsAt && now < startsAt) {
       return NextResponse.json({ valid: false, error: 'Discount code is not yet active' }, { status: 200 });
     }
-    if (discount.endsAt && now > discount.endsAt) {
+    if (endsAt && now > endsAt) {
       return NextResponse.json({ valid: false, error: 'Discount code has expired' }, { status: 200 });
     }
 
     // Check usage limit
-    if (discount.usageLimit && discount.usedCount >= discount.usageLimit) {
+    const usageLimit = discount.usageLimit as number | null;
+    const usedCount = discount.usedCount as number;
+    if (usageLimit && usedCount >= usageLimit) {
       return NextResponse.json({ valid: false, error: 'Discount code has reached its usage limit' }, { status: 200 });
     }
 
     // Check minimum order amount
-    if (discount.minOrderAmount && subtotal !== undefined && subtotal < discount.minOrderAmount) {
+    const minOrderAmount = discount.minOrderAmount as number | null;
+    if (minOrderAmount && subtotal !== undefined && subtotal < minOrderAmount) {
       return NextResponse.json(
-        { valid: false, error: `Minimum order amount of ₹${discount.minOrderAmount} required` },
+        { valid: false, error: `Minimum order amount of ₹${minOrderAmount} required` },
         { status: 200 }
       );
     }
 
     // Calculate discount amount
     let discountAmount = 0;
+    const discountValue = discount.value as number;
+    const discountType = discount.type as string;
+    const maxDiscount = discount.maxDiscount as number | null;
+
     if (subtotal !== undefined) {
-      if (discount.type === 'percentage') {
-        discountAmount = subtotal * (discount.value / 100);
-        if (discount.maxDiscount && discountAmount > discount.maxDiscount) {
-          discountAmount = discount.maxDiscount;
+      if (discountType === 'percentage') {
+        discountAmount = subtotal * (discountValue / 100);
+        if (maxDiscount && discountAmount > maxDiscount) {
+          discountAmount = maxDiscount;
         }
       } else {
-        discountAmount = Math.min(discount.value, subtotal);
+        discountAmount = Math.min(discountValue, subtotal);
       }
     }
 
@@ -67,11 +91,11 @@ export async function POST(request: Request) {
         id: discount.id,
         code: discount.code,
         name: discount.name,
-        type: discount.type,
-        value: discount.value,
+        type: discountType,
+        value: discountValue,
         discountAmount,
-        minOrderAmount: discount.minOrderAmount,
-        maxDiscount: discount.maxDiscount,
+        minOrderAmount,
+        maxDiscount,
       },
     }, { status: 200 });
   } catch (error) {

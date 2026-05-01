@@ -44,7 +44,12 @@ model Store {
   customers   Customer[]
   categories  Category[]
   pages       Page[]
-  discounts   Discount[]
+  discounts      Discount[]
+  inventoryLogs  InventoryLog[]
+  shippingZones  ShippingZone[]
+  shipments      Shipment[]
+  reviews        Review[]
+  variants       ProductVariant[]
 }
 
 model Category {
@@ -84,7 +89,10 @@ model Product {
   categoryRef Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  orderItems  OrderItem[]
+  orderItems     OrderItem[]
+  inventoryLogs  InventoryLog[]
+  reviews        Review[]
+  variants       ProductVariant[]
 }
 
 model Order {
@@ -112,6 +120,7 @@ model Order {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   items         OrderItem[]
+  shipments     Shipment[]
 }
 
 model OrderItem {
@@ -179,4 +188,121 @@ model Discount {
   store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model InventoryLog {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type          String   // "in", "out", "adjustment", "return"
+  quantity      Int      // positive for in, negative for out
+  previousStock Int
+  newStock      Int
+  reason        String?
+  reference     String?  // order number, PO number, etc.
+  createdAt     DateTime @default(now())
+
+  @@index([productId])
+  @@index([storeId])
+}
+
+model ProductVariant {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name         String   // e.g., "Red / Large", "Size M"
+  sku          String?
+  price        Float?   // null = same as parent product price
+  comparePrice Float?
+  stock        Int      @default(0)
+  options      String   @default("{}") // JSON: { "Color": "Red", "Size": "Large" }
+  position     Int      @default(0) // sort order
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productId])
+  @@index([storeId])
+}
+
+model ShippingZone {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Domestic - North India", "International - US"
+  regions     String   // JSON array of regions/states/countries
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rates       ShippingRate[]
+
+  @@index([storeId])
+}
+
+model ShippingRate {
+  id            String       @id @default(cuid())
+  name          String       // e.g., "Standard", "Express", "Overnight"
+  zoneId        String
+  zone          ShippingZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  priceType     String       // "flat", "weight_based", "price_based"
+  minWeight     Float?
+  maxWeight     Float?
+  minOrderValue Float?
+  maxOrderValue Float?
+  rate          Float        // shipping cost
+  freeAbove     Float?       // free shipping above this order value
+  estimatedDays String       // e.g., "3-5", "1-2"
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([zoneId])
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerName  String
+  customerEmail String?
+  rating        Int      // 1-5 stars
+  title         String?
+  content       String?
+  isVerified    Boolean  @default(false) // verified purchase
+  isApproved    Boolean  @default(false) // merchant approval
+  response      String?  // merchant response
+  respondedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([productId])
+  @@index([storeId])
+}
+
+model Shipment {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  storeId         String
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  trackingNumber  String?
+  carrier         String?  // e.g., "Delhivery", "BlueDart", "DTDC", "India Post"
+  shippingMethod  String?  // e.g., "Standard", "Express"
+  status          String   @default("label_created") // label_created, picked_up, in_transit, out_for_delivery, delivered, failed, returned
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  weight          Float?
+  dimensions      String?  // JSON: {length, width, height}
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([storeId])
 }

@@ -6,7 +6,8 @@ import {
   Package, Plus, Search, LayoutGrid, List, MoreHorizontal, Pencil, Trash2,
   Eye, Filter, ChevronLeft, ChevronRight, X, ImageIcon, Upload, GripVertical,
   Tag, ArrowUpDown, CheckCircle2, Archive, CircleDot, Star, ArrowLeft,
-  IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download
+  IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download, Layers,
+  GripVertical as DragHandle, Minus, Copy
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -82,6 +83,33 @@ interface PaginationData {
   limit: number
   total: number
   totalPages: number
+}
+
+interface VariantData {
+  id: string
+  productId: string
+  storeId: string
+  name: string
+  sku: string | null
+  price: number | null
+  comparePrice: number | null
+  stock: number
+  options: string
+  position: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+interface VariantFormData {
+  name: string
+  sku: string
+  price: string
+  comparePrice: string
+  stock: string
+  options: { key: string; value: string }[]
+  position: number
+  isActive: boolean
 }
 
 type ViewMode = 'list' | 'form' | 'detail'
@@ -243,6 +271,17 @@ export default function ProductsPage() {
   const [newCategoryImage, setNewCategoryImage] = useState('')
   const [isCreatingCategory, setIsCreatingCategory] = useState(false)
 
+  // Variant state
+  const [variants, setVariants] = useState<VariantData[]>([])
+  const [isLoadingVariants, setIsLoadingVariants] = useState(false)
+  const [variantDialogOpen, setVariantDialogOpen] = useState(false)
+  const [editingVariantId, setEditingVariantId] = useState<string | null>(null)
+  const [variantFormData, setVariantFormData] = useState<VariantFormData>({
+    name: '', sku: '', price: '', comparePrice: '', stock: '0',
+    options: [], position: 0, isActive: true,
+  })
+  const [isSavingVariant, setIsSavingVariant] = useState(false)
+
   // ─── Fetch Products ───────────────────────────────────────────
 
   const fetchProducts = useCallback(async () => {
@@ -318,6 +357,158 @@ export default function ProductsPage() {
       fetchProductDetail(detailProductId)
     }
   }, [detailProductId, fetchProductDetail])
+
+  // ─── Fetch Variants ──────────────────────────────────────────
+
+  const fetchVariants = useCallback(async (productId: string) => {
+    setIsLoadingVariants(true)
+    try {
+      const res = await fetch(`/api/products/${productId}/variants`)
+      if (!res.ok) throw new Error('Failed to fetch variants')
+      const data = await res.json()
+      setVariants(data.variants || [])
+    } catch {
+      toast({ title: 'Error', description: 'Failed to load variants', variant: 'destructive' })
+    } finally {
+      setIsLoadingVariants(false)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    if (detailProductId) {
+      fetchVariants(detailProductId)
+    }
+  }, [detailProductId, fetchVariants])
+
+  // ─── Variant Handlers ────────────────────────────────────────
+
+  const openAddVariantDialog = () => {
+    setEditingVariantId(null)
+    setVariantFormData({
+      name: '', sku: '', price: '', comparePrice: '', stock: '0',
+      options: [{ key: '', value: '' }], position: variants.length, isActive: true,
+    })
+    setVariantDialogOpen(true)
+  }
+
+  const openEditVariantDialog = (variant: VariantData) => {
+    setEditingVariantId(variant.id)
+    let parsedOptions: { key: string; value: string }[] = []
+    try {
+      const opts = JSON.parse(variant.options)
+      parsedOptions = Object.entries(opts).map(([key, value]) => ({ key, value: String(value) }))
+    } catch { /* empty */ }
+    if (parsedOptions.length === 0) parsedOptions = [{ key: '', value: '' }]
+    setVariantFormData({
+      name: variant.name,
+      sku: variant.sku || '',
+      price: variant.price !== null ? String(variant.price) : '',
+      comparePrice: variant.comparePrice !== null ? String(variant.comparePrice) : '',
+      stock: String(variant.stock),
+      options: parsedOptions,
+      position: variant.position,
+      isActive: variant.isActive,
+    })
+    setVariantDialogOpen(true)
+  }
+
+  const handleSaveVariant = async () => {
+    if (!variantFormData.name.trim()) {
+      toast({ title: 'Validation Error', description: 'Variant name is required', variant: 'destructive' })
+      return
+    }
+    if (!detailProductId) return
+
+    setIsSavingVariant(true)
+    try {
+      const optionsObj: Record<string, string> = {}
+      variantFormData.options.forEach(opt => {
+        if (opt.key.trim() && opt.value.trim()) {
+          optionsObj[opt.key.trim()] = opt.value.trim()
+        }
+      })
+
+      const payload = {
+        name: variantFormData.name.trim(),
+        sku: variantFormData.sku.trim() || null,
+        price: variantFormData.price ? parseFloat(variantFormData.price) : null,
+        comparePrice: variantFormData.comparePrice ? parseFloat(variantFormData.comparePrice) : null,
+        stock: parseInt(variantFormData.stock) || 0,
+        options: optionsObj,
+        position: variantFormData.position,
+        isActive: variantFormData.isActive,
+      }
+
+      let res: Response
+      if (editingVariantId) {
+        res = await fetch(`/api/products/variants/${editingVariantId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        res = await fetch(`/api/products/${detailProductId}/variants`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
+
+      if (!res.ok) {
+        const errData = await res.json()
+        throw new Error(errData.error || 'Failed to save variant')
+      }
+
+      toast({
+        title: 'Success',
+        description: editingVariantId ? 'Variant updated' : 'Variant created',
+      })
+      setVariantDialogOpen(false)
+      setEditingVariantId(null)
+      fetchVariants(detailProductId)
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to save variant',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSavingVariant(false)
+    }
+  }
+
+  const handleDeleteVariant = async (variantId: string) => {
+    if (!detailProductId) return
+    try {
+      const res = await fetch(`/api/products/variants/${variantId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      toast({ title: 'Success', description: 'Variant deleted' })
+      fetchVariants(detailProductId)
+    } catch {
+      toast({ title: 'Error', description: 'Failed to delete variant', variant: 'destructive' })
+    }
+  }
+
+  const handleAddOptionField = () => {
+    setVariantFormData(prev => ({
+      ...prev,
+      options: [...prev.options, { key: '', value: '' }],
+    }))
+  }
+
+  const handleRemoveOptionField = (index: number) => {
+    setVariantFormData(prev => ({
+      ...prev,
+      options: prev.options.length > 1 ? prev.options.filter((_, i) => i !== index) : prev.options,
+    }))
+  }
+
+  const handleUpdateOptionField = (index: number, field: 'key' | 'value', val: string) => {
+    setVariantFormData(prev => ({
+      ...prev,
+      options: prev.options.map((opt, i) => i === index ? { ...opt, [field]: val } : opt),
+    }))
+  }
 
   // ─── Handlers ────────────────────────────────────────────────
 
@@ -633,7 +824,7 @@ export default function ProductsPage() {
         <div className="flex items-center gap-2">
           <Button
             onClick={openAddForm}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="btn-gradient text-white"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Product
@@ -869,7 +1060,7 @@ export default function ProductsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
           >
-            <Card className="group overflow-hidden hover:shadow-md transition-all duration-200 border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800 hover-lift">
+            <Card className="group overflow-hidden card-premium animate-card-entrance border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800">
               {/* Image */}
               <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                 {images.length > 0 ? (
@@ -1009,7 +1200,7 @@ export default function ProductsPage() {
           {products.map((product) => {
             const images = parseJSONField(product.images)
             return (
-              <TableRow key={product.id} className="group table-row-hover">
+              <TableRow key={product.id} className={`group table-row-hover animate-row-appear ${products.indexOf(product) % 2 === 1 ? 'table-row-alt' : ''}`}>
                 <TableCell>
                   <Checkbox
                     checked={selectedIds.has(product.id)}
@@ -1120,7 +1311,7 @@ export default function ProductsPage() {
       <Card className="py-16">
         <CardContent className="text-center space-y-4">
           <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto">
-            <Package className="w-10 h-10 text-emerald-600" />
+            <Package className="w-10 h-10 text-emerald-600 empty-state-icon" />
           </div>
           <h3 className="text-xl font-semibold">No products yet</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
@@ -1132,7 +1323,7 @@ export default function ProductsPage() {
           {!search && statusFilter === 'all' && categoryFilter === 'all' && (
             <Button
               onClick={openAddForm}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white mt-4"
+              className="btn-gradient text-white mt-4"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Product
@@ -1756,6 +1947,172 @@ export default function ProductsPage() {
                 <p className="text-muted-foreground text-sm">No description provided</p>
               )}
             </Card>
+
+            {/* Variants */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-emerald-600" />
+                  Variants
+                  {variants.length > 0 && (
+                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border-0 text-xs">
+                      {variants.length}
+                    </Badge>
+                  )}
+                </h3>
+                <Button
+                  size="sm"
+                  onClick={openAddVariantDialog}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add Variant
+                </Button>
+              </div>
+
+              {isLoadingVariants ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="h-14 w-full" />
+                  ))}
+                </div>
+              ) : variants.length === 0 ? (
+                <div className="text-center py-8 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
+                  <Layers className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground font-medium">No variants yet</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add variants like sizes, colors, or materials
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={openAddVariantDialog}
+                    className="mt-3 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                  >
+                    <Plus className="w-3.5 h-3.5 mr-1" />
+                    Add First Variant
+                  </Button>
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="text-xs">Variant</TableHead>
+                        <TableHead className="text-xs">SKU</TableHead>
+                        <TableHead className="text-xs">Price</TableHead>
+                        <TableHead className="text-xs">Stock</TableHead>
+                        <TableHead className="text-xs">Status</TableHead>
+                        <TableHead className="text-xs w-20">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {variants.map((variant, idx) => {
+                        let parsedOptions: Record<string, string> = {}
+                        try { parsedOptions = JSON.parse(variant.options) } catch { /* empty */ }
+                        const optionEntries = Object.entries(parsedOptions)
+                        return (
+                          <TableRow key={variant.id} className={idx % 2 === 1 ? 'table-row-alt' : ''}>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium text-sm">{variant.name}</p>
+                                {optionEntries.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {optionEntries.map(([key, value]) => (
+                                      <Badge
+                                        key={key}
+                                        variant="outline"
+                                        className="text-[10px] px-1.5 py-0 border-emerald-200 text-emerald-600 dark:border-emerald-800 dark:text-emerald-400"
+                                      >
+                                        {key}: {value}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <span className="text-xs text-muted-foreground font-mono">
+                                {variant.sku || '—'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {variant.price !== null ? (
+                                <span className="font-medium text-sm text-emerald-600 dark:text-emerald-400">
+                                  {formatPrice(variant.price)}
+                                </span>
+                              ) : (
+                                <span className="text-xs text-muted-foreground italic">
+                                  Same as product
+                                </span>
+                              )}
+                              {variant.comparePrice && variant.price && variant.comparePrice > variant.price && (
+                                <span className="text-xs text-muted-foreground line-through ml-1">
+                                  {formatPrice(variant.comparePrice)}
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <span className={`text-sm font-medium ${
+                                variant.stock <= 0 ? 'text-red-600' :
+                                variant.stock <= 5 ? 'text-yellow-600' :
+                                'text-emerald-600'
+                              }`}>
+                                {variant.stock}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {variant.isActive ? (
+                                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0 text-[10px]">Active</Badge>
+                              ) : (
+                                <Badge variant="secondary" className="text-[10px]">Inactive</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 w-7 p-0 hover:text-emerald-600"
+                                  onClick={() => openEditVariantDialog(variant)}
+                                >
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 w-7 p-0 hover:text-red-600"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete variant?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will permanently delete the &quot;{variant.name}&quot; variant. This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeleteVariant(variant.id)}>
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </Card>
           </div>
 
           {/* Right Column */}
@@ -1893,6 +2250,161 @@ export default function ProductsPage() {
         {viewMode === 'form' && <div key="form">{renderFormView()}</div>}
         {viewMode === 'detail' && <div key="detail">{renderDetailView()}</div>}
       </AnimatePresence>
+
+      {/* Variant Create/Edit Dialog */}
+      <Dialog open={variantDialogOpen} onOpenChange={setVariantDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Layers className="w-5 h-5 text-emerald-600" />
+              {editingVariantId ? 'Edit Variant' : 'Add Variant'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingVariantId ? 'Update variant details for this product' : 'Create a new variant like a size, color, or material option'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2 max-h-[70vh] overflow-y-auto">
+            {/* Variant Name */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">
+                Variant Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                placeholder="e.g., Red / Large, Size M"
+                value={variantFormData.name}
+                onChange={(e) => setVariantFormData(prev => ({ ...prev, name: e.target.value }))}
+              />
+              <p className="text-xs text-muted-foreground">A descriptive name for this variant</p>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium flex items-center gap-1">
+                <Tag className="w-3 h-3" /> Options
+              </Label>
+              <div className="space-y-2">
+                {variantFormData.options.map((opt, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Input
+                      placeholder="Option name (e.g., Color)"
+                      value={opt.key}
+                      onChange={(e) => handleUpdateOptionField(idx, 'key', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Input
+                      placeholder="Value (e.g., Red)"
+                      value={opt.value}
+                      onChange={(e) => handleUpdateOptionField(idx, 'value', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0 h-8 w-8 text-muted-foreground hover:text-red-500"
+                      onClick={() => handleRemoveOptionField(idx)}
+                      disabled={variantFormData.options.length <= 1}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddOptionField}
+                className="w-full border-dashed border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" />
+                Add Option
+              </Button>
+            </div>
+
+            {/* SKU */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">SKU</Label>
+              <Input
+                placeholder="e.g., SAR-001-RED-L"
+                value={variantFormData.sku}
+                onChange={(e) => setVariantFormData(prev => ({ ...prev, sku: e.target.value }))}
+              />
+            </div>
+
+            {/* Price fields */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Price Override</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Same as product"
+                    className="pl-7"
+                    value={variantFormData.price}
+                    onChange={(e) => setVariantFormData(prev => ({ ...prev, price: e.target.value }))}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground">Leave empty to use product price</p>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Compare-at Price</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Optional"
+                    className="pl-7"
+                    value={variantFormData.comparePrice}
+                    onChange={(e) => setVariantFormData(prev => ({ ...prev, comparePrice: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Stock */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Stock Quantity</Label>
+              <Input
+                type="number"
+                min="0"
+                placeholder="0"
+                value={variantFormData.stock}
+                onChange={(e) => setVariantFormData(prev => ({ ...prev, stock: e.target.value }))}
+                className="w-32"
+              />
+            </div>
+
+            {/* Active toggle */}
+            <div className="flex items-center gap-2 pt-1">
+              <Switch
+                id="variant-active"
+                checked={variantFormData.isActive}
+                onCheckedChange={(checked) => setVariantFormData(prev => ({ ...prev, isActive: checked }))}
+              />
+              <Label htmlFor="variant-active" className="text-sm cursor-pointer">Active</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setVariantDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveVariant}
+              disabled={isSavingVariant}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              {isSavingVariant ? 'Saving...' : (editingVariantId ? 'Update Variant' : 'Create Variant')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

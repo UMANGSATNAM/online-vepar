@@ -16,6 +16,9 @@ export type ViewType =
   | 'pages'
   | 'create-store'
   | 'discounts'
+  | 'inventory'
+  | 'shipping'
+  | 'reviews'
   | 'checkout'
 
 export interface User {

@@ -525,13 +525,13 @@ export default function DashboardHome() {
         {!loading && data && (
           <motion.div variants={itemVariants}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {highlights.map((h) => (
+              {highlights.map((h, idx) => (
                 <button
                   key={h.label}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200 hover:shadow-sm group"
+                  className={`flex items-center gap-3 p-3 rounded-xl border border-border hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200 hover:shadow-sm card-premium animate-card-entrance stagger-${idx + 1} group`}
                   onClick={() => h.label === 'Low Stock Alerts' ? setView('products') : setView('orders')}
                 >
-                  <div className={`w-10 h-10 ${h.bg} rounded-lg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                  <div className={`w-10 h-10 ${h.bg} rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
                     <h.icon className={`w-5 h-5 ${h.color}`} />
                   </div>
                   <div className="text-left">
@@ -558,7 +558,8 @@ export default function DashboardHome() {
 
         {/* Quick Actions */}
         <motion.div variants={itemVariants}>
-          <Card>
+          <div className="section-divider mb-6" />
+          <Card className="card-premium">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
@@ -570,22 +571,25 @@ export default function DashboardHome() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {quickActions.map((action) => (
-                  <button
-                    key={action.label}
-                    className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all text-left group hover-lift"
-                    onClick={() => setView(action.view)}
-                  >
-                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-colors">
-                      <action.icon className="w-5 h-5 text-emerald-600" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-foreground block">{action.label}</span>
-                      <span className="text-xs text-muted-foreground">{action.desc}</span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
-                ))}
+                {quickActions.map((action, idx) => {
+                  const borderColors = ['border-l-emerald-500', 'border-l-orange-500', 'border-l-violet-500', 'border-l-sky-500']
+                  return (
+                    <button
+                      key={action.label}
+                      className={`flex items-center gap-3 p-4 rounded-lg border border-border border-l-4 ${borderColors[idx] || 'border-l-emerald-500'} hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all text-left group hover-lift`}
+                      onClick={() => setView(action.view)}
+                    >
+                      <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-colors">
+                        <action.icon className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-foreground block">{action.label}</span>
+                        <span className="text-xs text-muted-foreground">{action.desc}</span>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  )
+                })}
               </div>
             </CardContent>
           </Card>
@@ -595,7 +599,7 @@ export default function DashboardHome() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Recent Orders - 3 columns */}
           <motion.div variants={itemVariants} className="lg:col-span-3">
-            <Card>
+            <Card className="card-premium">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -622,8 +626,9 @@ export default function DashboardHome() {
                   <TableSkeleton />
                 ) : !data?.recentOrders.length ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <ShoppingCart className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No orders yet</p>
+                    <ShoppingCart className="w-10 h-10 mx-auto mb-3 empty-state-icon" />
+                    <p className="text-sm font-medium">No orders yet</p>
+                    <p className="text-xs mt-1">Orders will appear here when customers place them</p>
                   </div>
                 ) : (
                   <Table>
@@ -692,7 +697,7 @@ export default function DashboardHome() {
           <div className="lg:col-span-2 space-y-6">
             {/* Top Products */}
             <motion.div variants={itemVariants}>
-              <Card>
+              <Card className="card-premium">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
@@ -757,7 +762,7 @@ export default function DashboardHome() {
 
             {/* Activity Timeline */}
             <motion.div variants={itemVariants}>
-              <Card>
+              <Card className="card-premium">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
@@ -841,7 +846,7 @@ function StatCard({ stat }: { stat: {
 
   return (
     <motion.div variants={itemVariants}>
-      <Card className={`hover:shadow-md hover:scale-[1.02] transition-all duration-200 border-t-2 ${stat.borderColor} relative overflow-hidden`}>
+      <Card className={`card-premium animate-card-entrance hover:scale-[1.02] transition-all duration-200 border-t-2 ${stat.borderColor} relative overflow-hidden ${stat.title === 'Total Revenue' ? 'stat-glow-green stagger-1' : stat.title === 'Total Orders' ? 'stat-glow-orange stagger-2' : stat.title === 'Total Customers' ? 'stat-glow-violet stagger-3' : 'stat-glow-sky stagger-4'}`}>
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} pointer-events-none`} />
         <div className="relative">

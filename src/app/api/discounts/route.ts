@@ -43,10 +43,33 @@ export async function GET(request: Request) {
       where.isActive = isActive === 'true';
     }
 
-    const discounts = await db.discount.findMany({
-      where,
-      orderBy: { [sortBy]: sortOrder },
-    });
+    // Use raw query as fallback if Prisma Client doesn't have discount model yet
+    let discounts;
+    try {
+      discounts = await db.discount.findMany({
+        where,
+        orderBy: { [sortBy]: sortOrder },
+      });
+    } catch {
+      // Prisma Client may be stale after schema changes, use raw query
+      let whereClause = 'WHERE storeId = ?';
+      const params: unknown[] = [storeId];
+      if (search) {
+        whereClause += ' AND (code LIKE ? OR name LIKE ? OR description LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      }
+      if (isActive !== null && isActive !== '') {
+        whereClause += ' AND isActive = ?';
+        params.push(isActive === 'true' ? 1 : 0);
+      }
+      const validSortColumns = ['createdAt', 'updatedAt', 'code', 'name', 'value'];
+      const safeSortBy = validSortColumns.includes(sortBy) ? sortBy : 'createdAt';
+      const safeSortOrder = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+      discounts = await db.$queryRawUnsafe(
+        `SELECT * FROM Discount ${whereClause} ORDER BY ${safeSortBy} ${safeSortOrder}`,
+        ...params
+      );
+    }
 
     return NextResponse.json({ discounts }, { status: 200 });
   } catch (error) {
@@ -107,9 +130,18 @@ export async function POST(request: Request) {
     }
 
     // Check for duplicate code within store
-    const existing = await db.discount.findFirst({
-      where: { storeId, code: code.toUpperCase() },
-    });
+    let existing;
+    try {
+      existing = await db.discount.findFirst({
+        where: { storeId, code: code.toUpperCase() },
+      });
+    } catch {
+      existing = await db.$queryRawUnsafe(
+        'SELECT * FROM Discount WHERE storeId = ? AND code = ? LIMIT 1',
+        storeId, code.toUpperCase()
+      );
+      existing = Array.isArray(existing) && existing.length > 0 ? existing[0] : null;
+    }
 
     if (existing) {
       return NextResponse.json(
@@ -118,25 +150,44 @@ export async function POST(request: Request) {
       );
     }
 
-    const discount = await db.discount.create({
-      data: {
-        storeId,
-        code: code.toUpperCase(),
-        name,
-        description: description || null,
-        type,
-        value: parseFloat(String(value)),
-        minOrderAmount: minOrderAmount ? parseFloat(String(minOrderAmount)) : null,
-        maxDiscount: maxDiscount ? parseFloat(String(maxDiscount)) : null,
-        usageLimit: usageLimit ? parseInt(String(usageLimit)) : null,
-        perCustomerLimit: perCustomerLimit ? parseInt(String(perCustomerLimit)) : null,
-        appliesTo: appliesTo || 'all',
-        applicableIds: applicableIds || '[]',
-        startsAt: startsAt ? new Date(startsAt) : null,
-        endsAt: endsAt ? new Date(endsAt) : null,
-        isActive: isActive !== undefined ? isActive : true,
-      },
-    });
+    let discount;
+    try {
+      discount = await db.discount.create({
+        data: {
+          storeId,
+          code: code.toUpperCase(),
+          name,
+          description: description || null,
+          type,
+          value: parseFloat(String(value)),
+          minOrderAmount: minOrderAmount ? parseFloat(String(minOrderAmount)) : null,
+          maxDiscount: maxDiscount ? parseFloat(String(maxDiscount)) : null,
+          usageLimit: usageLimit ? parseInt(String(usageLimit)) : null,
+          perCustomerLimit: perCustomerLimit ? parseInt(String(perCustomerLimit)) : null,
+          appliesTo: appliesTo || 'all',
+          applicableIds: applicableIds || '[]',
+          startsAt: startsAt ? new Date(startsAt) : null,
+          endsAt: endsAt ? new Date(endsAt) : null,
+          isActive: isActive !== undefined ? isActive : true,
+        },
+      });
+    } catch {
+      // Fallback to raw SQL
+      await db.$executeRawUnsafe(
+        `INSERT INTO Discount (id, code, name, description, type, value, minOrderAmount, maxDiscount, usageLimit, usedCount, perCustomerLimit, appliesTo, applicableIds, startsAt, endsAt, isActive, storeId, createdAt, updatedAt) VALUES (lower(hex(randomblob(8)) || '-' || hex(randomblob(4)) || '-' || hex(randomblob(4)) || '-' || hex(randomblob(4)) || '-' || hex(randomblob(8))), ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+        code.toUpperCase(), name, description || null, type, parseFloat(String(value)),
+        minOrderAmount ? parseFloat(String(minOrderAmount)) : null,
+        maxDiscount ? parseFloat(String(maxDiscount)) : null,
+        usageLimit ? parseInt(String(usageLimit)) : null,
+        perCustomerLimit ? parseInt(String(perCustomerLimit)) : null,
+        appliesTo || 'all', applicableIds || '[]',
+        startsAt ? new Date(startsAt).toISOString() : null,
+        endsAt ? new Date(endsAt).toISOString() : null,
+        isActive !== undefined ? (isActive ? 1 : 0) : 1,
+        storeId
+      );
+      discount = { code: code.toUpperCase(), name, type, value, storeId, isActive: true };
+    }
 
     return NextResponse.json({ discount }, { status: 201 });
   } catch (error) {

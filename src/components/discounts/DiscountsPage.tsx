@@ -346,7 +346,7 @@ export default function DiscountsPage() {
             <p className="text-muted-foreground mt-1">Create and manage discount codes for your store</p>
           </div>
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="btn-gradient text-white"
             onClick={handleCreate}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -427,7 +427,7 @@ export default function DiscountsPage() {
               </p>
               {!search && statusFilter === 'all' && (
                 <Button
-                  className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="mt-4 btn-gradient text-white"
                   onClick={handleCreate}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -454,14 +454,14 @@ export default function DiscountsPage() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Card className="h-full hover:shadow-md transition-shadow border-l-4 hover-lift"
+                    <Card className="h-full card-premium animate-card-entrance border-l-4"
                       style={{ borderLeftColor: status === 'active' ? '#10b981' : status === 'expired' ? '#ef4444' : status === 'scheduled' ? '#3b82f6' : '#9ca3af' }}
                     >
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge className={getStatusBadge(status)} variant="outline">
+                              <Badge className={`${getStatusBadge(status)} ${status === 'active' ? 'badge-glow' : ''}`} variant="outline">
                                 <span className="flex items-center gap-1">
                                   {getStatusIcon(status)}
                                   {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -523,7 +523,7 @@ export default function DiscountsPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-6 w-6 p-0"
+                            className="h-6 w-6 p-0 copy-flash"
                             onClick={() => copyCode(discount.code)}
                           >
                             <Copy className="w-3 h-3" />
@@ -551,9 +551,11 @@ export default function DiscountsPage() {
                             </span>
                           </div>
                           {discount.usageLimit && (
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                            <div
+                              className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden"
+                            >
                               <div
-                                className="bg-emerald-500 h-1.5 rounded-full transition-all"
+                                className="progress-gradient h-1.5 rounded-full transition-all"
                                 style={{ width: `${Math.min(usagePercent, 100)}%` }}
                               />
                             </div>
@@ -839,7 +841,7 @@ export default function DiscountsPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="btn-gradient text-white"
               onClick={handleSave}
               disabled={saving || !form.code.trim() || !form.name.trim() || form.value <= 0 || (form.type === 'percentage' && form.value > 100)}
             >

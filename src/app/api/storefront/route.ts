@@ -42,8 +42,35 @@ export async function GET(request: Request) {
         featured: true,
         category: true,
         tags: true,
+        variants: {
+          where: { isActive: true },
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            name: true,
+            sku: true,
+            price: true,
+            comparePrice: true,
+            stock: true,
+            options: true,
+            position: true,
+            isActive: true,
+          },
+        },
       },
     });
+
+    // Get approved review stats per product
+    const reviewStats = await db.review.groupBy({
+      by: ['productId'],
+      where: { storeId: store.id, isApproved: true },
+      _avg: { rating: true },
+      _count: { id: true },
+    });
+
+    const reviewStatsMap = new Map(
+      reviewStats.map((s) => [s.productId, { avgRating: s._avg.rating ? Math.round(s._avg.rating * 10) / 10 : 0, reviewCount: s._count.id }])
+    );
 
     return NextResponse.json({
       store: {
@@ -57,11 +84,20 @@ export async function GET(request: Request) {
         primaryColor: store.primaryColor,
         currency: store.currency,
       },
-      products: products.map((p) => ({
-        ...p,
-        images: p.images ? JSON.parse(p.images) : [],
-        tags: p.tags ? JSON.parse(p.tags) : [],
-      })),
+      products: products.map((p) => {
+        const stats = reviewStatsMap.get(p.id);
+        return {
+          ...p,
+          images: p.images ? JSON.parse(p.images) : [],
+          tags: p.tags ? JSON.parse(p.tags) : [],
+          variants: p.variants.map((v) => ({
+            ...v,
+            options: v.options ? JSON.parse(v.options) : {},
+          })),
+          avgRating: stats?.avgRating || 0,
+          reviewCount: stats?.reviewCount || 0,
+        };
+      }),
     }, { status: 200 });
   } catch (error) {
     console.error('Storefront GET error:', error);
