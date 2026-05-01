@@ -38,6 +38,8 @@ async function main() {
 
   // Clean existing data
   await prisma.activityLog.deleteMany();
+  await prisma.collectionProduct.deleteMany();
+  await prisma.collection.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.review.deleteMany();
   await prisma.orderItem.deleteMany();
@@ -1439,6 +1441,92 @@ async function main() {
   console.log('\n📋 Demo credentials:');
   console.log('   Email: demo@onlinevepar.com');
   console.log('   Password: demo123');
+
+  // 15. Create collections
+  const collections = await Promise.all([
+    // "Summer Essentials" - active, featured, manual collection with products
+    prisma.collection.create({
+      data: {
+        name: 'Summer Essentials',
+        slug: 'summer-essentials',
+        description: 'Beat the heat with our lightweight and breezy summer collection. Perfect for casual outings and everyday wear.',
+        image: 'https://placehold.co/800x400/10b981/white?text=Summer+Essentials',
+        type: 'manual',
+        conditions: '{}',
+        sortOrder: 'best-selling',
+        status: 'active',
+        featured: true,
+        storeId: store.id,
+      },
+    }),
+    // "Best Sellers" - active, auto collection (featured products)
+    prisma.collection.create({
+      data: {
+        name: 'Best Sellers',
+        slug: 'best-sellers',
+        description: 'Our most popular products loved by customers. Automatically includes all featured products.',
+        image: 'https://placehold.co/800x400/059669/white?text=Best+Sellers',
+        type: 'auto',
+        conditions: JSON.stringify({ featured: true }),
+        sortOrder: 'best-selling',
+        status: 'active',
+        featured: false,
+        storeId: store.id,
+      },
+    }),
+    // "New Arrivals" - active, featured, manual collection
+    prisma.collection.create({
+      data: {
+        name: 'New Arrivals',
+        slug: 'new-arrivals',
+        description: 'Fresh additions to our store. Discover the latest styles and designs just added to our catalog.',
+        type: 'manual',
+        conditions: '{}',
+        sortOrder: 'newest',
+        status: 'active',
+        featured: true,
+        storeId: store.id,
+      },
+    }),
+    // "Budget Friendly" - draft, auto collection (price < 2000)
+    prisma.collection.create({
+      data: {
+        name: 'Budget Friendly',
+        slug: 'budget-friendly',
+        description: 'Great style doesn\'t have to break the bank. Products under ₹2,000 that offer amazing value.',
+        type: 'auto',
+        conditions: JSON.stringify({ maxPrice: 2000 }),
+        sortOrder: 'price-asc',
+        status: 'draft',
+        featured: false,
+        storeId: store.id,
+      },
+    }),
+  ]);
+  console.log('✅ Created', collections.length, 'collections');
+
+  // 16. Create collection products (for manual collections)
+  const collectionProductsData: Array<{ collectionId: string; productId: string; position: number }> = [];
+
+  // Summer Essentials: Banarasi Silk Saree, Cotton Printed Kurta, Designer Clutch Bag, Zari Work Dupatta
+  collectionProductsData.push(
+    { collectionId: collections[0].id, productId: products[0].id, position: 0 },
+    { collectionId: collections[0].id, productId: products[1].id, position: 1 },
+    { collectionId: collections[0].id, productId: products[7].id, position: 2 },
+    { collectionId: collections[0].id, productId: products[10].id, position: 3 },
+  );
+
+  // New Arrivals: Embroidered Palazzo Kurta Set, Mangalsutra Necklace, Chiffon Party Wear Gown
+  collectionProductsData.push(
+    { collectionId: collections[2].id, productId: products[5].id, position: 0 },
+    { collectionId: collections[2].id, productId: products[9].id, position: 1 },
+    { collectionId: collections[2].id, productId: products[4].id, position: 2 },
+  );
+
+  for (const cp of collectionProductsData) {
+    await prisma.collectionProduct.create({ data: cp });
+  }
+  console.log('✅ Created', collectionProductsData.length, 'collection products');
 }
 
 main()

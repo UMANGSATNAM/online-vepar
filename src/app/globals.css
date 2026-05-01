@@ -1279,3 +1279,104 @@ textarea,
   stroke-dasharray: 0, 100;
   transition: stroke-dasharray 1s ease-out;
 }
+
+/* ===== TASK 21 STYLING POLISH UTILITIES ===== */
+
+/* Slide up animation - content slides up from below with opacity fade */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out both;
+}
+
+/* Fade in from left animation */
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-left {
+  animation: fade-in-left 0.2s ease-out both;
+}
+
+/* Card gradient background utilities */
+.card-gradient-emerald {
+  background: linear-gradient(to bottom right, oklch(0.96 0.04 155 / 0.4), transparent);
+}
+
+.dark .card-gradient-emerald {
+  background: linear-gradient(to bottom right, oklch(0.25 0.06 155 / 0.2), transparent);
+}
+
+.card-gradient-orange {
+  background: linear-gradient(to bottom right, oklch(0.96 0.04 60 / 0.4), transparent);
+}
+
+.dark .card-gradient-orange {
+  background: linear-gradient(to bottom right, oklch(0.25 0.06 60 / 0.2), transparent);
+}
+
+.card-gradient-violet {
+  background: linear-gradient(to bottom right, oklch(0.96 0.04 300 / 0.4), transparent);
+}
+
+.dark .card-gradient-violet {
+  background: linear-gradient(to bottom right, oklch(0.25 0.06 300 / 0.2), transparent);
+}
+
+.card-gradient-sky {
+  background: linear-gradient(to bottom right, oklch(0.96 0.04 220 / 0.4), transparent);
+}
+
+.dark .card-gradient-sky {
+  background: linear-gradient(to bottom right, oklch(0.25 0.06 220 / 0.2), transparent);
+}
+
+/* Pulse glow effect - subtle pulsing emerald glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px oklch(0.55 0.16 155 / 0.15);
+  }
+  50% {
+    box-shadow: 0 0 16px oklch(0.55 0.16 155 / 0.3);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Progress bar grow animation */
+@keyframes progress-grow {
+  from {
+    width: 0%;
+  }
+}
+
+.animate-progress {
+  animation: progress-grow 0.8s ease-out both;
+}
+
+/* Verified badge glow - small emerald glow around verified badges */
+.verified-glow {
+  box-shadow: 0 0 6px oklch(0.55 0.16 155 / 0.25);
+}
+
+.dark .verified-glow {
+  box-shadow: 0 0 6px oklch(0.55 0.16 155 / 0.35);
+}

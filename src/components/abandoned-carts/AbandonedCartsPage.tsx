@@ -79,8 +79,8 @@ interface CartStats {
 function StatusBadge({ status }: { status: string }) {
   const variants: Record<string, { className: string; icon: React.ReactNode; label: string }> = {
     abandoned: {
-      className: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
-      icon: <AlertTriangle className="w-3 h-3 mr-1" />,
+      className: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 relative',
+      icon: <><AlertTriangle className="w-3 h-3 mr-1" /><span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-amber-500 rounded-full"><span className="absolute inset-0 bg-amber-400 rounded-full animate-ping" /></span></>,
       label: 'Abandoned',
     },
     email_sent: {
@@ -407,7 +407,7 @@ export default function AbandonedCartsPage() {
         transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-t-2 border-t-amber-500 hover:shadow-md transition-shadow">
+          <Card className="border-t-2 border-t-amber-500 card-gradient-orange hover-lift transition-all duration-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
@@ -421,7 +421,7 @@ export default function AbandonedCartsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-t-2 border-t-emerald-500 hover:shadow-md transition-shadow">
+          <Card className="border-t-2 border-t-emerald-500 card-gradient-emerald hover-lift transition-all duration-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
@@ -435,7 +435,7 @@ export default function AbandonedCartsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-t-2 border-t-green-500 hover:shadow-md transition-shadow">
+          <Card className="border-t-2 border-t-green-500 card-gradient-emerald hover-lift transition-all duration-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -449,7 +449,8 @@ export default function AbandonedCartsPage() {
               {/* Recovery rate progress bar */}
               <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-emerald-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full animate-progress"
+                  style={{ width: `${stats.recoveryRate}%` }}
                   initial={{ width: 0 }}
                   animate={{ width: `${stats.recoveryRate}%` }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -458,11 +459,11 @@ export default function AbandonedCartsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-t-2 border-t-blue-500 hover:shadow-md transition-shadow">
+          <Card className="border-t-2 border-t-sky-500 card-gradient-sky hover-lift transition-all duration-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-sky-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{stats.emailsSent}</p>
@@ -716,7 +717,9 @@ export default function AbandonedCartsPage() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.15 }}
-                          className="border-b border-border hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors cursor-pointer"
+                          className={`border-b border-border table-row-hover cursor-pointer ${
+                            cart.status === 'recovered' ? 'bg-emerald-50/30 dark:bg-emerald-900/10' : ''
+                          }`}
                           onClick={() => toggleExpand(cart.id)}
                         >
                           {/* Select */}
@@ -766,7 +769,9 @@ export default function AbandonedCartsPage() {
 
                           {/* Status */}
                           <TableCell onClick={(e) => e.stopPropagation()}>
-                            <StatusBadge status={cart.status} />
+                            <div className="relative">
+                              <StatusBadge status={cart.status} />
+                            </div>
                           </TableCell>
 
                           {/* Abandoned Date */}

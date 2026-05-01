@@ -23,6 +23,7 @@ export type ViewType =
   | 'reviews'
   | 'activity'
   | 'checkout'
+  | 'collections'
 
 export interface User {
   id: string

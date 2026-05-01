@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   Settings, Palette, Globe, Coins, AlertTriangle,
-  Save, Loader2, ImageIcon, Check, Store
+  Save, Loader2, ImageIcon, Check, Store, Bell, ShoppingCart,
+  Package, Star, FileText, Mail
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -38,6 +39,23 @@ interface StoreSettings {
   currency: string
   domain: string
   isActive: boolean
+}
+
+interface NotificationPreferences {
+  id: string
+  storeId: string
+  newOrderEmail: boolean
+  orderStatusEmail: boolean
+  paymentReceivedEmail: boolean
+  lowStockEmail: boolean
+  lowStockThreshold: number
+  reviewEmail: boolean
+  abandonedCartEmail: boolean
+  abandonedCartReminderDelay: number
+  weeklyReportEmail: boolean
+  monthlyReportEmail: boolean
+  newsletterEmail: boolean
+  reportEmail: string
 }
 
 const COLOR_PRESETS = [
@@ -177,6 +195,11 @@ export default function StoreSettings() {
     isActive: true,
   })
 
+  const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences | null>(null)
+  const [notifLoading, setNotifLoading] = useState(false)
+  const [notifSaving, setNotifSaving] = useState(false)
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
+
   const fetchStoreDetails = useCallback(async () => {
     if (!currentStore?.id) {
       setLoading(false)
@@ -211,6 +234,60 @@ export default function StoreSettings() {
   useEffect(() => {
     fetchStoreDetails()
   }, [fetchStoreDetails])
+
+  const fetchNotificationPrefs = useCallback(async () => {
+    if (!currentStore?.id) return
+    setNotifLoading(true)
+    try {
+      const res = await fetch(`/api/notification-preferences?storeId=${currentStore.id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setNotifPrefs(data.preferences)
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to load notification preferences', variant: 'destructive' })
+    } finally {
+      setNotifLoading(false)
+    }
+  }, [currentStore?.id, toast])
+
+  useEffect(() => {
+    if (activeTab === 'notifications') {
+      fetchNotificationPrefs()
+    }
+  }, [activeTab, fetchNotificationPrefs])
+
+  const saveNotificationPref = useCallback(async (updates: Partial<NotificationPreferences>) => {
+    if (!currentStore?.id) return
+    setNotifSaving(true)
+    try {
+      const res = await fetch('/api/notification-preferences', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storeId: currentStore.id, ...updates }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setNotifPrefs(data.preferences)
+        toast({ title: 'Preferences saved', description: 'Your notification preferences have been updated.' })
+      } else {
+        toast({ title: 'Error', description: 'Failed to save preferences', variant: 'destructive' })
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to save preferences', variant: 'destructive' })
+    } finally {
+      setNotifSaving(false)
+    }
+  }, [currentStore?.id, toast])
+
+  const handleNotifChange = useCallback((updates: Partial<NotificationPreferences>) => {
+    setNotifPrefs(prev => prev ? { ...prev, ...updates } : null)
+    if (debounceTimer) clearTimeout(debounceTimer)
+    const timer = setTimeout(() => {
+      saveNotificationPref(updates)
+    }, 500)
+    setDebounceTimer(timer)
+  }, [debounceTimer, saveNotificationPref])
 
   const handleNameChange = (name: string) => {
     const slug = name.toLowerCase()
@@ -297,7 +374,7 @@ export default function StoreSettings() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
             <TabsTrigger value="general" className="gap-1.5">
               <Settings className="w-3.5 h-3.5 hidden sm:block" />
               General
@@ -313,6 +390,10 @@ export default function StoreSettings() {
             <TabsTrigger value="currency" className="gap-1.5">
               <Coins className="w-3.5 h-3.5 hidden sm:block" />
               Regional
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-1.5">
+              <Bell className="w-3.5 h-3.5 hidden sm:block" />
+              Notifications
             </TabsTrigger>
             <TabsTrigger value="danger" className="gap-1.5 text-destructive">
               <AlertTriangle className="w-3.5 h-3.5 hidden sm:block" />
@@ -798,6 +879,297 @@ export default function StoreSettings() {
                 </div>
               </CardContent>
             </Card>
+          </motion.div>
+        </TabsContent>
+
+        {/* Notifications */}
+        <TabsContent value="notifications">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            {notifLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-48 w-full" />
+              </div>
+            ) : notifPrefs ? (
+              <>
+                {/* Notification Preview */}
+                <Card className="card-gradient-emerald border-emerald-200 dark:border-emerald-800">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-sm">
+                      <Bell className="w-4 h-4 text-emerald-600" />
+                      Notification Preview
+                    </CardTitle>
+                    <CardDescription>This is what a sample notification email looks like</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-lg border bg-background p-4 space-y-3">
+                      <div className="flex items-center gap-2 border-b pb-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                          <ShoppingCart className="w-4 h-4 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">Online Vepar</p>
+                          <p className="text-xs text-muted-foreground">noreply@onlinevepar.com</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">🎉 New Order Received!</p>
+                        <p className="text-xs text-muted-foreground">You have a new order #OV-1234 from Priya Sharma worth ₹2,499.</p>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <div className="inline-block rounded-md bg-emerald-600 px-3 py-1.5 text-xs text-white font-medium">
+                          View Order Details
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground pt-1">
+                        You are receiving this because you enabled order notifications.{' '}
+                        <span className="text-emerald-600">Manage preferences</span>
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Order Notifications */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <ShoppingCart className="w-5 h-5 text-emerald-600" />
+                      Order Notifications
+                    </CardTitle>
+                    <CardDescription>Configure email notifications for order events</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">New order notifications</Label>
+                        <p className="text-xs text-muted-foreground">Get notified when a new order is placed</p>
+                      </div>
+                      <div className="data-[state=checked]:bg-emerald-600">
+                        <Switch
+                          checked={notifPrefs.newOrderEmail}
+                          onCheckedChange={(checked) => handleNotifChange({ newOrderEmail: checked })}
+                          disabled={notifSaving}
+                          className="data-[state=checked]:bg-emerald-600"
+                        />
+                      </div>
+                    </div>
+                    <Separator />
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Order status updates</Label>
+                        <p className="text-xs text-muted-foreground">Receive updates when order status changes</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.orderStatusEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ orderStatusEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    <Separator />
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Payment received</Label>
+                        <p className="text-xs text-muted-foreground">Get notified when payment is received</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.paymentReceivedEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ paymentReceivedEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Inventory Alerts */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="w-5 h-5 text-emerald-600" />
+                      Inventory Alerts
+                    </CardTitle>
+                    <CardDescription>Get alerts about your product inventory levels</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Low stock alerts</Label>
+                        <p className="text-xs text-muted-foreground">Get alerts when products are running low</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.lowStockEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ lowStockEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    {notifPrefs.lowStockEmail && (
+                      <>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label className="text-sm font-medium">Low stock threshold</Label>
+                            <p className="text-xs text-muted-foreground">Alert when stock falls below this number</p>
+                          </div>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={100}
+                            value={notifPrefs.lowStockThreshold}
+                            onChange={(e) => handleNotifChange({ lowStockThreshold: parseInt(e.target.value) || 5 })}
+                            className="w-20 text-center"
+                            disabled={notifSaving}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Marketing & Reviews */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-emerald-600" />
+                      Marketing &amp; Reviews
+                    </CardTitle>
+                    <CardDescription>Manage customer engagement notifications</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">New review notifications</Label>
+                        <p className="text-xs text-muted-foreground">Get notified when customers leave reviews</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.reviewEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ reviewEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    <Separator />
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Abandoned cart reminders</Label>
+                        <p className="text-xs text-muted-foreground">Send reminders to customers with abandoned carts</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.abandonedCartEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ abandonedCartEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    {notifPrefs.abandonedCartEmail && (
+                      <>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label className="text-sm font-medium">Reminder delay (hours)</Label>
+                            <p className="text-xs text-muted-foreground">Hours to wait before sending reminder</p>
+                          </div>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={168}
+                            value={notifPrefs.abandonedCartReminderDelay}
+                            onChange={(e) => handleNotifChange({ abandonedCartReminderDelay: parseInt(e.target.value) || 24 })}
+                            className="w-20 text-center"
+                            disabled={notifSaving}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Reports */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-emerald-600" />
+                      Reports
+                    </CardTitle>
+                    <CardDescription>Configure report and newsletter email preferences</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Weekly summary report</Label>
+                        <p className="text-xs text-muted-foreground">Receive a weekly performance summary</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.weeklyReportEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ weeklyReportEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    <Separator />
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Monthly analytics report</Label>
+                        <p className="text-xs text-muted-foreground">Receive detailed monthly analytics</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.monthlyReportEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ monthlyReportEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                    <Separator />
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-emerald-600" />
+                        <Label className="text-sm font-medium">Report email address</Label>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Reports will be sent to this email address</p>
+                      <Input
+                        type="email"
+                        value={notifPrefs.reportEmail || ''}
+                        onChange={(e) => handleNotifChange({ reportEmail: e.target.value })}
+                        placeholder="Email address for reports (defaults to your account email)"
+                        disabled={notifSaving}
+                      />
+                    </div>
+                    <Separator />
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">Newsletter</Label>
+                        <p className="text-xs text-muted-foreground">Receive product updates and tips</p>
+                      </div>
+                      <Switch
+                        checked={notifPrefs.newsletterEmail}
+                        onCheckedChange={(checked) => handleNotifChange({ newsletterEmail: checked })}
+                        disabled={notifSaving}
+                        className="data-[state=checked]:bg-emerald-600"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {notifSaving && (
+                  <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 pulse-glow rounded-lg px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 w-fit">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Saving preferences...
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Bell className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                <p>Unable to load notification preferences</p>
+              </div>
+            )}
           </motion.div>
         </TabsContent>
 

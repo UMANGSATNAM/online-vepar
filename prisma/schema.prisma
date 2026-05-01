@@ -52,7 +52,9 @@ model Store {
   variants       ProductVariant[]
   activityLogs   ActivityLog[]
   taxRates       TaxRate[]
-  abandonedCarts AbandonedCart[]
+  abandonedCarts         AbandonedCart[]
+  collections           Collection[]
+  notificationPreference NotificationPreference?
 }
 
 model Category {
@@ -96,6 +98,7 @@ model Product {
   inventoryLogs  InventoryLog[]
   reviews        Review[]
   variants       ProductVariant[]
+  collectionProducts CollectionProduct[]
 }
 
 model Order {
@@ -379,4 +382,58 @@ model AbandonedCart {
   @@index([status])
   @@index([customerEmail])
   @@index([abandonedAt])
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  image       String?
+  type        String   @default("manual") // "manual" or "auto"
+  conditions  String   @default("{}") // JSON for auto-collection rules like tags/category/price range
+  sortOrder   String   @default("best-selling") // best-selling, alpha, price-asc, price-desc, newest
+  status      String   @default("active") // active, draft
+  featured    Boolean  @default(false)
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  collectionProducts CollectionProduct[]
+
+  @@index([storeId])
+  @@index([slug])
+}
+
+model CollectionProduct {
+  id           String   @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([collectionId])
+  @@index([productId])
+}
+
+model NotificationPreference {
+  id                        String   @id @default(cuid())
+  storeId                   String   @unique
+  store                     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  newOrderEmail             Boolean  @default(true)
+  orderStatusEmail          Boolean  @default(true)
+  paymentReceivedEmail      Boolean  @default(true)
+  lowStockEmail             Boolean  @default(true)
+  lowStockThreshold         Int      @default(5)
+  reviewEmail               Boolean  @default(true)
+  abandonedCartEmail        Boolean  @default(true)
+  abandonedCartReminderDelay Int     @default(24)
+  weeklyReportEmail         Boolean  @default(true)
+  monthlyReportEmail        Boolean  @default(false)
+  newsletterEmail           Boolean  @default(true)
+  reportEmail               String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 }

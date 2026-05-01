@@ -257,6 +257,7 @@ export default function ReviewsPage() {
       textClass: 'text-emerald-600 dark:text-emerald-400',
       borderClass: 'border-t-gradient-emerald',
       glowClass: 'stat-glow',
+      gradientClass: 'card-gradient-emerald',
     },
     {
       label: 'Average Rating',
@@ -267,6 +268,7 @@ export default function ReviewsPage() {
       textClass: 'text-amber-600 dark:text-amber-400',
       borderClass: 'border-t-gradient-amber',
       glowClass: 'stat-glow-amber',
+      gradientClass: 'card-gradient-orange',
       extra: stats.avgRating > 0 ? renderStars(Math.round(stats.avgRating), 'md') : null,
     },
     {
@@ -278,6 +280,7 @@ export default function ReviewsPage() {
       textClass: 'text-orange-600 dark:text-orange-400',
       borderClass: 'border-t-gradient-orange',
       glowClass: 'stat-glow-orange',
+      gradientClass: 'card-gradient-orange',
     },
     {
       label: 'Verified Reviews',
@@ -288,6 +291,7 @@ export default function ReviewsPage() {
       textClass: 'text-green-600 dark:text-green-400',
       borderClass: 'border-t-gradient-green',
       glowClass: 'stat-glow-green',
+      gradientClass: 'card-gradient-emerald',
     },
   ] : []
 
@@ -333,7 +337,7 @@ export default function ReviewsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: idx * 0.05 }}
             >
-              <Card className={`${card.borderClass} ${card.glowClass} hover-lift transition-all duration-200`}>
+              <Card className={`${card.borderClass} ${card.glowClass} hover-lift transition-all duration-200 ${card.gradientClass}`}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium text-muted-foreground">{card.label}</p>
@@ -342,7 +346,7 @@ export default function ReviewsPage() {
                     </div>
                   </div>
                   <div className="mt-2 flex items-end gap-2">
-                    <p className="text-2xl font-bold">{card.value}</p>
+                    <p className="text-2xl font-bold animate-count-up">{card.value}</p>
                     {card.extra && <div className="mb-1">{card.extra}</div>}
                   </div>
                 </CardContent>
@@ -500,7 +504,7 @@ export default function ReviewsPage() {
                 className="animate-card-entrance"
                 style={{ animationDelay: `${idx * 0.06}s` }}
               >
-                <Card className={`overflow-hidden card-premium review-card border-l-4 ${
+                <Card className={`overflow-hidden card-premium review-card border-l-4 hover:ring-1 hover:ring-inset hover:ring-emerald-200 dark:hover:ring-emerald-800 transition-all duration-200 ${
                   review.rating >= 4
                     ? 'border-l-emerald-500'
                     : review.rating === 3
@@ -521,7 +525,7 @@ export default function ReviewsPage() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-sm">{review.customerName}</span>
                             {review.isVerified && (
-                              <Badge className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
+                              <Badge className="verified-glow bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
                                 <ShieldCheck className="w-3 h-3" />
                                 Verified Purchase
                               </Badge>
@@ -617,7 +621,7 @@ export default function ReviewsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-4 ml-2"
                       >
-                        <div className="merchant-response p-3">
+                        <div className="merchant-response p-3 bg-emerald-50/60 dark:bg-emerald-900/20">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
                               Merchant Response
@@ -643,7 +647,7 @@ export default function ReviewsPage() {
                           transition={{ duration: 0.2 }}
                           className="mt-4 overflow-hidden"
                         >
-                          <div className="merchant-response p-4 space-y-2">
+                          <div className="merchant-response p-4 space-y-2 bg-emerald-50/60 dark:bg-emerald-900/20">
                             <label className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
                               Your Response
                             </label>

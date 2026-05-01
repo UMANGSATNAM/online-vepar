@@ -33,6 +33,7 @@ import {
   Clock,
   Receipt,
   ShoppingBag,
+  Layers,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -81,12 +82,14 @@ import TaxRatesPage from '@/components/tax/TaxRatesPage'
 import AbandonedCartsPage from '@/components/abandoned-carts/AbandonedCartsPage'
 import ReviewsPage from '@/components/reviews/ReviewsPage'
 import ActivityLogPage from '@/components/activity/ActivityLogPage'
+import CollectionsPage from '@/components/collections/CollectionsPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
 
 const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; shortcut?: string }[] = [
   { view: 'dashboard', label: 'Home', icon: Home, shortcut: 'Alt+H' },
   { view: 'products', label: 'Products', icon: Package, shortcut: 'Alt+P' },
+  { view: 'collections', label: 'Collections', icon: Layers, shortcut: 'Alt+L' },
   { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
   { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
   { view: 'reviews', label: 'Reviews', icon: Star, shortcut: 'Alt+R' },
@@ -125,6 +128,7 @@ const viewLabels: Record<string, string> = {
   reviews: 'Reviews',
   activity: 'Activity Log',
   checkout: 'Storefront',
+  collections: 'Collections',
 }
 
 function ThemeToggle() {
@@ -240,6 +244,8 @@ export default function DashboardLayout() {
         return <ReviewsPage />
       case 'activity':
         return <ActivityLogPage />
+      case 'collections':
+        return <CollectionsPage />
       case 'create-store':
         return <CreateStoreDialog />
       default:

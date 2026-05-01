@@ -61,6 +61,7 @@ export default function Home() {
     case 'abandoned-carts':
     case 'reviews':
     case 'activity':
+    case 'collections':
       return <DashboardLayout />
     default:
       return <LandingPage />
