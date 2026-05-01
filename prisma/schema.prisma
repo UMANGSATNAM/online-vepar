@@ -51,6 +51,8 @@ model Store {
   reviews        Review[]
   variants       ProductVariant[]
   activityLogs   ActivityLog[]
+  taxRates       TaxRate[]
+  abandonedCarts AbandonedCart[]
 }
 
 model Category {
@@ -324,4 +326,57 @@ model ActivityLog {
   @@index([storeId])
   @@index([entity])
   @@index([createdAt])
+}
+
+model TaxRate {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "GST 18%", "VAT 5%"
+  rate        Float    // percentage, e.g., 18.0
+  country     String?  // ISO country code, e.g., "IN"
+  state       String?  // state/province
+  city        String?
+  zipCode     String?
+  isCompound  Boolean  @default(false) // compound tax (tax on tax)
+  priority    Int      @default(0) // higher priority applied first
+  isActive    Boolean  @default(true)
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([country])
+}
+
+model AbandonedCart {
+  id              String   @id @default(cuid())
+  storeId         String
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerEmail   String
+  customerName    String?
+  customerPhone   String?
+  items           String   @default("[]") // JSON array of {productId, name, price, quantity, image}
+  subtotal        Float    @default(0)
+  tax             Float    @default(0)
+  shipping        Float    @default(0)
+  total           Float    @default(0)
+  currency        String   @default("INR")
+  recoveryToken   String   @unique // unique token for recovery URL
+  recoveryUrl     String?  // full recovery URL
+  status          String   @default("abandoned") // abandoned, email_sent, recovered, expired
+  emailSentAt     DateTime?
+  emailOpenedAt   DateTime?
+  recoveredAt     DateTime?
+  abandonedAt     DateTime @default(now())
+  expiresAt       DateTime? // cart expiry date
+  reminderCount   Int      @default(0) // number of reminder emails sent
+  lastReminderAt  DateTime?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([status])
+  @@index([customerEmail])
+  @@index([abandonedAt])
 }

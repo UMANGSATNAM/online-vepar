@@ -47,6 +47,8 @@ async function main() {
   await prisma.customer.deleteMany();
   await prisma.page.deleteMany();
   await prisma.discount.deleteMany();
+  await prisma.taxRate.deleteMany();
+  await prisma.abandonedCart.deleteMany();
   await prisma.store.deleteMany();
   await prisma.user.deleteMany();
 
@@ -1180,6 +1182,260 @@ async function main() {
   console.log('✅ Created', activityLogsData.length, 'activity logs');
 
   console.log('\n🎉 Seeding completed successfully!');
+  console.log('\n📋 Demo credentials:');
+
+  // 13. Create tax rates
+  const taxRates = await Promise.all([
+    prisma.taxRate.create({
+      data: {
+        name: 'GST 18%',
+        rate: 18.0,
+        country: 'IN',
+        isCompound: false,
+        priority: 10,
+        isActive: true,
+        storeId: store.id,
+      },
+    }),
+    prisma.taxRate.create({
+      data: {
+        name: 'GST 12%',
+        rate: 12.0,
+        country: 'IN',
+        isCompound: false,
+        priority: 5,
+        isActive: true,
+        storeId: store.id,
+      },
+    }),
+    prisma.taxRate.create({
+      data: {
+        name: 'GST 5%',
+        rate: 5.0,
+        country: 'IN',
+        isCompound: false,
+        priority: 3,
+        isActive: true,
+        storeId: store.id,
+      },
+    }),
+    prisma.taxRate.create({
+      data: {
+        name: 'VAT 20%',
+        rate: 20.0,
+        country: 'GB',
+        isCompound: false,
+        priority: 10,
+        isActive: true,
+        storeId: store.id,
+      },
+    }),
+    prisma.taxRate.create({
+      data: {
+        name: 'Sales Tax 8.5%',
+        rate: 8.5,
+        country: 'US',
+        state: 'California',
+        isCompound: false,
+        priority: 10,
+        isActive: true,
+        storeId: store.id,
+      },
+    }),
+  ]);
+  console.log('✅ Created', taxRates.length, 'tax rates');
+
+  // 14. Create abandoned carts
+  function generateRecoveryToken(): string {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let token = 'rc_';
+    for (let i = 0; i < 24; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return token;
+  }
+
+  const abandonedCartsData = [
+    {
+      customerEmail: 'sneha.gupta@email.com',
+      customerName: 'Sneha Gupta',
+      customerPhone: '+91 99887 76655',
+      items: JSON.stringify([
+        { productId: products[0].id, name: 'Banarasi Silk Saree', price: 5999, quantity: 1, image: 'https://placehold.co/100x100/10b981/white?text=Saree' },
+        { productId: products[3].id, name: 'Gold Plated Jhumka Earrings', price: 899, quantity: 2, image: 'https://placehold.co/100x100/10b981/white?text=Jhumka' },
+      ]),
+      subtotal: 7797,
+      tax: 1403.46,
+      shipping: 0,
+      total: 9200.46,
+      status: 'abandoned',
+      abandonedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
+      expiresAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+      reminderCount: 0,
+    },
+    {
+      customerEmail: 'divya.kapoor@email.com',
+      customerName: 'Divya Kapoor',
+      customerPhone: '+91 88776 65544',
+      items: JSON.stringify([
+        { productId: products[4].id, name: 'Chiffon Party Wear Gown', price: 3499, quantity: 1 },
+      ]),
+      subtotal: 3499,
+      tax: 629.82,
+      shipping: 99,
+      total: 4227.82,
+      status: 'abandoned',
+      abandonedAt: new Date(now.getTime() - 6 * 60 * 60 * 1000), // 6 hours ago
+      expiresAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+      reminderCount: 0,
+    },
+    {
+      customerEmail: 'arun.kumar@email.com',
+      customerName: 'Arun Kumar',
+      customerPhone: '+91 77665 54433',
+      items: JSON.stringify([
+        { productId: products[6].id, name: 'Kanchipuram Silk Saree', price: 8499, quantity: 1 },
+        { productId: products[10].id, name: 'Zari Work Dupatta', price: 999, quantity: 1 },
+      ]),
+      subtotal: 9498,
+      tax: 1709.64,
+      shipping: 0,
+      total: 11207.64,
+      status: 'email_sent',
+      abandonedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+      emailSentAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+      expiresAt: new Date(now.getTime() + 28 * 24 * 60 * 60 * 1000),
+      reminderCount: 1,
+      lastReminderAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+    },
+    {
+      customerEmail: 'pooja.mehta@email.com',
+      customerName: 'Pooja Mehta',
+      customerPhone: '+91 66554 43322',
+      items: JSON.stringify([
+        { productId: products[2].id, name: 'Bridal Lehenga Set', price: 15999, quantity: 1 },
+      ]),
+      subtotal: 15999,
+      tax: 2879.82,
+      shipping: 0,
+      total: 18878.82,
+      status: 'email_sent',
+      abandonedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+      emailSentAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(now.getTime() + 27 * 24 * 60 * 60 * 1000),
+      reminderCount: 2,
+      lastReminderAt: new Date(now.getTime() - 12 * 60 * 60 * 1000), // 12 hours ago
+    },
+    {
+      customerEmail: 'lakshmi.iyer@email.com',
+      customerName: 'Lakshmi Iyer',
+      items: JSON.stringify([
+        { productId: products[1].id, name: 'Cotton Printed Kurta', price: 1299, quantity: 2 },
+        { productId: products[5].id, name: 'Embroidered Palazzo Kurta Set', price: 2199, quantity: 1 },
+        { productId: products[7].id, name: 'Designer Clutch Bag', price: 1599, quantity: 1 },
+      ]),
+      subtotal: 6396,
+      tax: 1151.28,
+      shipping: 0,
+      total: 7547.28,
+      status: 'recovered',
+      abandonedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+      emailSentAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000),
+      recoveredAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(now.getTime() + 25 * 24 * 60 * 60 * 1000),
+      reminderCount: 1,
+      lastReminderAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000),
+    },
+    {
+      customerEmail: 'nisha.joshi@email.com',
+      customerName: 'Nisha Joshi',
+      customerPhone: '+91 55443 32211',
+      items: JSON.stringify([
+        { productId: products[9].id, name: 'Mangalsutra Necklace', price: 4999, quantity: 1 },
+      ]),
+      subtotal: 4999,
+      tax: 899.82,
+      shipping: 0,
+      total: 5898.82,
+      status: 'recovered',
+      abandonedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      emailSentAt: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000),
+      emailOpenedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+      recoveredAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(now.getTime() + 23 * 24 * 60 * 60 * 1000),
+      reminderCount: 2,
+      lastReminderAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000),
+    },
+    {
+      customerEmail: 'vikram.singh@email.com',
+      customerName: 'Vikram Singh',
+      customerPhone: '+91 44332 21100',
+      items: JSON.stringify([
+        { productId: products[0].id, name: 'Banarasi Silk Saree', price: 5999, quantity: 2 },
+        { productId: products[3].id, name: 'Gold Plated Jhumka Earrings', price: 899, quantity: 1 },
+        { productId: products[7].id, name: 'Designer Clutch Bag', price: 1599, quantity: 1 },
+      ]),
+      subtotal: 14496,
+      tax: 2609.28,
+      shipping: 0,
+      total: 17105.28,
+      status: 'expired',
+      abandonedAt: new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000), // 45 days ago
+      expiresAt: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000), // expired 15 days ago
+      reminderCount: 3,
+      lastReminderAt: new Date(now.getTime() - 20 * 24 * 60 * 60 * 1000),
+    },
+    {
+      customerEmail: 'meera.reddy@email.com',
+      customerName: 'Meera Reddy',
+      items: JSON.stringify([
+        { productId: products[8].id, name: 'Georgette Anarkali Kurta', price: 2899, quantity: 1 },
+      ]),
+      subtotal: 2899,
+      tax: 521.82,
+      shipping: 49,
+      total: 3469.82,
+      status: 'expired',
+      abandonedAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000), // 60 days ago
+      emailSentAt: new Date(now.getTime() - 55 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000), // expired 30 days ago
+      reminderCount: 2,
+      lastReminderAt: new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000),
+      notes: 'Customer showed interest but did not return',
+    },
+  ];
+
+  for (const cartData of abandonedCartsData) {
+    const recoveryToken = generateRecoveryToken();
+    const recoveryUrl = `https://vepar-fashion-store.onlinevepar.com/cart/recover?token=${recoveryToken}`;
+    await prisma.abandonedCart.create({
+      data: {
+        storeId: store.id,
+        customerEmail: cartData.customerEmail,
+        customerName: cartData.customerName || null,
+        customerPhone: cartData.customerPhone || null,
+        items: cartData.items,
+        subtotal: cartData.subtotal,
+        tax: cartData.tax,
+        shipping: cartData.shipping,
+        total: cartData.total,
+        currency: 'INR',
+        recoveryToken,
+        recoveryUrl,
+        status: cartData.status,
+        emailSentAt: (cartData as Record<string, unknown>).emailSentAt as Date | undefined || null,
+        emailOpenedAt: (cartData as Record<string, unknown>).emailOpenedAt as Date | undefined || null,
+        recoveredAt: (cartData as Record<string, unknown>).recoveredAt as Date | undefined || null,
+        abandonedAt: cartData.abandonedAt,
+        expiresAt: cartData.expiresAt,
+        reminderCount: cartData.reminderCount,
+        lastReminderAt: (cartData as Record<string, unknown>).lastReminderAt as Date | undefined || null,
+        notes: (cartData as Record<string, unknown>).notes as string | undefined || null,
+      },
+    });
+  }
+  console.log('✅ Created', abandonedCartsData.length, 'abandoned carts');
+
   console.log('\n📋 Demo credentials:');
   console.log('   Email: demo@onlinevepar.com');
   console.log('   Password: demo123');

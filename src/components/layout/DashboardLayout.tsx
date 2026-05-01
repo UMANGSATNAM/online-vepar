@@ -31,6 +31,8 @@ import {
   VolumeX,
   Sparkles,
   Clock,
+  Receipt,
+  ShoppingBag,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -75,6 +77,8 @@ import CreateStoreDialog from '@/components/store/CreateStoreDialog'
 import DiscountsPage from '@/components/discounts/DiscountsPage'
 import InventoryPage from '@/components/inventory/InventoryPage'
 import ShippingPage from '@/components/shipping/ShippingPage'
+import TaxRatesPage from '@/components/tax/TaxRatesPage'
+import AbandonedCartsPage from '@/components/abandoned-carts/AbandonedCartsPage'
 import ReviewsPage from '@/components/reviews/ReviewsPage'
 import ActivityLogPage from '@/components/activity/ActivityLogPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
@@ -90,6 +94,8 @@ const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ cla
   { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D' },
   { view: 'inventory', label: 'Inventory', icon: Warehouse, shortcut: 'Alt+I' },
   { view: 'shipping', label: 'Shipping', icon: Truck, shortcut: 'Alt+Shift+S' },
+  { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, shortcut: 'Alt+T' },
+  { view: 'abandoned-carts', label: 'Abandoned Carts', icon: ShoppingBag },
   { view: 'analytics', label: 'Analytics', icon: BarChart3, shortcut: 'Alt+A' },
   { view: 'store-settings', label: 'Store Settings', icon: Settings, shortcut: 'Alt+S' },
   { view: 'store-preview', label: 'Store Preview', icon: Globe },
@@ -114,6 +120,8 @@ const viewLabels: Record<string, string> = {
   discounts: 'Discounts',
   inventory: 'Inventory',
   shipping: 'Shipping',
+  'tax-rates': 'Tax Rates',
+  'abandoned-carts': 'Abandoned Carts',
   reviews: 'Reviews',
   activity: 'Activity Log',
   checkout: 'Storefront',
@@ -224,6 +232,10 @@ export default function DashboardLayout() {
         return <InventoryPage />
       case 'shipping':
         return <ShippingPage />
+      case 'tax-rates':
+        return <TaxRatesPage />
+      case 'abandoned-carts':
+        return <AbandonedCartsPage />
       case 'reviews':
         return <ReviewsPage />
       case 'activity':

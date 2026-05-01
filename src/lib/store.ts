@@ -18,6 +18,8 @@ export type ViewType =
   | 'discounts'
   | 'inventory'
   | 'shipping'
+  | 'tax-rates'
+  | 'abandoned-carts'
   | 'reviews'
   | 'activity'
   | 'checkout'

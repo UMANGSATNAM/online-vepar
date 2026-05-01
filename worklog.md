@@ -1888,3 +1888,266 @@ All features working:
 5. Improve mobile responsiveness of dashboard tables
 6. Add AI-powered SEO meta tag generator
 7. Add webhook/events system for third-party integrations
+
+---
+Task ID: 18
+Agent: Main Agent (Cron Review Session 5)
+Task: QA Testing, Bug Fixes, New Features (Tax Management + Abandoned Cart Recovery), Styling Polish
+
+Work Log:
+
+### QA Testing (agent-browser + VLM)
+- Tested all 16+ pages via agent-browser: Landing, Login, Dashboard, Products, Orders, Customers, Reviews, Activity, Discounts, Inventory, Shipping, Analytics, Store Settings, Store Preview, Pages, Checkout
+- Used VLM (z-ai vision) to analyze screenshots for visual quality issues
+- Found: Welcome modal lacks backdrop blur and visual hierarchy, stat cards need better hover effects, product cards spacing inconsistent
+- No JavaScript errors on any page
+- All API routes returning 200
+
+### New Feature: Tax Management
+- **Prisma Schema**: Added `TaxRate` model with name, rate, country/state/city/zipCode, isCompound, priority, isActive, storeId
+- **API Routes**: 
+  - `/api/tax-rates` - GET (list with search/filter) + POST (create with validation)
+  - `/api/tax-rates/[id]` - GET, PUT, DELETE with ownership verification
+  - `/api/tax-rates/calculate` - POST (calculate tax based on subtotal + shipping address)
+- **UI**: TaxRatesPage with 4 summary cards, table view, status tabs (All/Active/Inactive), search, create/edit dialog with country dropdown, compound tax toggle
+- **Navigation**: Added Receipt icon in sidebar after Shipping
+- **Seed Data**: 5 sample tax rates (GST 18%/12%/5% for India, VAT 20% UK, Sales Tax 8.5% US/California)
+
+### New Feature: Abandoned Cart Recovery
+- **Prisma Schema**: Added `AbandonedCart` model with customerEmail/Name/Phone, items JSON, subtotal/tax/shipping/total, recoveryToken (unique), status (abandoned/email_sent/recovered/expired), timestamps, reminderCount
+- **API Routes**:
+  - `/api/abandoned-carts` - GET (list with status filter, date range, search, pagination, stats) + POST (create)
+  - `/api/abandoned-carts/[id]` - GET, PUT (send reminder, update status, add notes), DELETE
+- **UI**: AbandonedCartsPage with summary cards (Total Abandoned, Abandoned Value, Recovery Rate, Reminders Sent), status tabs, search/filter, expandable table rows, email preview dialog, bulk actions
+- **Navigation**: Added ShoppingBag icon in sidebar after Tax Rates
+- **Seed Data**: 8 sample abandoned carts with varied statuses and customer data
+- **Bug Fix**: Fixed status counts in tabs showing 0 - changed from using filtered carts state to separate unfiltered fetch for counts
+
+### Styling Improvements
+
+#### Dashboard Welcome Modal Polish
+- Changed overlay from `bg-black/40` to `bg-black/60 backdrop-blur-sm` for better visual hierarchy
+- Added top gradient bar (emerald→teal→cyan) as decorative element
+- Improved entrance animation with Y-axis translation
+- Changed card radius from `rounded-xl` to `rounded-2xl` with `p-8`
+- Sparkles icon now has `animate-sparkle-pulse` animation
+- Added gradient background (emerald-50→teal-50) to icon container
+- Each feature list item now has its own color-coded icon container (emerald, orange, violet, sky)
+- Items have subtle borders with hover effect
+- "Take a Tour" button now has gradient background (emerald→teal) with Sparkles icon
+- Better padding and spacing throughout
+
+#### globals.css New Utilities (Session 5)
+- `.modal-overlay` - backdrop-filter blur
+- `.stat-card-premium` - hover with scale + enhanced shadow
+- `.accent-bar-*` (6 variants: emerald, orange, violet, sky, rose, amber) - gradient top border for cards
+- `.status-badge-*` (4 variants: active, inactive, expired, scheduled) - with dark mode support
+- `.card-glow-hover` - emerald glow on hover with dark mode
+- `.table-modern` - alternating row colors + emerald hover with dark mode
+- `.page-header-accent` - gradient accent bar below page headers
+- `.animate-count-up` - smooth number entrance animation
+- `.pulse-ring-sm::before` - pulse ring for live indicators
+- `.recovery-rate-ring` - donut chart stroke animation
+
+### Quality Checks
+- `bun run lint` passes with 0 errors, 0 warnings
+- Dev server compiles successfully
+- No JavaScript errors on any page
+- All new features verified via agent-browser
+
+Stage Summary:
+- 2 major new features: Tax Management + Abandoned Cart Recovery
+- Dashboard welcome modal significantly polished with better overlay, gradient bar, color-coded items
+- 20+ new CSS utility classes added for consistent styling
+- Bug fix: Abandoned carts status counts now display correctly
+- All existing features still working correctly
+
+### Current Project Status Assessment
+**Overall: 🟢 Feature-Rich, AI-Enhanced, and Stable**
+
+All features working (20+ pages):
+- Landing page with animated hero, dashboard mockup, floating orbs, pricing toggle, testimonials
+- Auth (login/register) with demo account
+- Dashboard with real-time stats, sparklines, time-based greeting, welcome modal
+- Products CRUD with grid/table views, search, filter, sort, bulk actions, VARIANTS, AI DESCRIPTION GENERATOR
+- Orders management with status tabs, detail view, status updates
+- Customer management with order history
+- Inventory Management with stock tracking, low stock alerts, bulk adjustments
+- Shipping Management with zones, rates, shipments, tracking timeline
+- Discounts with 5 seed records, card-based layout, status tabs
+- Product Variants with size/color/material options, individual pricing
+- Reviews & Ratings with star ratings, merchant responses, approval workflow
+- AI Product Description Generator with LLM integration
+- Activity Log / Audit Trail with timeline, filtering, click-to-navigate
+- AI Insights on Analytics page
+- Analytics with 4 chart types, date range picker, AI insights
+- Store settings with 5 tabs
+- Store preview with device toggle
+- Page/blog management
+- Notifications panel with real data
+- Dark mode with light/dark/system toggle
+- Create Store flow with theme/color selection
+- Global search (Cmd+K) across products, orders, customers
+- CSV export for products, orders, customers
+- **NEW: Tax Management** with country-specific rates, compound tax, tax calculation API
+- **NEW: Abandoned Cart Recovery** with email preview, recovery rate tracking, bulk reminders
+
+### Unresolved Issues / Risks
+1. Prisma Client stale after schema changes - mitigated with raw SQL fallbacks
+2. No image upload - only URL input for product images
+3. No payment gateway integration (placeholder only)
+4. Cookie-based auth is simple (no JWT/session rotation)
+5. AI insights may occasionally fail - falls back to static insights
+6. Activity logging is fire-and-forget (may miss some logs if DB is busy)
+7. Abandoned cart email sending is simulated (no real email service)
+8. Tax calculation API works but no integration with checkout flow yet
+
+### Priority Recommendations for Next Phase
+1. Add customer-facing storefront with full shopping cart and checkout flow
+2. Integrate tax calculation and discount codes into checkout
+3. Add email notification service (SendGrid/Resend) for abandoned cart recovery
+4. Add multi-language support (i18n)
+5. Improve mobile responsiveness of dashboard tables
+6. Add AI-powered SEO meta tag generator
+7. Add webhook/events system for third-party integrations
+8. Add staff/role management with permissions
+
+---
+Task ID: 3
+Agent: Tax Management Agent
+Task: Add Tax Management Feature
+
+Work Log:
+
+### Step 1: Prisma Schema Update
+- Added `TaxRate` model to `prisma/schema.prisma` with fields: id, name, rate, country, state, city, zipCode, isCompound, priority, isActive, storeId, createdAt, updatedAt
+- Added `taxRates TaxRate[]` relation to Store model
+- Ran `bun run db:push` - schema synced successfully
+
+### Step 2: Tax Rate API Routes
+- Created `/api/tax-rates/route.ts`:
+  - GET: List tax rates for a store with search and isActive filter
+  - POST: Create new tax rate with validation (unique name per store, positive rate)
+- Created `/api/tax-rates/[id]/route.ts`:
+  - GET: Single tax rate with ownership verification
+  - PUT: Update tax rate with duplicate name check and validation
+  - DELETE: Delete tax rate with ownership verification
+- Created `/api/tax-rates/calculate/route.ts`:
+  - POST: Calculate tax for an order given subtotal, shipping address, and storeId
+  - Returns applicable tax rates and total tax amount (supports compound taxes)
+
+### Step 3: TaxRatesPage UI Component
+- Created `/components/tax/TaxRatesPage.tsx`:
+  - Summary cards: Total Tax Rates, Active Rates, Default Rate, Countries Covered
+  - Table view showing: name, rate %, region/country, priority, compound status, active status
+  - Status filter tabs: All, Active, Inactive
+  - Search by name or country
+  - Sortable columns (name, rate, priority, createdAt)
+  - Create/Edit dialog with fields: name, rate (%), country dropdown (15 countries), state, city, zip, compound toggle, priority, active toggle
+  - Actions: Edit, Activate/Deactivate, Delete (with confirmation)
+  - Loading skeletons, empty state, responsive design
+  - Uses emerald green theme, framer-motion, toast notifications
+
+### Step 4: Navigation Integration
+- Updated `src/lib/store.ts`: Added `tax-rates` to ViewType union (after shipping)
+- Updated `src/components/layout/DashboardLayout.tsx`:
+  - Added Receipt icon import from lucide-react
+  - Added TaxRatesPage import from `@/components/tax/TaxRatesPage`
+  - Added `{ view: "tax-rates", label: "Tax Rates", icon: Receipt }` to navItems (after shipping)
+  - Added `tax-rates: "Tax Rates"` to viewLabels
+  - Added `case "tax-rates": return <TaxRatesPage />` to renderContent
+- Updated `src/app/page.tsx`: Added `tax-rates` to DashboardLayout switch case
+
+### Step 5: Seed Data
+- Added 5 sample tax rates to `prisma/seed.ts`:
+  - GST 18% (India, priority 10)
+  - GST 12% (India, priority 5)
+  - GST 5% (India, priority 3)
+  - VAT 20% (UK, priority 10)
+  - Sales Tax 8.5% (US, California, priority 10)
+- Added `taxRate.deleteMany()` cleanup to seed
+
+### Step 6: Lint & Quality
+- Ran `bun run lint` - passes with 0 errors, 0 warnings
+- Dev server compiles successfully
+
+Stage Summary:
+- Full Tax Management feature implemented
+- Backend: CRUD API + tax calculation endpoint with region-based matching and compound tax support
+- Frontend: Table-based list with summary cards, status filtering, search, sort, create/edit/delete
+- Navigation: Tax Rates accessible from sidebar with Receipt icon (after Shipping)
+- Seed data: 5 tax rates covering India (GST), UK (VAT), and US (Sales Tax)
+- All existing patterns followed (emerald theme, shadcn/ui, framer-motion, toast notifications, dark mode support)
+
+### Files Created
+- `/src/app/api/tax-rates/route.ts`
+- `/src/app/api/tax-rates/[id]/route.ts`
+- `/src/app/api/tax-rates/calculate/route.ts`
+- `/src/components/tax/TaxRatesPage.tsx`
+
+### Files Modified
+- `/prisma/schema.prisma` (added TaxRate model + taxRates relation on Store)
+- `/src/lib/store.ts` (added `tax-rates` to ViewType)
+- `/src/components/layout/DashboardLayout.tsx` (added Receipt nav item, TaxRatesPage import, renderContent case, viewLabel)
+- `/src/app/page.tsx` (added `tax-rates` case)
+- `/prisma/seed.ts` (added tax rate seed data + cleanup)
+
+
+---
+Task ID: 4
+Agent: Abandoned Cart Agent
+Task: Add Abandoned Cart Recovery Feature
+
+Work Log:
+
+### Step 1: Prisma Schema - Verified Existing
+- AbandonedCart model already exists in prisma/schema.prisma with all required fields: id, storeId, customerEmail, customerName, customerPhone, items (JSON), subtotal, tax, shipping, total, currency, recoveryToken (unique), recoveryUrl, status (abandoned/email_sent/recovered/expired), emailSentAt, emailOpenedAt, recoveredAt, abandonedAt, expiresAt, reminderCount, lastReminderAt, notes, createdAt, updatedAt
+- Indexes on storeId, status, customerEmail, abandonedAt already present
+- abandonedCarts AbandonedCart[] relation already on Store model
+- Ran bun run db:push - schema already in sync
+
+### Step 2: API Routes - Verified Existing
+- /api/abandoned-carts/route.ts already exists with GET (list with filters, stats, pagination) and POST (create with recoveryToken, activity logging)
+- /api/abandoned-carts/[id]/route.ts already exists with GET, PUT (sendReminder, update status, add notes), DELETE
+- Both use try/catch with raw SQL fallback pattern, auth + ownership verification
+
+### Step 3: AbandonedCartsPage UI - Verified Existing
+- /components/abandoned-carts/AbandonedCartsPage.tsx exists (1082 lines)
+- 4 Summary Cards: Total Abandoned, Abandoned Value (INR), Recovery Rate (%), Reminders Sent
+- Recovery Rate Visual: Animated bar showing status distribution
+- Status Tabs: All, Abandoned, Email Sent, Recovered, Expired
+- Search + Date range filter (today, 7d, 30d, 90d)
+- Table with expandable rows: Customer info, Items Count, Total Value, Status badge, Abandoned Date, Last Reminder, Actions
+- Actions: Send Reminder (with email preview dialog), Mark Recovered, Add Note, Copy Recovery URL, Delete
+- Bulk: Select multiple then Send Reminders
+- Loading skeletons, empty state, responsive, emerald theme, dark mode, framer-motion, toast notifications
+
+### Step 4: Navigation Integration - Verified Existing
+- store.ts: abandoned-carts already in ViewType
+- DashboardLayout.tsx: ShoppingBag icon, AbandonedCartsPage import, nav item after tax-rates, viewLabel, renderContent case
+- page.tsx: abandoned-carts already in DashboardLayout switch case
+
+### Step 5: Seed Data - ADDED
+- Added 8 sample abandoned carts to prisma/seed.ts with varied statuses:
+  - 2 abandoned: Sneha Gupta (2 items, INR 9,200), Divya Kapoor (1 item, INR 4,228)
+  - 2 email_sent: Arun Kumar (2 items, INR 11,208), Pooja Mehta (1 item, INR 18,879)
+  - 2 recovered: Lakshmi Iyer (3 items, INR 7,547), Nisha Joshi (1 item, INR 5,899)
+  - 2 expired: Vikram Singh (3 items, INR 17,105), Meera Reddy (1 item, INR 3,470)
+- Ran bunx tsx prisma/seed.ts - all 8 abandoned carts seeded successfully
+
+### Step 6: Quality
+- bun run lint passes with 0 errors, 0 warnings
+- bun run db:push - schema in sync
+- Dev server compiles and runs successfully
+
+Stage Summary:
+- Complete Abandoned Cart Recovery feature is fully functional
+- Backend: Full CRUD API with filters, stats, reminder sending, status management, activity logging, raw SQL fallback
+- Frontend: Comprehensive management page with summary cards, status distribution bar, tabs, search/filter, table with expandable rows, bulk actions, email preview dialog, note dialog, delete confirmation
+- Navigation: Accessible from sidebar with ShoppingBag icon after Tax Rates
+- Seed data: 8 varied abandoned carts (2 abandoned, 2 email_sent, 2 recovered, 2 expired)
+- Lint passes, dev server compiles
+
+### Files Modified
+- /prisma/seed.ts (added 8 abandoned cart seed data entries + generateRecoveryToken helper)
+

@@ -57,6 +57,8 @@ export default function Home() {
     case 'discounts':
     case 'inventory':
     case 'shipping':
+    case 'tax-rates':
+    case 'abandoned-carts':
     case 'reviews':
     case 'activity':
       return <DashboardLayout />

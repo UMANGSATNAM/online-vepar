@@ -249,52 +249,57 @@ function WelcomeModal({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="bg-card rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 border border-border"
+        className="bg-card rounded-2xl shadow-2xl max-w-md w-full mx-4 p-8 border border-border relative overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mx-auto">
-            <Sparkles className="w-8 h-8 text-emerald-600" />
+        {/* Decorative gradient background */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500" />
+        <div className="text-center space-y-5">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/40 dark:to-teal-900/40 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+            <Sparkles className="w-8 h-8 text-emerald-600 animate-sparkle-pulse" />
           </div>
           <h2 className="text-2xl font-bold text-foreground">Welcome to Online Vepar!</h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-foreground/70 text-sm leading-relaxed">
             Your e-commerce dashboard is ready. Here&apos;s a quick overview of what you can do.
           </p>
 
           <div className="space-y-2 text-left">
             {[
-              { icon: Package, label: 'Manage products and inventory' },
-              { icon: ShoppingCart, label: 'Track and fulfill orders' },
-              { icon: BarChart3, label: 'Monitor analytics and revenue' },
-              { icon: Settings, label: 'Customize your store settings' },
+              { icon: Package, label: 'Manage products and inventory', color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30' },
+              { icon: ShoppingCart, label: 'Track and fulfill orders', color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/30' },
+              { icon: BarChart3, label: 'Monitor analytics and revenue', color: 'text-violet-600 bg-violet-50 dark:bg-violet-900/30' },
+              { icon: Settings, label: 'Customize your store settings', color: 'text-sky-600 bg-sky-50 dark:bg-sky-900/30' },
             ].map((item) => (
-              <div key={item.label} className="flex items-center gap-3 p-2 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20">
-                <item.icon className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg border border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors">
+                <div className={`w-7 h-7 rounded-md ${item.color} flex items-center justify-center shrink-0`}>
+                  <item.icon className="w-3.5 h-3.5" />
+                </div>
                 <span className="text-sm text-foreground">{item.label}</span>
               </div>
             ))}
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-3">
             <Button
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-10"
               onClick={onClose}
             >
               I&apos;ll Explore
             </Button>
             <Button
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="flex-1 h-10 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md hover:shadow-lg transition-all"
               onClick={onClose}
             >
+              <Sparkles className="w-4 h-4 mr-1.5" />
               Take a Tour
             </Button>
           </div>
