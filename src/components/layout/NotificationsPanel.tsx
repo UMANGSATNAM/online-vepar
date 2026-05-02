@@ -105,32 +105,35 @@ export default function NotificationsPanel() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <motion.div whileTap={{ scale: 0.9 }}>
-            <Bell className="w-5 h-5 text-muted-foreground" />
-          </motion.div>
+        <Button variant="ghost" size="icon" className="relative h-9 w-9">
+          <Bell className="w-[18px] h-[18px] text-muted-foreground" />
           <AnimatePresence>
             {unreadCount > 0 && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}
-                className="absolute -top-1 -right-1"
+                className="absolute -top-0.5 -right-0.5"
               >
-                <Badge className="h-5 min-w-5 p-0 flex items-center justify-center bg-emerald-600 text-[10px] text-white border-0">
+                <span className="flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-emerald-600 text-[9px] font-semibold text-white leading-none">
                   {unreadCount > 9 ? '9+' : unreadCount}
-                </Badge>
+                </span>
               </motion.div>
             )}
           </AnimatePresence>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 sm:w-96 p-0" align="end">
-        <div className="flex items-center justify-between p-4 border-b">
+      <PopoverContent
+        className="w-80 sm:w-96 p-0 flex flex-col max-h-[480px]"
+        align="end"
+        sideOffset={8}
+      >
+        {/* Fixed Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b shrink-0">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-sm">Notifications</h3>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+              <Badge variant="secondary" className="text-[10px] h-5 px-1.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-0 font-medium">
                 {unreadCount} new
               </Badge>
             )}
@@ -139,7 +142,7 @@ export default function NotificationsPanel() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs h-7 text-emerald-600 hover:text-emerald-700"
+              className="text-[11px] h-7 px-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
               onClick={handleMarkAllRead}
             >
               <Check className="w-3 h-3 mr-1" />
@@ -148,79 +151,73 @@ export default function NotificationsPanel() {
           )}
         </div>
 
-        <ScrollArea className="max-h-[400px]">
+        {/* Scrollable Content */}
+        <ScrollArea className="flex-1 min-h-0 max-h-[360px]">
           {loading && notifications.length === 0 ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex items-center justify-center py-12">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             </div>
           ) : notifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-              <Bell className="w-8 h-8 mb-2 opacity-50" />
-              <p className="text-sm">No notifications yet</p>
-              <p className="text-xs mt-1">We&apos;ll notify you when something happens</p>
+            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+              <Bell className="w-8 h-8 mb-2 opacity-40" />
+              <p className="text-sm font-medium">No notifications yet</p>
+              <p className="text-xs mt-1 opacity-70">We&apos;ll notify you when something happens</p>
             </div>
           ) : (
-            <div className="divide-y">
-              <AnimatePresence>
-                {notifications.map((notification) => {
-                  const Icon = NOTIFICATION_ICONS[notification.type] || ShoppingCart
-                  const colorClass = NOTIFICATION_COLORS[notification.type] || 'bg-muted text-muted-foreground'
+            <div className="py-1">
+              {notifications.map((notification) => {
+                const Icon = NOTIFICATION_ICONS[notification.type] || ShoppingCart
+                const colorClass = NOTIFICATION_COLORS[notification.type] || 'bg-muted text-muted-foreground'
 
-                  return (
-                    <motion.button
-                      key={notification.id}
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      className={`w-full text-left p-3 hover:bg-accent/50 transition-colors flex gap-3 ${
-                        !notification.read ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : ''
-                      }`}
-                      onClick={() => handleNotificationClick(notification)}
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className={`text-sm ${!notification.read ? 'font-semibold' : 'font-medium'}`}>
-                            {notification.title}
-                          </p>
-                          {!notification.read && (
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 mt-1.5" />
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                          {notification.description}
+                return (
+                  <button
+                    key={notification.id}
+                    className={`w-full text-left px-4 py-2.5 hover:bg-accent/50 transition-colors flex gap-3 ${
+                      !notification.read ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : ''
+                    }`}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className={`text-[13px] leading-snug ${!notification.read ? 'font-semibold' : 'font-medium text-foreground/80'}`}>
+                          {notification.title}
                         </p>
-                        <p className="text-[11px] text-muted-foreground/70 mt-1">
-                          {notification.time}
-                        </p>
+                        {!notification.read && (
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 mt-1.5" />
+                        )}
                       </div>
-                    </motion.button>
-                  )
-                })}
-              </AnimatePresence>
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                        {notification.description}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/60 mt-1">
+                        {notification.time}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           )}
         </ScrollArea>
 
+        {/* Fixed Footer */}
         {notifications.length > 0 && (
-          <>
-            <Separator />
-            <div className="p-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full text-xs text-emerald-600 hover:text-emerald-700"
-                onClick={() => {
-                  setView('orders')
-                  setOpen(false)
-                }}
-              >
-                View all activity
-              </Button>
-            </div>
-          </>
+          <div className="border-t shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-xs h-9 rounded-none text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 font-medium"
+              onClick={() => {
+                setView('orders')
+                setOpen(false)
+              }}
+            >
+              View all activity
+            </Button>
+          </div>
         )}
       </PopoverContent>
     </Popover>

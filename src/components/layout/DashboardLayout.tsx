@@ -27,9 +27,6 @@ import {
   Warehouse,
   Truck,
   Star,
-  Volume2,
-  VolumeX,
-  Sparkles,
   Clock,
   Receipt,
   ShoppingBag,
@@ -37,6 +34,8 @@ import {
   CreditCard,
   LayoutGrid,
   ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -93,33 +92,30 @@ import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
 
 // --- Navigation Items ---
-// Main nav (shown in sidebar and bottom nav)
-const mainNavItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; shortcut?: string }[] = [
-  { view: 'dashboard', label: 'Home', icon: Home, shortcut: 'Alt+H' },
-  { view: 'products', label: 'Products', icon: Package, shortcut: 'Alt+P' },
-  { view: 'orders', label: 'Orders', icon: ShoppingCart, shortcut: 'Alt+O' },
-  { view: 'customers', label: 'Customers', icon: Users, shortcut: 'Alt+C' },
-  { view: 'analytics', label: 'Analytics', icon: BarChart3, shortcut: 'Alt+A' },
+const mainNavItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { view: 'dashboard', label: 'Home', icon: Home },
+  { view: 'products', label: 'Products', icon: Package },
+  { view: 'orders', label: 'Orders', icon: ShoppingCart },
+  { view: 'customers', label: 'Customers', icon: Users },
+  { view: 'analytics', label: 'Analytics', icon: BarChart3 },
 ]
 
-// Secondary nav (shown only in sidebar)
-const secondaryNavItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; shortcut?: string; group: string }[] = [
-  { view: 'collections', label: 'Collections', icon: Layers, shortcut: 'Alt+L', group: 'Catalog' },
-  { view: 'discounts', label: 'Discounts', icon: Tag, shortcut: 'Alt+D', group: 'Catalog' },
-  { view: 'reviews', label: 'Reviews', icon: Star, shortcut: 'Alt+R', group: 'Catalog' },
-  { view: 'inventory', label: 'Inventory', icon: Warehouse, shortcut: 'Alt+I', group: 'Operations' },
-  { view: 'shipping', label: 'Shipping', icon: Truck, shortcut: 'Alt+Shift+S', group: 'Operations' },
-  { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, shortcut: 'Alt+T', group: 'Operations' },
-  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, shortcut: 'Alt+G', group: 'Operations' },
+const secondaryNavItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; group: string }[] = [
+  { view: 'collections', label: 'Collections', icon: Layers, group: 'Catalog' },
+  { view: 'discounts', label: 'Discounts', icon: Tag, group: 'Catalog' },
+  { view: 'reviews', label: 'Reviews', icon: Star, group: 'Catalog' },
+  { view: 'inventory', label: 'Inventory', icon: Warehouse, group: 'Operations' },
+  { view: 'shipping', label: 'Shipping', icon: Truck, group: 'Operations' },
+  { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, group: 'Operations' },
+  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, group: 'Operations' },
   { view: 'abandoned-carts', label: 'Abandoned Carts', icon: ShoppingBag, group: 'Operations' },
   { view: 'activity', label: 'Activity Log', icon: Clock, group: 'Operations' },
-  { view: 'staff', label: 'Staff', icon: Users, shortcut: 'Alt+Shift+T', group: 'Settings' },
-  { view: 'store-settings', label: 'Settings', icon: Settings, shortcut: 'Alt+S', group: 'Settings' },
+  { view: 'staff', label: 'Staff', icon: Users, group: 'Settings' },
+  { view: 'store-settings', label: 'Settings', icon: Settings, group: 'Settings' },
   { view: 'store-preview', label: 'Preview', icon: Globe, group: 'Settings' },
   { view: 'pages', label: 'Pages', icon: FileText, group: 'Settings' },
 ]
 
-// Map views to breadcrumb labels
 const viewLabels: Record<string, string> = {
   landing: 'Home',
   login: 'Login',
@@ -152,7 +148,7 @@ function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="h-9 w-9">
+      <Button variant="ghost" size="icon" className="h-8 w-8">
         <Sun className="w-4 h-4 text-muted-foreground" />
       </Button>
     )
@@ -161,13 +157,13 @@ function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 relative">
-          <Sun className="w-4 h-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute w-4 h-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <Button variant="ghost" size="icon" className="h-8 w-8 relative">
+          <Sun className="w-[16px] h-[16px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute w-[16px] h-[16px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-[140px]">
         <DropdownMenuItem onClick={() => setTheme('light')} className={theme === 'light' ? 'bg-accent' : ''}>
           <Sun className="w-4 h-4 mr-2" />
           Light
@@ -185,10 +181,9 @@ function ThemeToggle() {
   )
 }
 
-// --- Sidebar Content Component (shared between Sheet and Desktop sidebar) ---
+// --- Sidebar Content ---
 function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   const { currentView, setView, currentStore, stores, setStore, currentUser, logout } = useAppStore()
-  const [soundEnabled, setSoundEnabled] = useState(true)
 
   const handleNav = (view: ViewType) => {
     setView(view)
@@ -199,27 +194,28 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
     ? currentUser.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U'
 
+  const storeInitial = currentStore?.name?.[0]?.toUpperCase() || 'S'
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Header */}
-      <div className="h-14 flex items-center gap-2 px-3 border-b border-border/60 shrink-0">
-        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Store className="w-5 h-5 text-white" />
+      {/* Logo Header */}
+      <div className="h-14 flex items-center gap-2.5 px-3 border-b border-border/60 shrink-0">
+        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+          <Store className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
           <div className="flex items-center gap-1.5 overflow-hidden min-w-0">
-            <span className="text-base font-bold text-emerald-900 dark:text-emerald-100 whitespace-nowrap truncate">
+            <span className="text-[15px] font-bold text-foreground whitespace-nowrap truncate">
               Online Vepar
             </span>
-            <Badge className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[9px] px-1.5 py-0 h-4 font-semibold shrink-0">
-              <Sparkles className="w-2.5 h-2.5 mr-0.5" />
+            <Badge className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-0 text-[9px] px-1.5 py-0 h-4 font-semibold shrink-0">
               PRO
             </Badge>
           </div>
         )}
       </div>
 
-      {/* Store selector */}
+      {/* Store Selector */}
       {!collapsed && (
         <div className="px-3 py-2.5 shrink-0">
           <div className="flex items-center gap-1.5">
@@ -230,51 +226,80 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
                 if (store) setStore(store)
               }}
             >
-              <SelectTrigger className="flex-1 h-8 text-xs border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/20">
-                <SelectValue placeholder="Select store" />
+              <SelectTrigger className="flex-1 h-9 text-xs border-border/80 bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/50 rounded flex items-center justify-center shrink-0">
+                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">{storeInitial}</span>
+                  </div>
+                  <SelectValue placeholder="Select store" />
+                </div>
               </SelectTrigger>
               <SelectContent>
                 {stores.map((store) => (
                   <SelectItem key={store.id} value={store.id}>
-                    {store.name}
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/50 rounded flex items-center justify-center shrink-0">
+                        <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-300">{store.name[0]?.toUpperCase()}</span>
+                      </div>
+                      {store.name}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-8 w-8 shrink-0 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300 transition-all duration-200"
-              onClick={() => handleNav('create-store')}
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-9 w-9 shrink-0 border-border/80 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200"
+                  onClick={() => handleNav('create-store')}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={8}>Create Store</TooltipContent>
+            </Tooltip>
           </div>
+        </div>
+      )}
+
+      {/* Collapsed store indicator */}
+      {collapsed && (
+        <div className="px-2 py-2 shrink-0 flex justify-center">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg flex items-center justify-center cursor-pointer hover:bg-emerald-200 dark:hover:bg-emerald-900/70 transition-colors">
+                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">{storeInitial}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={8}>{currentStore?.name || 'Select Store'}</TooltipContent>
+          </Tooltip>
         </div>
       )}
 
       {/* Navigation */}
       <ScrollArea className="flex-1 min-h-0 px-2 py-1.5">
         <nav className="space-y-0.5">
-          {/* Main nav items */}
+          {/* Main nav */}
           <div className="space-y-0.5">
-            {!collapsed && <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">Main</p>}
+            {!collapsed && <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">Main</p>}
             {mainNavItems.map((item) => {
               const isActive = currentView === item.view
               return (
                 <Button
                   key={item.view}
                   variant={isActive ? 'secondary' : 'ghost'}
-                  className={`w-full ${collapsed ? 'justify-center h-10' : 'justify-start gap-2.5 h-9 pl-3'} relative transition-all duration-150 button-press ${
+                  className={`w-full ${collapsed ? 'justify-center h-9' : 'justify-start gap-2.5 h-8 pl-3'} relative transition-all duration-150 rounded-md text-[13px] ${
                     isActive
-                      ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/80'
                   }`}
                   onClick={() => handleNav(item.view)}
                 >
-                  {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-emerald-600 rounded-r" />}
+                  {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-emerald-600 rounded-r" />}
                   <item.icon className="w-4 h-4 flex-shrink-0" />
-                  {!collapsed && <span className="text-sm whitespace-nowrap">{item.label}</span>}
+                  {!collapsed && <span>{item.label}</span>}
                 </Button>
               )
             })}
@@ -284,8 +309,8 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
           {!collapsed && (
             <>
               {['Catalog', 'Operations', 'Settings'].map((group) => (
-                <div key={group} className="mt-2 space-y-0.5">
-                  <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">{group}</p>
+                <div key={group} className="mt-1 space-y-0.5">
+                  <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">{group}</p>
                   {secondaryNavItems
                     .filter((item) => item.group === group)
                     .map((item) => {
@@ -294,16 +319,16 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
                         <Button
                           key={item.view}
                           variant={isActive ? 'secondary' : 'ghost'}
-                          className={`w-full justify-start gap-2.5 h-9 pl-3 relative transition-all duration-150 ${
+                          className={`w-full justify-start gap-2.5 h-8 pl-3 relative transition-all duration-150 rounded-md text-[13px] ${
                             isActive
-                              ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                              ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium shadow-sm'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-accent/80'
                           }`}
                           onClick={() => handleNav(item.view)}
                         >
-                          {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-emerald-600 rounded-r" />}
+                          {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-emerald-600 rounded-r" />}
                           <item.icon className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-sm whitespace-nowrap">{item.label}</span>
+                          <span>{item.label}</span>
                         </Button>
                       )
                     })}
@@ -312,10 +337,10 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
             </>
           )}
 
-          {/* Collapsed secondary nav (icons only) */}
+          {/* Collapsed secondary nav */}
           {collapsed && (
             <>
-              <div className="my-2 border-t border-border" />
+              <div className="my-1.5 border-t border-border/60" />
               {secondaryNavItems.map((item) => {
                 const isActive = currentView === item.view
                 return (
@@ -323,14 +348,14 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
                     <TooltipTrigger asChild>
                       <Button
                         variant="ghost"
-                        className={`w-full justify-center h-10 relative transition-all duration-150 ${
+                        className={`w-full justify-center h-9 relative transition-all duration-150 rounded-md ${
                           isActive
                             ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent/80'
                         }`}
                         onClick={() => handleNav(item.view)}
                       >
-                        {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-emerald-600 rounded-r" />}
+                        {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-emerald-600 rounded-r" />}
                         <item.icon className="w-4 h-4 flex-shrink-0" />
                       </Button>
                     </TooltipTrigger>
@@ -344,50 +369,35 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
           )}
 
           {/* Visit Store */}
-          <div className="mt-2 pt-2 border-t border-border">
+          <div className="mt-1.5 pt-1.5 border-t border-border/60">
             <Button
               variant="ghost"
-              className={`w-full ${collapsed ? 'justify-center h-10' : 'justify-start gap-2.5 h-9 pl-3'} text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30`}
+              className={`w-full ${collapsed ? 'justify-center h-9' : 'justify-start gap-2.5 h-8 pl-3'} text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-md text-[13px]`}
               onClick={() => handleNav('checkout')}
             >
               <Globe className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span className="text-sm">Visit Store</span>}
+              {!collapsed && <span>Visit Store</span>}
             </Button>
           </div>
         </nav>
       </ScrollArea>
 
-      {/* Sound toggle */}
-      {!collapsed && (
-        <div className="px-2 py-0.5 shrink-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start gap-2 h-7 text-muted-foreground hover:text-foreground text-[11px]"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-          >
-            {soundEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />}
-            {soundEnabled ? 'Sound On' : 'Sound Off'}
-          </Button>
-        </div>
-      )}
-
       {/* User profile */}
-      <div className="border-t border-border p-2 shrink-0">
+      <div className="border-t border-border/60 p-2 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className={`w-full ${collapsed ? 'justify-center px-0' : 'justify-start gap-2'} h-auto p-2 hover:bg-accent transition-all duration-150`}
+              className={`w-full ${collapsed ? 'justify-center px-0' : 'justify-start gap-2.5'} h-auto p-2 hover:bg-accent/80 transition-colors rounded-md`}
             >
               <div className="relative shrink-0">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs">
+                  <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-0.5 -right-0.5">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800" />
+                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-card" />
                 </div>
               </div>
               {!collapsed && (
@@ -419,8 +429,8 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
       </div>
 
       {!collapsed && (
-        <div className="px-3 py-1.5 border-t border-border shrink-0">
-          <p className="text-[10px] text-muted-foreground text-center">Online Vepar v1.0</p>
+        <div className="px-3 py-1.5 border-t border-border/40 shrink-0">
+          <p className="text-[10px] text-muted-foreground/50 text-center">Online Vepar v1.0</p>
         </div>
       )}
     </div>
@@ -434,9 +444,9 @@ function MobileBottomNav() {
 
   const bottomNavItems = [
     { view: 'dashboard' as ViewType, label: 'Home', icon: Home },
-    { view: 'products' as ViewType, label: 'Products', icon: Package },
     { view: 'orders' as ViewType, label: 'Orders', icon: ShoppingCart },
-    { view: 'analytics' as ViewType, label: 'Analytics', icon: BarChart3 },
+    { view: 'products' as ViewType, label: 'Products', icon: Package },
+    { view: 'customers' as ViewType, label: 'Customers', icon: Users },
   ]
 
   return (
@@ -446,47 +456,55 @@ function MobileBottomNav() {
         {showMore && (
           <>
             <motion.div
-              className="fixed inset-0 z-40 bg-black/50"
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowMore(false)}
             />
             <motion.div
-              className="fixed bottom-16 left-0 right-0 z-50 bg-card border-t border-border/50 rounded-t-2xl shadow-2xl dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] max-h-[70vh] overflow-y-auto overscroll-contain safe-area-bottom-inset"
+              className="fixed bottom-[68px] left-0 right-0 z-50 bg-card border-t border-border/50 rounded-t-2xl shadow-2xl max-h-[60vh] overflow-y-auto overscroll-contain"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
-              <div className="p-3 space-y-1">
-                <div className="flex items-center justify-between mb-2 px-1">
+              <div className="p-4 space-y-1">
+                <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">More Options</p>
-                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowMore(false)}>
-                    <X className="w-3.5 h-3.5" />
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowMore(false)}>
+                    <X className="w-4 h-4" />
                   </Button>
                 </div>
-                {secondaryNavItems.map((item) => {
-                  const isActive = currentView === item.view
-                  return (
-                    <button
-                      key={item.view}
-                      className={`flex items-center gap-3 w-full p-2.5 rounded-lg text-left transition-colors ${
-                        isActive
-                          ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-                          : 'text-foreground hover:bg-accent'
-                      }`}
-                      onClick={() => {
-                        setView(item.view)
-                        setShowMore(false)
-                      }}
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      <span className="text-sm">{item.label}</span>
-                      {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto text-emerald-600" />}
-                    </button>
-                  )
-                })}
+                {['Catalog', 'Operations', 'Settings'].map((group) => (
+                  <div key={group} className="mb-2">
+                    <p className="px-1 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">{group}</p>
+                    {secondaryNavItems
+                      .filter((item) => item.group === group)
+                      .map((item) => {
+                        const isActive = currentView === item.view
+                        return (
+                          <button
+                            key={item.view}
+                            className={`flex items-center gap-3 w-full p-3 rounded-xl text-left transition-colors touch-target ${
+                              isActive
+                                ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                                : 'text-foreground hover:bg-accent/80 active:bg-accent'
+                            }`}
+                            onClick={() => {
+                              setView(item.view)
+                              setShowMore(false)
+                            }}
+                          >
+                            <item.icon className="w-5 h-5 shrink-0" />
+                            <span className="text-sm font-medium">{item.label}</span>
+                            {isActive && <ChevronRight className="w-4 h-4 ml-auto text-emerald-600" />}
+                          </button>
+                        )
+                      })}
+                  </div>
+                ))}
               </div>
             </motion.div>
           </>
@@ -494,22 +512,27 @@ function MobileBottomNav() {
       </AnimatePresence>
 
       {/* Bottom navigation bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/50 lg:hidden safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-        <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-2">
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/40 lg:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-1">
           {bottomNavItems.map((item) => {
             const isActive = currentView === item.view
             return (
               <button
                 key={item.view}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors min-w-[48px] ${
+                className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[56px] touch-target ${
                   isActive
-                    ? 'text-emerald-600 dark:text-emerald-400 mobile-nav-active-indicator'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-muted-foreground active:text-foreground'
                 }`}
                 onClick={() => setView(item.view)}
               >
-                <item.icon className={`w-5 h-5 ${isActive ? 'scale-110' : ''} transition-transform`} />
-                <span className={`text-[10px] font-medium ${isActive ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+                <div className={`p-1 rounded-lg transition-all ${isActive ? 'bg-emerald-50 dark:bg-emerald-900/40' : ''}`}>
+                  <item.icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : ''}`} />
+                </div>
+                <span className={`text-[10px] font-medium leading-tight ${isActive ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
                   {item.label}
                 </span>
               </button>
@@ -517,15 +540,17 @@ function MobileBottomNav() {
           })}
           {/* More button */}
           <button
-            className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors min-w-[48px] ${
+            className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[56px] touch-target ${
               showMore || secondaryNavItems.some((i) => i.view === currentView)
-                ? 'text-emerald-600 dark:text-emerald-400 mobile-nav-active-indicator'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : 'text-muted-foreground active:text-foreground'
             }`}
             onClick={() => setShowMore(!showMore)}
           >
-            <LayoutGrid className={`w-5 h-5 ${showMore ? 'scale-110' : ''} transition-transform`} />
-            <span className="text-[10px] font-medium">More</span>
+            <div className={`p-1 rounded-lg transition-all ${showMore ? 'bg-emerald-50 dark:bg-emerald-900/40' : ''}`}>
+              <LayoutGrid className={`w-5 h-5 transition-transform ${showMore ? 'scale-110' : ''}`} />
+            </div>
+            <span className="text-[10px] font-medium leading-tight">More</span>
           </button>
         </div>
       </nav>
@@ -547,7 +572,6 @@ export default function DashboardLayout() {
     logout,
   } = useAppStore()
 
-  const [searchQuery, setSearchQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -630,23 +654,11 @@ export default function DashboardLayout() {
         <div className="flex flex-1 min-h-0">
           {/* Desktop Sidebar */}
           <motion.aside
-            className="hidden lg:flex flex-col border-r border-border overflow-hidden shrink-0 sticky top-0 h-screen"
-            animate={{ width: sidebarOpen ? 240 : 60 }}
+            className="hidden lg:flex flex-col border-r border-border/60 overflow-hidden shrink-0 sticky top-0 h-screen bg-card"
+            animate={{ width: sidebarOpen ? 240 : 56 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            style={{
-              background: sidebarOpen
-                ? 'linear-gradient(180deg, oklch(0.96 0.04 155 / 0.5) 0%, oklch(0.94 0.02 155 / 0.2) 40%, var(--card) 100%)'
-                : undefined,
-            }}
           >
-            <div className="absolute inset-0 hidden dark:block pointer-events-none"
-              style={{
-                background: sidebarOpen
-                  ? 'linear-gradient(180deg, oklch(0.2 0.03 155 / 0.6) 0%, oklch(0.16 0.02 155 / 0.3) 40%, var(--card) 100%)'
-                  : undefined,
-              }}
-            />
-            <div className="relative z-10 h-full min-h-0">
+            <div className="h-full min-h-0">
               <SidebarContent
                 collapsed={!sidebarOpen}
                 onNavigate={() => {}}
@@ -657,11 +669,11 @@ export default function DashboardLayout() {
           {/* Main content area */}
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
             {/* Top header */}
-            <header className={`h-14 border-b border-border bg-card flex items-center gap-2 px-3 lg:px-5 transition-shadow duration-200 shrink-0 ${scrolled ? 'shadow-sm' : ''}`}>
+            <header className={`h-13 border-b border-border/60 bg-card flex items-center gap-2 px-3 lg:px-4 transition-shadow duration-200 shrink-0 ${scrolled ? 'shadow-sm' : ''}`}>
               {/* Mobile: hamburger opens Sheet */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="lg:hidden shrink-0 h-9 w-9">
+                  <Button variant="ghost" size="icon" className="lg:hidden shrink-0 h-8 w-8">
                     <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
@@ -678,18 +690,18 @@ export default function DashboardLayout() {
               {/* Breadcrumbs */}
               <div className="hidden md:block shrink-0">
                 <Breadcrumb>
-                  <BreadcrumbList>
+                  <BreadcrumbList className="text-xs">
                     <BreadcrumbItem>
                       <BreadcrumbLink
-                        className="cursor-pointer text-muted-foreground"
+                        className="cursor-pointer text-muted-foreground/70 hover:text-foreground transition-colors"
                         onClick={() => setView('dashboard')}
                       >
                         {currentStore?.name || 'My Store'}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
-                    <BreadcrumbSeparator className="text-muted-foreground/40" />
+                    <BreadcrumbSeparator className="text-muted-foreground/30" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage className="text-foreground font-medium text-sm">
+                      <BreadcrumbPage className="text-foreground font-medium">
                         {viewLabels[currentView] || 'Dashboard'}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
@@ -704,34 +716,43 @@ export default function DashboardLayout() {
                 </h2>
               </div>
 
-              {/* Search */}
-              <div className="flex-1 max-w-xs mx-auto lg:mx-0 lg:max-w-sm">
-                <div
-                  className="relative group cursor-pointer"
+              {/* Spacer */}
+              <div className="flex-1" />
+
+              {/* Search trigger */}
+              <div className="hidden sm:flex items-center max-w-[220px] lg:max-w-[260px] shrink-0">
+                <button
+                  className="flex items-center gap-2 w-full h-8 px-3 rounded-md border border-border/60 bg-background text-muted-foreground text-xs hover:border-border hover:bg-accent/50 transition-colors cursor-pointer"
                   onClick={() => setSearchOpen(true)}
                 >
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                  <Input
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 pr-10 bg-background border-border h-8 text-sm focus:ring-1 focus:ring-emerald-500 transition-all duration-200 pointer-events-none"
-                    readOnly
-                  />
-                  <div className="absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:flex items-center pointer-events-none">
-                    <kbd className="inline-flex h-4 select-none items-center gap-0.5 rounded border bg-muted px-1 font-mono text-[9px] font-medium text-muted-foreground">
-                      <Command className="w-2 h-2" />K
-                    </kbd>
-                  </div>
-                </div>
+                  <Search className="w-3.5 h-3.5 shrink-0" />
+                  <span className="flex-1 text-left truncate">Search...</span>
+                  <kbd className="hidden lg:inline-flex h-4 select-none items-center gap-0.5 rounded border bg-muted px-1 font-mono text-[9px] font-medium text-muted-foreground shrink-0">
+                    <Command className="w-2 h-2" />K
+                  </kbd>
+                </button>
               </div>
 
-              <div className="flex items-center gap-1 shrink-0">
+              <div className="flex items-center gap-0.5 shrink-0">
+                {/* Collapse sidebar toggle (desktop) */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground"
+                  onClick={toggleSidebar}
+                >
+                  {sidebarOpen ? (
+                    <PanelLeftClose className="w-[16px] h-[16px]" />
+                  ) : (
+                    <PanelLeftOpen className="w-[16px] h-[16px]" />
+                  )}
+                </Button>
+
                 {/* Visit Store */}
                 <Button
                   variant="outline"
                   size="sm"
-                  className="hidden sm:flex gap-1 h-7 text-[11px] border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                  className="hidden sm:flex gap-1.5 h-7 text-[11px] border-border/60 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:border-emerald-200 dark:hover:border-emerald-800"
                   onClick={() => setView('checkout')}
                 >
                   <Globe className="w-3 h-3" />
@@ -746,7 +767,7 @@ export default function DashboardLayout() {
 
                 {/* User avatar (mobile) */}
                 <Avatar className="h-7 w-7 lg:hidden">
-                  <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-[10px]">
+                  <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-[10px] font-semibold">
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
@@ -754,15 +775,15 @@ export default function DashboardLayout() {
             </header>
 
             {/* Page content */}
-            <main id="main-content" className="flex-1 overflow-auto pb-16 lg:pb-0">
-              <div className="p-3 lg:p-5 max-w-[1600px] mx-auto">
+            <main id="main-content" className="flex-1 overflow-auto pb-20 lg:pb-0">
+              <div className="p-4 lg:p-6 max-w-[1600px] mx-auto">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentView}
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    exit={{ opacity: 0, y: -3 }}
+                    transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
                     {renderContent()}
                   </motion.div>
@@ -777,18 +798,6 @@ export default function DashboardLayout() {
 
         {/* Global Search Dialog */}
         <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
-
-        {/* Collapse toggle for desktop */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hidden lg:flex fixed bottom-4 left-0 z-50 w-5 h-10 rounded-none rounded-r-md bg-card/80 backdrop-blur-sm border border-border/50 border-l-0 hover:bg-accent transition-all duration-200 hover:w-6 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
-          onClick={toggleSidebar}
-        >
-          <ChevronDown
-            className={`w-3 h-3 transition-transform ${sidebarOpen ? '-rotate-90' : 'rotate-90'}`}
-          />
-        </Button>
       </div>
     </TooltipProvider>
   )

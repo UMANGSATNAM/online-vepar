@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   experimental: {
     memoryBasedWorkersCount: true,
   },
+  allowedDevOrigins: [
+    'localhost',
+    'localhost:81',
+    '.space-z.ai',
+    '.z.ai',
+  ],
 };
 
 export default nextConfig;
