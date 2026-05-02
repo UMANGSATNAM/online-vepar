@@ -203,7 +203,7 @@ const emptyFormData: ProductFormData = {
 
 function ProductGridSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <Card key={i} className="overflow-hidden">
           <Skeleton className="h-40 w-full" />
@@ -853,49 +853,51 @@ export default function ProductsPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="space-y-4"
+      className="space-y-4 pb-16 lg:pb-0"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Package className="w-6 h-6 text-emerald-600" />
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Package className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
             Products
             {pagination.total > 0 && (
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-xs sm:text-sm font-normal text-muted-foreground">
                 ({pagination.total})
               </span>
             )}
           </h1>
-          <p className="text-muted-foreground mt-1">Manage your product catalog</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage your product catalog</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
             onClick={openAddForm}
-            className="btn-gradient text-white"
+            className="btn-gradient text-white h-9 sm:h-10"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
+            <Plus className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
           </Button>
           <Button
             variant="outline"
+            className="h-9 sm:h-10"
             onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=products`)}
           >
-            <Download className="w-4 h-4 mr-2" />
-            Export
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline ml-2">Export</span>
           </Button>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <Card className="p-4">
-        <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+      <Card className="p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center">
           {/* Search */}
-          <div className="relative flex-1 w-full lg:max-w-xs">
+          <div className="relative flex-1 w-full sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name, SKU, description..."
-              className="pl-9"
+              placeholder="Search products..."
+              className="pl-9 h-9 sm:h-10 text-sm"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value)
@@ -904,76 +906,78 @@ export default function ProductsPage() {
             />
           </div>
 
-          {/* Status Filter */}
-          <Select
-            value={statusFilter}
-            onValueChange={(val) => {
-              setStatusFilter(val)
-              setPagination(prev => ({ ...prev, page: 1 }))
-            }}
-          >
-            <SelectTrigger className="w-full lg:w-[140px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Category Filter */}
-          <Select
-            value={categoryFilter}
-            onValueChange={(val) => {
-              setCategoryFilter(val)
-              setPagination(prev => ({ ...prev, page: 1 }))
-            }}
-          >
-            <SelectTrigger className="w-full lg:w-[160px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(cat => (
-                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Sort */}
-          <Select value={getCurrentSortValue()} onValueChange={handleSortChange}>
-            <SelectTrigger className="w-full lg:w-[170px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="name-az">Name: A to Z</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Display Mode Toggle */}
-          <div className="flex items-center border rounded-md overflow-hidden">
-            <Button
-              variant={displayMode === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setDisplayMode('grid')}
-              className={displayMode === 'grid' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none' : 'rounded-none'}
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+            {/* Status Filter */}
+            <Select
+              value={statusFilter}
+              onValueChange={(val) => {
+                setStatusFilter(val)
+                setPagination(prev => ({ ...prev, page: 1 }))
+              }}
             >
-              <LayoutGrid className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={displayMode === 'table' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setDisplayMode('table')}
-              className={displayMode === 'table' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none' : 'rounded-none'}
+              <SelectTrigger className="w-full sm:w-[130px] h-9 sm:h-10 text-sm">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Category Filter */}
+            <Select
+              value={categoryFilter}
+              onValueChange={(val) => {
+                setCategoryFilter(val)
+                setPagination(prev => ({ ...prev, page: 1 }))
+              }}
             >
-              <List className="w-4 h-4" />
-            </Button>
+              <SelectTrigger className="w-full sm:w-[140px] h-9 sm:h-10 text-sm">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(cat => (
+                  <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Sort */}
+            <Select value={getCurrentSortValue()} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-full sm:w-[150px] h-9 sm:h-10 text-sm">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="name-az">Name: A to Z</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Display Mode Toggle */}
+            <div className="flex items-center border rounded-md overflow-hidden">
+              <Button
+                variant={displayMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setDisplayMode('grid')}
+                className={displayMode === 'grid' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={displayMode === 'table' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setDisplayMode('table')}
+                className={displayMode === 'table' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
@@ -985,28 +989,28 @@ export default function ProductsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800"
+            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800 flex-wrap"
           >
-            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+            <span className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-300">
               {selectedIds.size} selected
             </span>
-            <Button size="sm" variant="outline" onClick={() => handleBulkStatusChange('active')}>
-              <CheckCircle2 className="w-3 h-3 mr-1" />
-              Set Active
+            <Button size="sm" variant="outline" className="h-8 sm:h-9 text-xs" onClick={() => handleBulkStatusChange('active')}>
+              <CheckCircle2 className="w-3 h-3 sm:mr-1" />
+              <span className="hidden sm:inline">Set Active</span>
             </Button>
-            <Button size="sm" variant="outline" onClick={() => handleBulkStatusChange('draft')}>
-              <CircleDot className="w-3 h-3 mr-1" />
-              Set Draft
+            <Button size="sm" variant="outline" className="h-8 sm:h-9 text-xs" onClick={() => handleBulkStatusChange('draft')}>
+              <CircleDot className="w-3 h-3 sm:mr-1" />
+              <span className="hidden sm:inline">Set Draft</span>
             </Button>
-            <Button size="sm" variant="outline" onClick={() => handleBulkStatusChange('archived')}>
-              <Archive className="w-3 h-3 mr-1" />
-              Archive
+            <Button size="sm" variant="outline" className="h-8 sm:h-9 text-xs" onClick={() => handleBulkStatusChange('archived')}>
+              <Archive className="w-3 h-3 sm:mr-1" />
+              <span className="hidden sm:inline">Archive</span>
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button size="sm" variant="destructive">
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Delete
+                <Button size="sm" variant="destructive" className="h-8 sm:h-9 text-xs">
+                  <Trash2 className="w-3 h-3 sm:mr-1" />
+                  <span className="hidden sm:inline">Delete</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -1022,9 +1026,9 @@ export default function ProductsPage() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
-              <X className="w-3 h-3 mr-1" />
-              Clear
+            <Button size="sm" variant="ghost" className="h-8 sm:h-9 text-xs" onClick={() => setSelectedIds(new Set())}>
+              <X className="w-3 h-3" />
+              <span className="hidden sm:inline ml-1">Clear</span>
             </Button>
           </motion.div>
         )}
@@ -1098,7 +1102,7 @@ export default function ProductsPage() {
   // ─── Render: Grid View ───────────────────────────────────────
 
   const renderGridView = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
       {products.map((product, idx) => {
         const images = parseJSONField(product.images)
         return (

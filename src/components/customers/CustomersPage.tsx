@@ -277,53 +277,54 @@ export default function CustomersPage() {
   // ========== DETAIL VIEW ==========
   if (selectedCustomer) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => setSelectedCustomerId(null)}>
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button variant="ghost" size="sm" className="h-9 sm:h-10" onClick={() => setSelectedCustomerId(null)}>
+                <ArrowLeft className="w-4 h-4 sm:mr-1" />
+                <span className="hidden sm:inline">Back</span>
               </Button>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full avatar-gradient-border">
-                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full avatar-gradient-border">
+                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-base sm:text-lg">
                     {selectedCustomer.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">{selectedCustomer.name}</h1>
-                  <p className="text-muted-foreground text-sm">Customer since {formatDate(selectedCustomer.createdAt)}</p>
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{selectedCustomer.name}</h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Customer since {formatDate(selectedCustomer.createdAt)}</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
-                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-9 sm:h-10"
                 onClick={() => openEditDialog(selectedCustomer)}
               >
-                <Pencil className="w-4 h-4 mr-2" />
-                Edit
+                <Pencil className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Edit</span>
               </Button>
               <Button
                 variant="destructive"
+                className="h-9 sm:h-10"
                 onClick={() => setDeleteId(selectedCustomer.id)}
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete
+                <Trash2 className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </div>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Left column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Order History */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -331,19 +332,20 @@ export default function CustomersPage() {
               transition={{ duration: 0.3, delay: 0.1 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4" />
                     Order History
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   {customerOrders.length === 0 ? (
                     <div className="text-center py-8">
                       <ShoppingCart className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">No orders yet for this customer</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">No orders yet for this customer</p>
                     </div>
                   ) : (
+                    <div className="overflow-x-auto -mx-3 sm:mx-0">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -378,6 +380,7 @@ export default function CustomersPage() {
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -385,7 +388,7 @@ export default function CustomersPage() {
           </div>
 
           {/* Right column */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -393,10 +396,10 @@ export default function CustomersPage() {
               transition={{ duration: 0.3, delay: 0.1 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Contact Info</CardTitle>
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg">Contact Info</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   {selectedCustomer.email && (
                     <div className="flex items-center gap-2 text-sm">
                       <Mail className="w-4 h-4 text-muted-foreground" />
@@ -437,10 +440,10 @@ export default function CustomersPage() {
               transition={{ duration: 0.3, delay: 0.15 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Stats</CardTitle>
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg">Stats</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Total Orders</span>
                     <span className="font-semibold">{selectedCustomer.totalOrders}</span>
@@ -527,13 +530,14 @@ export default function CustomersPage() {
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium">City</label>
                     <Input
                       placeholder="City"
                       value={formData.city}
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      className="h-9 sm:h-10"
                     />
                   </div>
                   <div className="space-y-1">
@@ -542,6 +546,7 @@ export default function CustomersPage() {
                       placeholder="State"
                       value={formData.state}
                       onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                      className="h-9 sm:h-10"
                     />
                   </div>
                   <div className="space-y-1">
@@ -550,6 +555,7 @@ export default function CustomersPage() {
                       placeholder="ZIP"
                       value={formData.zip}
                       onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                      className="h-9 sm:h-10"
                     />
                   </div>
                 </div>
@@ -623,39 +629,41 @@ export default function CustomersPage() {
 
   // ========== LIST VIEW ==========
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">
               Customers
               {pagination.total > 0 && (
-                <span className="text-muted-foreground font-normal text-lg ml-2">
+                <span className="text-muted-foreground font-normal text-sm sm:text-lg ml-2">
                   ({pagination.total})
                 </span>
               )}
             </h1>
-            <p className="text-muted-foreground mt-1">View and manage your customer base</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">View and manage your customer base</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
-              className="btn-gradient text-white"
+              className="btn-gradient text-white h-9 sm:h-10"
               onClick={openCreateDialog}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Customer
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Add Customer</span>
+              <span className="sm:hidden">Add</span>
             </Button>
             <Button
               variant="outline"
+              className="h-9 sm:h-10"
               onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=customers`)}
             >
-              <Download className="w-4 h-4 mr-2" />
-              Export
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline ml-2">Export</span>
             </Button>
           </div>
         </div>
@@ -668,11 +676,11 @@ export default function CustomersPage() {
         transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="flex items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative flex-1 max-w-sm w-full sm:max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search by name, email, phone..."
-              className="pl-9"
+              className="pl-9 h-9 sm:h-10 text-sm"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             />
@@ -725,16 +733,17 @@ export default function CustomersPage() {
               <>
                 {/* Desktop Table */}
                 <div className="hidden md:block">
+                  <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>City/State</TableHead>
-                        <TableHead className="text-center">Orders</TableHead>
-                        <TableHead className="text-right">Total Spent</TableHead>
-                        <TableHead>Joined</TableHead>
+                        <TableHead className="hidden sm:table-cell">Email</TableHead>
+                        <TableHead className="hidden lg:table-cell">Phone</TableHead>
+                        <TableHead className="hidden md:table-cell">City/State</TableHead>
+                        <TableHead className="text-center hidden sm:table-cell">Orders</TableHead>
+                        <TableHead className="text-right hidden sm:table-cell">Total Spent</TableHead>
+                        <TableHead className="hidden lg:table-cell">Joined</TableHead>
                         <TableHead className="w-[50px]" />
                       </TableRow>
                     </TableHeader>
@@ -760,22 +769,22 @@ export default function CustomersPage() {
                                 <span className="font-medium">{customer.name}</span>
                               </div>
                             </TableCell>
-                            <TableCell className="text-muted-foreground text-sm">
+                            <TableCell className="text-muted-foreground text-sm hidden sm:table-cell">
                               {customer.email || '—'}
                             </TableCell>
-                            <TableCell className="text-muted-foreground text-sm">
+                            <TableCell className="text-muted-foreground text-sm hidden lg:table-cell">
                               {customer.phone || '—'}
                             </TableCell>
-                            <TableCell className="text-muted-foreground text-sm">
+                            <TableCell className="text-muted-foreground text-sm hidden md:table-cell">
                               {[customer.city, customer.state].filter(Boolean).join(', ') || '—'}
                             </TableCell>
-                            <TableCell className="text-center">
+                            <TableCell className="text-center hidden sm:table-cell">
                               <Badge variant="secondary">{customer.totalOrders}</Badge>
                             </TableCell>
-                            <TableCell className="text-right font-medium">
+                            <TableCell className="text-right font-medium hidden sm:table-cell">
                               {formatPrice(customer.totalSpent)}
                             </TableCell>
-                            <TableCell className="text-muted-foreground text-sm">
+                            <TableCell className="text-muted-foreground text-sm hidden lg:table-cell">
                               {formatDate(customer.createdAt)}
                             </TableCell>
                             <TableCell>
@@ -809,9 +818,8 @@ export default function CustomersPage() {
                       </AnimatePresence>
                     </TableBody>
                   </Table>
+                  </div>
                 </div>
-
-                {/* Mobile Cards */}
                 <div className="md:hidden divide-y">
                   {customers.map((customer) => (
                     <motion.div
@@ -974,13 +982,14 @@ export default function CustomersPage() {
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 />
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <label className="text-sm font-medium">City</label>
                   <Input
                     placeholder="City"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="h-9 sm:h-10"
                   />
                 </div>
                 <div className="space-y-1">
@@ -989,6 +998,7 @@ export default function CustomersPage() {
                     placeholder="State"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    className="h-9 sm:h-10"
                   />
                 </div>
                 <div className="space-y-1">
@@ -997,6 +1007,7 @@ export default function CustomersPage() {
                     placeholder="ZIP"
                     value={formData.zip}
                     onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                    className="h-9 sm:h-10"
                   />
                 </div>
               </div>

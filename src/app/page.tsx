@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
+import '@/lib/api' // Initialize auth fetch interceptor
 import LandingPage from '@/components/landing/LandingPage'
 import LoginPage from '@/components/auth/LoginPage'
 import RegisterPage from '@/components/auth/RegisterPage'

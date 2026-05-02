@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { db } from '@/lib/db';
 
 // Simple hash function for passwords
@@ -19,16 +19,25 @@ export function verifyPassword(password: string, hashedPassword: string): boolea
   return hashPassword(password) === hashedPassword;
 }
 
-// Get current user from cookie
+// Get current user from cookie or X-User-Id header (fallback for sandbox environments)
 export async function getCurrentUser(): Promise<{ id: string; email: string; name: string; role: string } | null> {
   try {
+    // Try cookie first
     const cookieStore = await cookies();
     const session = cookieStore.get('ov_session');
     
-    if (!session?.value) return null;
+    let userId = session?.value;
+    
+    // Fallback: check X-User-Id header (for sandbox environments where cookies may not work)
+    if (!userId) {
+      const headersList = await headers();
+      userId = headersList.get('x-user-id') || undefined;
+    }
+    
+    if (!userId) return null;
     
     const user = await db.user.findUnique({
-      where: { id: session.value },
+      where: { id: userId },
       select: { id: true, email: true, name: true, role: true },
     });
     

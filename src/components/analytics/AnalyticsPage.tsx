@@ -351,7 +351,7 @@ export default function AnalyticsPage() {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6 pb-16 lg:pb-0"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -381,20 +381,20 @@ export default function AnalyticsPage() {
       <motion.div variants={itemVariants}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Analytics</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               Track your store performance and business insights
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             {/* Date Range Picker */}
-            <div className="flex items-center border rounded-lg overflow-hidden">
+            <div className="flex items-center border rounded-lg overflow-x-auto max-w-full">
               {DATE_RANGE_OPTIONS.map((opt) => (
                 <Button
                   key={opt.value}
                   variant={dateRange === opt.value ? 'secondary' : 'ghost'}
                   size="sm"
-                  className={`h-8 px-3 rounded-none text-xs ${dateRange === opt.value ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium' : ''}`}
+                  className={`h-7 sm:h-8 px-2 sm:px-3 rounded-none text-[10px] sm:text-xs whitespace-nowrap ${dateRange === opt.value ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium' : ''}`}
                   onClick={() => setDateRange(opt.value)}
                 >
                   {opt.value === 'custom' ? <Calendar className="w-3 h-3 mr-1" /> : null}
@@ -413,14 +413,14 @@ export default function AnalyticsPage() {
       {/* Comparison Metrics */}
       {!loading && data && (
         <motion.div variants={itemVariants}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
             {comparisonMetrics.map((metric) => (
-              <div key={metric.label} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card">
-                <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">{metric.label}</p>
-                  <div className="flex items-end gap-2">
-                    <span className="text-lg font-bold">{formatCurrency(metric.current)}</span>
-                    <span className="text-xs text-muted-foreground line-through">{formatCurrency(metric.previous)}</span>
+              <div key={metric.label} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border border-border bg-card">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{metric.label}</p>
+                  <div className="flex items-end gap-1 sm:gap-2">
+                    <span className="text-sm sm:text-lg font-bold truncate">{formatCurrency(metric.current)}</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground line-through hidden sm:inline">{formatCurrency(metric.previous)}</span>
                   </div>
                 </div>
                 <div className={`flex items-center gap-0.5 text-xs font-medium px-2 py-1 rounded-full ${metric.up ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600' : 'bg-red-50 dark:bg-red-900/30 text-red-600'}`}>
@@ -435,69 +435,69 @@ export default function AnalyticsPage() {
 
       {/* Key Metrics Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <MetricSkeleton key={i} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <motion.div variants={itemVariants}>
             <Card className="hover:shadow-md transition-shadow hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Avg. Order Value</CardTitle>
-                <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center ring-1 ring-emerald-600/20">
-                  <DollarSign className="w-4 h-4 text-emerald-600" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 p-3 sm:p-4 lg:p-6">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Order Value</CardTitle>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center ring-1 ring-emerald-600/20">
+                  <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold tracking-tight">{formatCurrency(Math.round(avgOrderValue))}</div>
-                <p className="text-xs text-muted-foreground mt-1">Per order average</p>
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                <div className="text-xl sm:text-2xl font-bold tracking-tight">{formatCurrency(Math.round(avgOrderValue))}</div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Per order average</p>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="hover:shadow-md transition-shadow hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Revenue / Customer</CardTitle>
-                <div className="w-8 h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center ring-1 ring-violet-600/20">
-                  <Users className="w-4 h-4 text-violet-600" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 p-3 sm:p-4 lg:p-6">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Revenue / Customer</CardTitle>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center ring-1 ring-violet-600/20">
+                  <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-600" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold tracking-tight">{formatCurrency(Math.round(revenuePerCustomer))}</div>
-                <p className="text-xs text-muted-foreground mt-1">Lifetime value</p>
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                <div className="text-xl sm:text-2xl font-bold tracking-tight">{formatCurrency(Math.round(revenuePerCustomer))}</div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Lifetime value</p>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="hover:shadow-md transition-shadow hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Best Seller</CardTitle>
-                <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center ring-1 ring-orange-600/20">
-                  <TrendingUp className="w-4 h-4 text-orange-600" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 p-3 sm:p-4 lg:p-6">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Best Seller</CardTitle>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center ring-1 ring-orange-600/20">
+                  <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold tracking-tight truncate">{bestSeller}</div>
-                <p className="text-xs text-muted-foreground mt-1">Top product by revenue</p>
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                <div className="text-base sm:text-lg font-bold tracking-tight truncate">{bestSeller}</div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Top product by revenue</p>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="hover:shadow-md transition-shadow hover-lift">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Pending Fulfillments</CardTitle>
-                <div className="w-8 h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center ring-1 ring-sky-600/20">
-                  <Package className="w-4 h-4 text-sky-600" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 p-3 sm:p-4 lg:p-6">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Pending Fulfillments</CardTitle>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center ring-1 ring-sky-600/20">
+                  <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold tracking-tight">{data?.stats.unfulfilledOrders || 0}</div>
-                <p className="text-xs text-muted-foreground mt-1">
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                <div className="text-xl sm:text-2xl font-bold tracking-tight">{data?.stats.unfulfilledOrders || 0}</div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                   {data?.stats.pendingOrders || 0} pending orders
                 </p>
               </CardContent>
@@ -507,22 +507,22 @@ export default function AnalyticsPage() {
       )}
 
       {/* Revenue Overview + Orders by Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Revenue Overview - 2 cols */}
         <motion.div variants={itemVariants} className="lg:col-span-2">
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
+            <CardHeader className="p-3 sm:p-4 lg:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                     </div>
                     Revenue Overview
                   </CardTitle>
-                  <CardDescription>Monthly revenue for the last 12 months</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm">Monthly revenue for the last 12 months</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {/* Chart Type Toggle */}
                   <div className="flex items-center border rounded-md overflow-hidden">
                     <Button
@@ -546,7 +546,7 @@ export default function AnalyticsPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 gap-1 text-xs"
+                    className="h-7 gap-1 text-[10px] sm:text-xs"
                     onClick={exportChart}
                     title="Export chart as PNG"
                   >
@@ -554,19 +554,19 @@ export default function AnalyticsPage() {
                     <span className="hidden sm:inline">Export</span>
                   </Button>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-emerald-600">
+                    <div className="text-lg sm:text-2xl font-bold text-emerald-600">
                       {loading ? <Skeleton className="h-7 w-24 inline-block shimmer-line" /> : formatCurrencyShort(data?.stats.totalRevenue || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Total Revenue</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">Total Revenue</p>
                   </div>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
               {loading ? (
                 <ChartSkeleton />
               ) : (
-                <div className="h-64" ref={chartRef}>
+                <div className="h-48 sm:h-64" ref={chartRef}>
                   <ResponsiveContainer width="100%" height="100%">
                     {chartType === 'area' ? (
                       <AreaChart data={areaData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
@@ -649,20 +649,20 @@ export default function AnalyticsPage() {
         {/* Orders by Status - 1 col */}
         <motion.div variants={itemVariants}>
           <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
-                  <ShoppingCart className="w-4 h-4 text-violet-600" />
+            <CardHeader className="p-3 sm:p-4 lg:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
+                  <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-600" />
                 </div>
                 Orders by Status
               </CardTitle>
-              <CardDescription>Distribution of order statuses</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">Distribution of order statuses</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
               {loading ? (
-                <ChartSkeleton height="h-52" />
+                <ChartSkeleton height="h-40 sm:h-52" />
               ) : pieData.length === 0 ? (
-                <div className="h-52 flex items-center justify-center text-muted-foreground">
+                <div className="h-40 sm:h-52 flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
                     <ShoppingCart className="w-8 h-8 mx-auto mb-2 opacity-40" />
                     <p className="text-sm">No order data</p>
@@ -670,7 +670,7 @@ export default function AnalyticsPage() {
                 </div>
               ) : (
                 <>
-                  <div className="h-52">
+                  <div className="h-40 sm:h-52">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -801,20 +801,20 @@ export default function AnalyticsPage() {
       {/* Revenue Trend Bar Chart */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-emerald-600" />
+          <CardHeader className="p-3 sm:p-4 lg:p-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
               </div>
               Revenue Trend
             </CardTitle>
-            <CardDescription>Monthly revenue comparison</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">Monthly revenue comparison</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
             {loading ? (
-              <ChartSkeleton height="h-72" />
+              <ChartSkeleton height="h-56 sm:h-72" />
             ) : (
-              <div className="h-72">
+              <div className="h-56 sm:h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={barData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <defs>
@@ -857,28 +857,28 @@ export default function AnalyticsPage() {
       </motion.div>
 
       {/* Top Products + Customer Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
         {/* Top Products Table - 3 cols */}
         <motion.div variants={itemVariants} className="lg:col-span-3">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                  <Package className="w-4 h-4 text-orange-600" />
+            <CardHeader className="p-3 sm:p-4 lg:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                  <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600" />
                 </div>
                 Top Products
               </CardTitle>
-              <CardDescription>Ranked by revenue</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">Ranked by revenue</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
               {loading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-4">
+                    <div key={i} className="flex items-center gap-2 sm:gap-4">
                       <Skeleton className="h-4 w-6 shimmer-line" />
                       <Skeleton className="h-4 flex-1 shimmer-line" />
-                      <Skeleton className="h-4 w-16 shimmer-line" />
-                      <Skeleton className="h-4 w-20 shimmer-line" />
+                      <Skeleton className="h-4 w-16 shimmer-line hidden sm:block" />
+                      <Skeleton className="h-4 w-20 shimmer-line hidden sm:block" />
                     </div>
                   ))}
                 </div>
@@ -888,14 +888,15 @@ export default function AnalyticsPage() {
                   <p className="text-sm">No product sales data yet</p>
                 </div>
               ) : (
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-8">#</TableHead>
                       <TableHead>Product</TableHead>
-                      <TableHead className="text-right">Qty Sold</TableHead>
+                      <TableHead className="text-right hidden sm:table-cell">Qty Sold</TableHead>
                       <TableHead className="text-right">Revenue</TableHead>
-                      <TableHead className="text-right">Avg. Value</TableHead>
+                      <TableHead className="text-right hidden md:table-cell">Avg. Value</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -904,21 +905,22 @@ export default function AnalyticsPage() {
                         <TableCell className="font-bold text-muted-foreground text-xs">{idx + 1}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-muted dark:bg-muted/50 rounded-md flex items-center justify-center shrink-0">
-                              <Package className="w-4 h-4 text-muted-foreground" />
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-muted dark:bg-muted/50 rounded-md flex items-center justify-center shrink-0">
+                              <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
                             </div>
-                            <span className="font-medium text-sm truncate max-w-[150px]">{product.name}</span>
+                            <span className="font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-[150px]">{product.name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right text-sm">{product.totalQuantity || 0}</TableCell>
-                        <TableCell className="text-right font-medium text-sm">{formatCurrency(product.totalRevenue || 0)}</TableCell>
-                        <TableCell className="text-right text-sm text-muted-foreground">
+                        <TableCell className="text-right text-xs sm:text-sm hidden sm:table-cell">{product.totalQuantity || 0}</TableCell>
+                        <TableCell className="text-right font-medium text-xs sm:text-sm">{formatCurrency(product.totalRevenue || 0)}</TableCell>
+                        <TableCell className="text-right text-xs sm:text-sm text-muted-foreground hidden md:table-cell">
                           {product.totalQuantity ? formatCurrency(Math.round((product.totalRevenue || 0) / product.totalQuantity)) : '—'}
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               )}
             </CardContent>
           </Card>

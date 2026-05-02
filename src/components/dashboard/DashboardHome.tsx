@@ -480,7 +480,7 @@ export default function DashboardHome() {
       </AnimatePresence>
 
       <motion.div
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6 pb-16 lg:pb-0"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -514,7 +514,7 @@ export default function DashboardHome() {
                 <GreetingIcon className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">
                   {greeting}, {firstName}! 👋
                 </h1>
                 <p className="text-muted-foreground mt-0.5">
@@ -529,19 +529,19 @@ export default function DashboardHome() {
         {/* Today's Highlights */}
         {!loading && data && (
           <motion.div variants={itemVariants}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {highlights.map((h, idx) => (
                 <button
                   key={h.label}
-                  className={`flex items-center gap-3 p-3 rounded-xl border border-border hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200 hover:shadow-sm card-premium animate-card-entrance stagger-${idx + 1} group`}
+                  className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border border-border hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200 hover:shadow-sm card-premium animate-card-entrance stagger-${idx + 1} group`}
                   onClick={() => h.label === 'Low Stock Alerts' ? setView('products') : setView('orders')}
                 >
-                  <div className={`w-10 h-10 ${h.bg} rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                    <h.icon className={`w-5 h-5 ${h.color}`} />
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 ${h.bg} rounded-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                    <h.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${h.color}`} />
                   </div>
-                  <div className="text-left">
-                    <p className="text-xs text-muted-foreground">{h.label}</p>
-                    <p className="text-lg font-bold text-foreground">{h.value}</p>
+                  <div className="text-left min-w-0">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{h.label}</p>
+                    <p className="text-base sm:text-lg font-bold text-foreground">{h.value}</p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
@@ -554,7 +554,7 @@ export default function DashboardHome() {
         {loading ? (
           <StatsSkeleton />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {statsCards.map((stat) => (
               <StatCard key={stat.title} stat={stat} />
             ))}
@@ -565,33 +565,33 @@ export default function DashboardHome() {
         <motion.div variants={itemVariants}>
           <div className="section-divider mb-6" />
           <Card className="card-premium">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <Eye className="w-4 h-4 text-emerald-600" />
+            <CardHeader className="p-3 sm:p-4 lg:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                  <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                 </div>
                 Quick Actions
               </CardTitle>
-              <CardDescription>Common tasks to manage your store</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">Common tasks to manage your store</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {quickActions.map((action, idx) => {
                   const borderColors = ['border-l-emerald-500', 'border-l-orange-500', 'border-l-violet-500', 'border-l-sky-500']
                   return (
                     <button
                       key={action.label}
-                      className={`flex items-center gap-3 p-4 rounded-lg border border-border border-l-4 ${borderColors[idx] || 'border-l-emerald-500'} hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all text-left group hover-lift`}
+                      className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border border-border border-l-4 ${borderColors[idx] || 'border-l-emerald-500'} hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all text-left group hover-lift`}
                       onClick={() => setView(action.view)}
                     >
-                      <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-colors">
-                        <action.icon className="w-5 h-5 text-emerald-600" />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-colors">
+                        <action.icon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
                       </div>
-                      <div>
-                        <span className="text-sm font-medium text-foreground block">{action.label}</span>
-                        <span className="text-xs text-muted-foreground">{action.desc}</span>
+                      <div className="min-w-0">
+                        <span className="text-xs sm:text-sm font-medium text-foreground block">{action.label}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">{action.desc}</span>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block" />
                     </button>
                   )
                 })}
@@ -601,20 +601,20 @@ export default function DashboardHome() {
         </motion.div>
 
         {/* Recent Orders + Top Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
           {/* Recent Orders - 3 columns */}
           <motion.div variants={itemVariants} className="lg:col-span-3">
             <Card className="card-premium">
-              <CardHeader>
+              <CardHeader className="p-3 sm:p-4 lg:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                        <ShoppingCart className="w-4 h-4 text-orange-600" />
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                        <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600" />
                       </div>
                       Recent Orders
                     </CardTitle>
-                    <CardDescription>Latest orders from your store</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">Latest orders from your store</CardDescription>
                   </div>
                   <Button
                     variant="ghost"
@@ -626,7 +626,7 @@ export default function DashboardHome() {
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                 {loading ? (
                   <TableSkeleton />
                 ) : !data?.recentOrders.length ? (
@@ -636,15 +636,16 @@ export default function DashboardHome() {
                     <p className="text-xs mt-1">Orders will appear here when customers place them</p>
                   </div>
                 ) : (
+                  <div className="overflow-x-auto -mx-3 sm:mx-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Order</TableHead>
                         <TableHead>Customer</TableHead>
-                        <TableHead>Date</TableHead>
+                        <TableHead className="hidden sm:table-cell">Date</TableHead>
                         <TableHead className="text-right">Total</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Payment</TableHead>
+                        <TableHead className="hidden md:table-cell">Payment</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -654,25 +655,25 @@ export default function DashboardHome() {
                           className={`cursor-pointer table-row-hover ${idx % 2 === 1 ? 'table-row-alt' : ''}`}
                           onClick={() => setView('orders')}
                         >
-                          <TableCell className="font-medium text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:underline">
+                          <TableCell className="font-medium text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:underline whitespace-nowrap">
                             {order.orderNumber}
                           </TableCell>
                           <TableCell>
                             <div>
-                              <p className="text-sm font-medium">{order.customerName}</p>
+                              <p className="text-xs sm:text-sm font-medium">{order.customerName}</p>
                               {order.customerEmail && (
-                                <p className="text-xs text-muted-foreground">{order.customerEmail}</p>
+                                <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">{order.customerEmail}</p>
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">{formatDate(order.createdAt)}</TableCell>
-                          <TableCell className="text-right font-medium">{formatCurrency(order.total)}</TableCell>
+                          <TableCell className="text-xs text-muted-foreground hidden sm:table-cell">{formatDate(order.createdAt)}</TableCell>
+                          <TableCell className="text-right font-medium text-xs sm:text-sm whitespace-nowrap">{formatCurrency(order.total)}</TableCell>
                           <TableCell>
                             <Badge variant="outline" className={`text-[10px] px-1.5 py-0 capitalize ${getStatusColor(order.status)}`}>
                               {order.status}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             <span className={`text-xs font-medium capitalize ${getPaymentStatusColor(order.paymentStatus)}`}>
                               {order.paymentStatus.replace('_', ' ')}
                             </span>
@@ -681,14 +682,15 @@ export default function DashboardHome() {
                       ))}
                     </TableBody>
                   </Table>
+                  </div>
                 )}
               </CardContent>
               {data && data.recentOrders.length > 0 && (
-                <CardFooter className="border-t pt-4">
+                <CardFooter className="border-t p-3 sm:p-4 lg:p-6">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1"
+                    className="w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1 h-9 sm:h-10"
                     onClick={() => setView('orders')}
                   >
                     View All Orders <ArrowRight className="w-4 h-4 ml-1" />
@@ -699,22 +701,22 @@ export default function DashboardHome() {
           </motion.div>
 
           {/* Right column: Top Products + Activity */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Top Products */}
             <motion.div variants={itemVariants}>
               <Card className="card-premium">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-violet-600" />
+                <CardHeader className="p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-violet-50 dark:bg-violet-900/30 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-600" />
                     </div>
                     Top Products
                   </CardTitle>
-                  <CardDescription>By revenue this period</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm">By revenue this period</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   {loading ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <div key={i} className="space-y-2">
                           <Skeleton className="h-4 w-3/4 shimmer-line" />
@@ -728,23 +730,23 @@ export default function DashboardHome() {
                       <p className="text-sm">No product sales yet</p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {topProducts.map((product, idx) => (
                         <div key={product.id} className="space-y-1.5">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                               <Badge
                                 variant="outline"
                                 className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center rounded-full font-bold shrink-0 ${idx < 3 ? rankBadgeColors[idx] : 'bg-muted text-muted-foreground border-muted'}`}
                               >
                                 {idx + 1}
                               </Badge>
-                              <div className="w-7 h-7 bg-emerald-50 dark:bg-emerald-900/30 rounded flex items-center justify-center shrink-0">
-                                <Package className="w-3.5 h-3.5 text-emerald-400" />
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-emerald-50 dark:bg-emerald-900/30 rounded flex items-center justify-center shrink-0">
+                                <Package className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />
                               </div>
-                              <span className="text-sm font-medium truncate">{product.name}</span>
+                              <span className="text-xs sm:text-sm font-medium truncate">{product.name}</span>
                             </div>
-                            <span className="text-sm font-semibold text-foreground shrink-0 ml-2">
+                            <span className="text-xs sm:text-sm font-semibold text-foreground shrink-0 ml-2">
                               {formatCurrency(product.totalRevenue || 0)}
                             </span>
                           </div>
@@ -768,16 +770,16 @@ export default function DashboardHome() {
             {/* Activity Timeline */}
             <motion.div variants={itemVariants}>
               <Card className="card-premium">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
-                      <Clock className="w-4 h-4 text-sky-600" />
+                <CardHeader className="p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
+                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600" />
                     </div>
                     Activity
                   </CardTitle>
-                  <CardDescription>Recent activity & alerts</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm">Recent activity & alerts</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   {loading ? (
                     <div className="space-y-3">
                       {Array.from({ length: 4 }).map((_, i) => (
@@ -809,7 +811,7 @@ export default function DashboardHome() {
                               onClick={() => setView(activity.view)}
                             >
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm text-foreground leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{activity.text}</p>
+                                <p className="text-xs sm:text-sm text-foreground leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{activity.text}</p>
                                 <p className="text-[10px] text-muted-foreground mt-0.5">{activity.time}</p>
                               </div>
                               <ArrowRight className="w-3 h-3 text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -855,20 +857,20 @@ function StatCard({ stat }: { stat: {
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} pointer-events-none`} />
         <div className="relative">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6">
+            <CardTitle className="text-[11px] sm:text-sm font-medium text-muted-foreground">
               {stat.title}
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <MiniSparkline color={stat.sparkColor} />
-              <div className={`w-9 h-9 ${stat.bg} rounded-lg flex items-center justify-center ring-1 ${stat.iconRing}`}>
-                <stat.icon className={`w-4.5 h-4.5 ${stat.color}`} />
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="hidden sm:block"><MiniSparkline color={stat.sparkColor} /></div>
+              <div className={`w-7 h-7 sm:w-9 sm:h-9 ${stat.bg} rounded-lg flex items-center justify-center ring-1 ${stat.iconRing}`}>
+                <stat.icon className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 ${stat.color}`} />
               </div>
             </div>
           </CardHeader>
-          <CardContent ref={ref}>
-            <div className="flex items-end gap-2">
-              <div className="text-2xl font-bold tracking-tight">
+          <CardContent ref={ref} className="p-3 sm:p-6 pt-0 sm:pt-0">
+            <div className="flex items-end gap-1 sm:gap-2">
+              <div className="text-lg sm:text-2xl font-bold tracking-tight">
                 {isRevenue ? formatCurrency(count) : count.toLocaleString('en-IN')}
               </div>
               {/* Trend indicator */}

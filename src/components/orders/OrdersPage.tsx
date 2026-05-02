@@ -359,22 +359,22 @@ export default function OrdersPage() {
   // ========== DETAIL VIEW ==========
   if (selectedOrder) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => setSelectedOrderId(null)}>
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button variant="ghost" size="sm" className="h-9 sm:h-10" onClick={() => setSelectedOrderId(null)}>
+                <ArrowLeft className="w-4 h-4 sm:mr-1" />
+                <span className="hidden sm:inline">Back</span>
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
                   {selectedOrder.orderNumber}
-                  <Badge className={getOrderStatusColor(selectedOrder.status)}>
+                  <Badge className={`${getOrderStatusColor(selectedOrder.status)} text-[10px] sm:text-xs`}>
                     {capitalizeFirst(selectedOrder.status)}
                   </Badge>
                 </h1>
@@ -393,76 +393,84 @@ export default function OrdersPage() {
           transition={{ duration: 0.3, delay: 0.05 }}
         >
           <Card className="card-premium">
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex flex-wrap gap-2">
                 {selectedOrder.status !== 'confirmed' && selectedOrder.status !== 'delivered' && selectedOrder.status !== 'cancelled' && (
                   <Button
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'confirmed' })}
                   >
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Mark as Confirmed
+                    <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Mark as Confirmed</span>
+                    <span className="sm:hidden">Confirm</span>
                   </Button>
                 )}
                 {selectedOrder.status === 'confirmed' && (
                   <Button
                     size="sm"
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    className="bg-purple-600 hover:bg-purple-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'processing' })}
                   >
-                    <Package className="w-4 h-4 mr-1" />
-                    Mark as Processing
+                    <Package className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Mark as Processing</span>
+                    <span className="sm:hidden">Process</span>
                   </Button>
                 )}
                 {(selectedOrder.status === 'confirmed' || selectedOrder.status === 'processing') && (
                   <Button
                     size="sm"
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                    className="bg-orange-600 hover:bg-orange-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'shipped' })}
                   >
-                    <Truck className="w-4 h-4 mr-1" />
-                    Mark as Shipped
+                    <Truck className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Mark as Shipped</span>
+                    <span className="sm:hidden">Ship</span>
                   </Button>
                 )}
                 {selectedOrder.status === 'shipped' && (
                   <Button
                     size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'delivered' })}
                   >
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Mark as Delivered
+                    <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Mark as Delivered</span>
+                    <span className="sm:hidden">Deliver</span>
                   </Button>
                 )}
                 {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'delivered' && (
                   <Button
                     size="sm"
                     variant="destructive"
+                    className="h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'cancelled' })}
                   >
-                    <XCircle className="w-4 h-4 mr-1" />
-                    Cancel Order
+                    <XCircle className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Cancel Order</span>
+                    <span className="sm:hidden">Cancel</span>
                   </Button>
                 )}
                 {selectedOrder.paymentStatus === 'unpaid' && (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { paymentStatus: 'paid' })}
                   >
-                    Mark as Paid
+                    <span className="hidden sm:inline">Mark as Paid</span>
+                    <span className="sm:hidden">Paid</span>
                   </Button>
                 )}
                 {selectedOrder.fulfillmentStatus === 'unfulfilled' && (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { fulfillmentStatus: 'fulfilled' })}
                   >
-                    Mark as Fulfilled
+                    <span className="hidden sm:inline">Mark as Fulfilled</span>
+                    <span className="sm:hidden">Fulfill</span>
                   </Button>
                 )}
               </div>
@@ -470,9 +478,9 @@ export default function OrdersPage() {
           </Card>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Left column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Order Items */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -480,10 +488,11 @@ export default function OrdersPage() {
               transition={{ duration: 0.3, delay: 0.1 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Order Items</CardTitle>
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg">Order Items</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                  <div className="overflow-x-auto -mx-3 sm:mx-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -504,6 +513,7 @@ export default function OrdersPage() {
                       ))}
                     </TableBody>
                   </Table>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -515,10 +525,10 @@ export default function OrdersPage() {
               transition={{ duration: 0.3, delay: 0.15 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Order Summary</CardTitle>
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg">Order Summary</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-2 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>{formatPrice(selectedOrder.subtotal)}</span>
@@ -553,13 +563,13 @@ export default function OrdersPage() {
               transition={{ duration: 0.3, delay: 0.2 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                     <StickyNote className="w-4 h-4" />
                     Notes
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
                   <Textarea
                     placeholder="Add notes about this order..."
                     value={orderNotes}
@@ -575,7 +585,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Right column */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Customer Info */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -583,8 +593,8 @@ export default function OrdersPage() {
               transition={{ duration: 0.3, delay: 0.1 }}
             >
               <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Customer</CardTitle>
+                <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
+                  <CardTitle className="text-base sm:text-lg">Customer</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -755,39 +765,41 @@ export default function OrdersPage() {
 
   // ========== LIST VIEW ==========
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">
               Orders
               {pagination.total > 0 && (
-                <span className="text-muted-foreground font-normal text-lg ml-2">
+                <span className="text-muted-foreground font-normal text-sm sm:text-lg ml-2">
                   ({pagination.total})
                 </span>
               )}
             </h1>
-            <p className="text-muted-foreground mt-1">Track and manage customer orders</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Track and manage customer orders</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
-              className="btn-gradient text-white"
+              className="btn-gradient text-white h-9 sm:h-10"
               onClick={() => setShowCreateDialog(true)}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Order
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Create Order</span>
+              <span className="sm:hidden">Create</span>
             </Button>
             <Button
               variant="outline"
+              className="h-9 sm:h-10"
               onClick={() => window.open(`/api/export?storeId=${currentStore?.id}&type=orders`)}
             >
-              <Download className="w-4 h-4 mr-2" />
-              Export
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline ml-2">Export</span>
             </Button>
           </div>
         </div>

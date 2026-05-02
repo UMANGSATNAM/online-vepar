@@ -1380,3 +1380,76 @@ textarea,
 .dark .verified-glow {
   box-shadow: 0 0 6px oklch(0.55 0.16 155 / 0.35);
 }
+
+/* ===== MOBILE RESPONSIVE UTILITIES ===== */
+
+/* Safe area bottom padding for mobile devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile bottom nav backdrop blur */
+@supports (backdrop-filter: blur(12px)) {
+  .mobile-nav-blur {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Touch-friendly tap targets - minimum 44px */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive card grid that works well on small screens */
+.responsive-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Prevent text overflow on small screens */
+.truncate-responsive {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .truncate-responsive {
+    white-space: normal;
+    max-width: none;
+  }
+}
+
+/* Mobile-optimized stat cards - smaller on small screens */
+@media (max-width: 639px) {
+  .stat-card-mobile {
+    padding: 0.75rem;
+  }
+  .stat-card-mobile .text-2xl {
+    font-size: 1.25rem;
+  }
+}
