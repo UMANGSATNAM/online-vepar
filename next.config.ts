@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Reduce memory usage in dev mode
+  experimental: {
+    memoryBasedWorkersCount: true,
+  },
 };
 
 export default nextConfig;

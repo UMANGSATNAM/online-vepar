@@ -110,6 +110,8 @@ export default function CheckoutPage() {
   const [storeData, setStoreData] = useState<StorefrontStore | null>(null)
   const [products, setProducts] = useState<StorefrontProduct[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
   const [storeView, setStoreView] = useState<StoreView>('home')
   const [selectedProduct, setSelectedProduct] = useState<StorefrontProduct | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
@@ -148,18 +150,23 @@ export default function CheckoutPage() {
   const fetchStorefront = useCallback(async () => {
     if (!currentStore?.id) {
       setLoading(false)
+      setError('No store selected. Go back to the dashboard and select a store first.')
       return
     }
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch(`/api/storefront?storeId=${currentStore.id}`)
       if (res.ok) {
         const data = await res.json()
         setStoreData(data.store)
         setProducts(data.products || [])
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error || 'Failed to load store. Please try again.')
       }
     } catch {
-      // silently fail
+      setError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -167,7 +174,11 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchStorefront()
-  }, [fetchStorefront])
+  }, [fetchStorefront, retryCount]) // retryCount triggers refetch
+
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1)
+  }
 
   // Sticky header scroll detection
   useEffect(() => {
@@ -1372,6 +1383,112 @@ export default function CheckoutPage() {
           </div>
         </Card>
       </motion.div>
+    )
+  }
+
+  // ═══════════════════════════════════════════════
+  // ERROR / NO STORE FALLBACK
+  // ═══════════════════════════════════════════════
+  if (!loading && (error || !storeData)) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
+        <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm bg-emerald-500">
+                  S
+                </div>
+                <span className="font-bold text-lg">Online Vepar</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground hover:text-foreground gap-1.5"
+                onClick={() => setView('dashboard')}
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Dashboard
+              </Button>
+            </div>
+          </div>
+        </header>
+        <main className="flex-1 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-md w-full text-center"
+          >
+            <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center bg-amber-50 dark:bg-amber-900/20">
+              <Store className="w-10 h-10 text-amber-500" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2">
+              {!currentStore?.id ? 'No Store Selected' : 'Store Not Available'}
+            </h1>
+            <p className="text-muted-foreground mb-6">
+              {error || 'The store could not be loaded. Please go back to the dashboard and try again.'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                className="text-white"
+                style={{ backgroundColor: primaryColor }}
+                onClick={() => setView('dashboard')}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Button>
+              {currentStore?.id && (
+                <Button variant="outline" onClick={handleRetry}>
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Try Again
+                </Button>
+              )}
+              {!currentStore?.id && (
+                <Button variant="outline" onClick={() => setView('login')}>
+                  Sign In
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        </main>
+      </div>
+    )
+  }
+
+  // ═══════════════════════════════════════════════
+  // LOADING STATE
+  // ═══════════════════════════════════════════════
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
+        <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm animate-pulse"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {currentStore?.name?.charAt(0) || 'S'}
+                </div>
+                <span className="font-bold text-lg">{currentStore?.name || 'Loading...'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-lg bg-muted animate-pulse" />
+                <div className="w-9 h-9 rounded-lg bg-muted animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </header>
+        <main className="flex-1 flex items-center justify-center p-4">
+          <div className="text-center">
+            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: primaryColor }} />
+            <p className="text-muted-foreground font-medium">Loading store...</p>
+            <p className="text-muted-foreground/60 text-sm mt-1">{currentStore?.name || 'Please wait'}</p>
+          </div>
+        </main>
+      </div>
     )
   }
 

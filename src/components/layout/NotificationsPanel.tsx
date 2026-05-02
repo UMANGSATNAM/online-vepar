@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Popover,
   PopoverContent,
@@ -147,10 +148,7 @@ export default function NotificationsPanel() {
           )}
         </div>
 
-        <div
-          className="notifications-scroll-list max-h-[400px] overflow-y-auto"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
+        <ScrollArea className="max-h-[400px]">
           {loading && notifications.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -204,7 +202,7 @@ export default function NotificationsPanel() {
               </AnimatePresence>
             </div>
           )}
-        </div>
+        </ScrollArea>
 
         {notifications.length > 0 && (
           <>

@@ -30,6 +30,7 @@ import {
   FileText,
   Scale,
   Cookie,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -378,7 +379,7 @@ function DashboardMockup() {
 }
 
 export default function LandingPage() {
-  const { setView } = useAppStore()
+  const { setView, setUser, setStore, setStores } = useAppStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
@@ -386,6 +387,7 @@ export default function LandingPage() {
   const [activeSection, setActiveSection] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [hoveredPlan, setHoveredPlan] = useState<string | null>(null)
+  const [demoLoading, setDemoLoading] = useState(false)
 
   // Scroll spy
   useEffect(() => {
@@ -594,12 +596,44 @@ export default function LandingPage() {
                 variant="outline"
                 size="lg"
                 className="border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 px-8 py-6 text-lg rounded-xl hover:scale-[1.02] transition-all duration-200"
-                onClick={() => {
-                  const el = document.getElementById('features')
-                  el?.scrollIntoView({ behavior: 'smooth' })
+                disabled={demoLoading}
+                onClick={async () => {
+                  setDemoLoading(true)
+                  try {
+                    const res = await fetch('/api/auth/login', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: 'demo@onlinevepar.com', password: 'demo123' }),
+                    })
+                    const data = await res.json()
+                    if (res.ok && data.user) {
+                      setUser(data.user)
+                      if (data.stores && data.stores.length > 0) {
+                        setStores(data.stores)
+                        setStore(data.stores[0])
+                      }
+                      setView('checkout')
+                    } else {
+                      setView('login')
+                    }
+                  } catch {
+                    setView('login')
+                  } finally {
+                    setDemoLoading(false)
+                  }
                 }}
               >
-                View Demo
+                {demoLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    View Demo Store
+                  </>
+                )}
               </Button>
             </div>
           </motion.div>
