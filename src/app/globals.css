@@ -1534,6 +1534,76 @@ textarea,
   border-radius: var(--radius);
 }
 
+/* ===== TASK 16: NOTIFICATIONS & STOREFRONT FIXES ===== */
+
+/* Notifications panel scrollable list with custom scrollbar */
+.notifications-scroll-list {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.55 0.16 155 / 0.4) transparent;
+}
+
+.notifications-scroll-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notifications-scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notifications-scroll-list::-webkit-scrollbar-thumb {
+  background: oklch(0.55 0.16 155 / 0.4);
+  border-radius: 3px;
+}
+
+.notifications-scroll-list::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.16 155 / 0.7);
+}
+
+/* Storefront cart drawer overlay */
+.cart-drawer-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* Storefront product image gallery thumbnail active ring */
+.gallery-thumb-active {
+  ring: 2px solid oklch(0.55 0.16 155);
+  outline: 2px solid oklch(0.55 0.16 155);
+  outline-offset: 2px;
+}
+
+/* Cart drawer slide-in animation */
+@keyframes cart-drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes cart-drawer-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+.cart-drawer-enter {
+  animation: cart-drawer-in 0.3s ease-out;
+}
+
+.cart-drawer-exit {
+  animation: cart-drawer-out 0.2s ease-in;
+}
+
+/* Added to cart animation - brief scale bounce on product card */
+@keyframes add-to-cart-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.added-to-cart-pop {
+  animation: add-to-cart-pop 0.3s ease-out;
+}
+
 /* Form validation states */
 .input-error {
   border-color: oklch(0.577 0.245 27.325) !important;
