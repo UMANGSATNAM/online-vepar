@@ -1231,6 +1231,7 @@ export default function ProductsPage() {
 
   const renderTableView = () => (
     <Card>
+      <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -1349,6 +1350,7 @@ export default function ProductsPage() {
           })}
         </TableBody>
       </Table>
+      </div>
     </Card>
   )
 
@@ -1821,7 +1823,7 @@ export default function ProductsPage() {
                           <Button
                             onClick={handleCreateCategory}
                             disabled={isCreatingCategory || !newCategoryName.trim()}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
                           >
                             {isCreatingCategory ? 'Creating...' : 'Create Category'}
                           </Button>
@@ -2091,7 +2093,7 @@ export default function ProductsPage() {
                 <Button
                   size="sm"
                   onClick={openAddVariantDialog}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
                 >
                   <Plus className="w-3.5 h-3.5 mr-1" />
                   Add Variant
@@ -2124,7 +2126,7 @@ export default function ProductsPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="border rounded-lg overflow-hidden">
+                <div className="border rounded-lg overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-muted/50">

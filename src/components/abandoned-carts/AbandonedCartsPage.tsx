@@ -370,7 +370,7 @@ export default function AbandonedCartsPage() {
 
   // ========== MAIN VIEW ==========
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}

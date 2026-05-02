@@ -6,7 +6,7 @@ import {
   ShoppingCart, Plus, Search, Filter, MoreHorizontal, Eye, Trash2,
   Package, Truck, CheckCircle2, XCircle, Clock, ArrowLeft,
   MapPin, Phone, Mail, FileText, ChevronLeft, ChevronRight,
-  StickyNote, Calendar, Download
+  StickyNote, Calendar, Download, Send, MessageSquare, Lock, Globe, User as UserIcon, Loader2
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -26,6 +26,16 @@ import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
 
 // Types
+interface OrderNoteItem {
+  id: string
+  orderId: string
+  authorId?: string
+  authorName?: string
+  content: string
+  isInternal: boolean
+  createdAt: string
+}
+
 interface OrderItem {
   id: string
   productId?: string
@@ -138,6 +148,12 @@ export default function OrdersPage() {
   const [detailLoading, setDetailLoading] = useState(false)
   const [orderNotes, setOrderNotes] = useState('')
 
+  // Order notes/comments
+  const [orderNoteList, setOrderNoteList] = useState<OrderNoteItem[]>([])
+  const [newNoteContent, setNewNoteContent] = useState('')
+  const [newNoteIsInternal, setNewNoteIsInternal] = useState(true)
+  const [addingNote, setAddingNote] = useState(false)
+
   // Create dialog state
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [creating, setCreating] = useState(false)
@@ -240,10 +256,12 @@ export default function OrdersPage() {
   useEffect(() => {
     if (selectedOrderId) {
       fetchOrderDetail(selectedOrderId)
+      fetchOrderNotes(selectedOrderId)
     } else {
       setSelectedOrder(null)
+      setOrderNoteList([])
     }
-  }, [selectedOrderId, fetchOrderDetail])
+  }, [selectedOrderId, fetchOrderDetail, fetchOrderNotes])
 
   // Update order status
   const updateOrderStatus = async (orderId: string, updates: Record<string, string>) => {
@@ -350,10 +368,65 @@ export default function OrdersPage() {
     setNewItems([{ name: '', price: 0, quantity: 1 }])
   }
 
-  // Save notes
+  // Save notes (legacy simple notes field)
   const saveNotes = async () => {
     if (!selectedOrder) return
     await updateOrderStatus(selectedOrder.id, { notes: orderNotes })
+  }
+
+  // Fetch order notes/comments
+  const fetchOrderNotes = useCallback(async (orderId: string) => {
+    try {
+      const res = await fetch(`/api/orders/notes?orderId=${orderId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setOrderNoteList(data.notes || [])
+      }
+    } catch {
+      // silently fail
+    }
+  }, [])
+
+  // Add order note
+  const handleAddNote = async () => {
+    if (!selectedOrder || !newNoteContent.trim()) return
+    setAddingNote(true)
+    try {
+      const res = await fetch('/api/orders/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: selectedOrder.id,
+          content: newNoteContent.trim(),
+          isInternal: newNoteIsInternal,
+        }),
+      })
+      if (res.ok) {
+        setNewNoteContent('')
+        fetchOrderNotes(selectedOrder.id)
+        toast({ title: 'Note added', description: 'Your note has been added to this order.' })
+      } else {
+        toast({ title: 'Error', description: 'Failed to add note', variant: 'destructive' })
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to add note', variant: 'destructive' })
+    } finally {
+      setAddingNote(false)
+    }
+  }
+
+  // Delete order note
+  const handleDeleteNote = async (noteId: string) => {
+    if (!selectedOrder) return
+    try {
+      const res = await fetch(`/api/orders/notes/${noteId}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchOrderNotes(selectedOrder.id)
+        toast({ title: 'Note deleted', description: 'The note has been removed.' })
+      }
+    } catch {
+      // silently fail
+    }
   }
 
   // ========== DETAIL VIEW ==========
@@ -556,7 +629,7 @@ export default function OrdersPage() {
               </Card>
             </motion.div>
 
-            {/* Notes */}
+            {/* Notes & Comments */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -565,20 +638,129 @@ export default function OrdersPage() {
               <Card className="card-premium">
                 <CardHeader className="pb-3 p-3 sm:p-4 lg:p-6">
                   <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                    <StickyNote className="w-4 h-4" />
-                    Notes
+                    <MessageSquare className="w-4 h-4" />
+                    Notes & Comments
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
-                  <Textarea
-                    placeholder="Add notes about this order..."
-                    value={orderNotes}
-                    onChange={(e) => setOrderNotes(e.target.value)}
-                    rows={3}
-                  />
-                  <Button size="sm" onClick={saveNotes} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Save Notes
-                  </Button>
+                <CardContent className="space-y-4 p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
+                  {/* Add Note Form */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant={newNoteIsInternal ? 'default' : 'outline'}
+                        className={`h-7 text-xs gap-1 ${newNoteIsInternal ? 'bg-amber-600 hover:bg-amber-700 text-white' : ''}`}
+                        onClick={() => setNewNoteIsInternal(true)}
+                      >
+                        <Lock className="w-3 h-3" />
+                        Internal
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={!newNoteIsInternal ? 'default' : 'outline'}
+                        className={`h-7 text-xs gap-1 ${!newNoteIsInternal ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}`}
+                        onClick={() => setNewNoteIsInternal(false)}
+                      >
+                        <Globe className="w-3 h-3" />
+                        Customer-visible
+                      </Button>
+                    </div>
+                    <div className="flex gap-2">
+                      <Textarea
+                        placeholder={newNoteIsInternal ? 'Add an internal note (only visible to staff)...' : 'Add a note visible to the customer...'}
+                        value={newNoteContent}
+                        onChange={(e) => setNewNoteContent(e.target.value)}
+                        rows={2}
+                        className="text-sm"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                            handleAddNote()
+                          }
+                        }}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddNote}
+                        disabled={addingNote || !newNoteContent.trim()}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white h-fit self-end"
+                      >
+                        {addingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Press ⌘+Enter to send</p>
+                  </div>
+
+                  <Separator />
+
+                  {/* Notes Timeline */}
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    {orderNoteList.length === 0 ? (
+                      <div className="text-center py-4">
+                        <StickyNote className="w-8 h-8 mx-auto text-muted-foreground/30 mb-2" />
+                        <p className="text-xs text-muted-foreground">No notes yet. Add one above.</p>
+                      </div>
+                    ) : (
+                      orderNoteList.map((note) => (
+                        <div
+                          key={note.id}
+                          className={`relative pl-6 pb-3 border-l-2 ${
+                            note.isInternal ? 'border-amber-300 dark:border-amber-700' : 'border-emerald-300 dark:border-emerald-700'
+                          }`}
+                        >
+                          <div className={`absolute left-0 top-1 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-background ${
+                            note.isInternal ? 'bg-amber-400' : 'bg-emerald-400'
+                          }`} />
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                {note.authorName && (
+                                  <span className="text-xs font-medium flex items-center gap-1">
+                                    <UserIcon className="w-3 h-3" />
+                                    {note.authorName}
+                                  </span>
+                                )}
+                                <Badge
+                                  variant="secondary"
+                                  className={`text-[9px] h-4 px-1.5 ${
+                                    note.isInternal
+                                      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                                      : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                                  }`}
+                                >
+                                  {note.isInternal ? 'Internal' : 'Customer'}
+                                </Badge>
+                                <span className="text-[10px] text-muted-foreground">
+                                  {formatDate(note.createdAt)}
+                                </span>
+                              </div>
+                              <p className="text-sm text-foreground/90 whitespace-pre-line">{note.content}</p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-muted-foreground hover:text-destructive flex-shrink-0"
+                              onClick={() => handleDeleteNote(note.id)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Legacy Order Notes */}
+                  {selectedOrder.notes && (
+                    <>
+                      <Separator />
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-muted-foreground">Original Order Note</p>
+                        <div className="p-2 rounded-md bg-muted/50 text-sm text-muted-foreground whitespace-pre-line">
+                          {selectedOrder.notes}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -916,7 +1098,7 @@ export default function OrdersPage() {
             ) : (
               <>
                 {/* Desktop Table */}
-                <div className="hidden md:block">
+                <div className="hidden md:block overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -1319,7 +1501,7 @@ export default function OrdersPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
               onClick={handleCreate}
               disabled={creating}
             >

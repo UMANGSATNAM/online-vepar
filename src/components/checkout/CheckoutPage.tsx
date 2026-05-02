@@ -106,6 +106,10 @@ export default function CheckoutPage() {
   const [placingOrder, setPlacingOrder] = useState(false)
   const [orderResult, setOrderResult] = useState<OrderResult | null>(null)
 
+  // Category filter
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
+
   // Mobile cart sheet
   const [cartOpen, setCartOpen] = useState(false)
 
@@ -237,6 +241,14 @@ export default function CheckoutPage() {
     const item = cart.find((c) => c.productId === productId)
     return item?.quantity || 0
   }
+
+  // Filtered products
+  const categories = ['all', ...Array.from(new Set(products.map(p => p.category).filter(Boolean) as string[]))]
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter
+    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
 
   // Theme styles
   const themeStyles: Record<string, { bg: string; headerBg: string; headerText: string; cardBg: string; cardBorder: string; footerBg: string; footerText: string }> = {
@@ -381,7 +393,7 @@ export default function CheckoutPage() {
                     size="sm"
                     onClick={handleApplyDiscount}
                     disabled={validatingDiscount || !discountCode.trim()}
-                    className="h-9 px-4"
+                    className="h-9 px-4" 
                   >
                     {validatingDiscount ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Apply'}
                   </Button>
@@ -810,7 +822,7 @@ export default function CheckoutPage() {
             <Button
               variant="outline"
               className="hidden lg:flex gap-2 relative"
-              onClick={() => setStep('cart')}
+              onClick={() => setStep('checkout')}
             >
               <ShoppingCart className="w-4 h-4" />
               <span>Cart</span>
@@ -876,11 +888,41 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Product Grid */}
           <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Products</h2>
               <Badge variant="secondary" className="text-xs">
-                {products.length} items
+                {filteredProducts.length} item{filteredProducts.length !== 1 ? 's' : ''}
               </Badge>
+            </div>
+
+            {/* Search & Category Filter */}
+            <div className="mb-6 space-y-3">
+              <div className="relative">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-9"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      categoryFilter === cat
+                        ? 'text-white shadow-sm'
+                        : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                    }`
+                    }
+                    style={categoryFilter === cat ? { backgroundColor: primaryColor } : undefined}
+                  >
+                    {cat === 'all' ? 'All' : cat}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {loading ? (
@@ -896,15 +938,15 @@ export default function CheckoutPage() {
                   </Card>
                 ))}
               </div>
-            ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
               <div className="text-center py-16">
                 <Package className="w-16 h-16 mx-auto text-muted-foreground/20 mb-4" />
-                <h3 className="text-lg font-medium text-muted-foreground mb-1">No Products Available</h3>
-                <p className="text-sm text-muted-foreground/60">Check back later for new products</p>
+                <h3 className="text-lg font-medium text-muted-foreground mb-1">No products found</h3>
+                <p className="text-sm text-muted-foreground/60">Try adjusting your search or filter</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {products.map((product, index) => {
+                {filteredProducts.map((product, index) => {
                   const inCart = getCartItemQuantity(product.id)
                   const outOfStock = product.trackInventory && product.stock <= 0
                   const onSale = product.comparePrice && product.comparePrice > product.price

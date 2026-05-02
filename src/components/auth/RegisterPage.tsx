@@ -184,7 +184,7 @@ export default function RegisterPage() {
       </div>
 
       {/* ===== Right Register Form Panel ===== */}
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-8 auth-bg-pattern">
         <motion.div
           className="w-full max-w-md"
           variants={containerVariants}
@@ -221,7 +221,7 @@ export default function RegisterPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200"
+                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200 input-focus-lift"
                     />
                   </div>
                 </motion.div>
@@ -237,7 +237,7 @@ export default function RegisterPage() {
                       placeholder="My Awesome Store"
                       value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
-                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200"
+                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200 input-focus-lift"
                     />
                   </div>
                 </motion.div>
@@ -254,7 +254,7 @@ export default function RegisterPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200"
+                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200 input-focus-lift"
                     />
                   </div>
                 </motion.div>
@@ -327,7 +327,7 @@ export default function RegisterPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200"
+                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200 input-focus-lift"
                     />
                     {confirmPassword && password === confirmPassword && (
                       <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
@@ -358,7 +358,7 @@ export default function RegisterPage() {
                 <motion.div variants={itemVariants}>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg shadow-emerald-600/25 hover:shadow-emerald-700/30 hover:scale-[1.02] transition-all duration-200 h-10"
+                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg shadow-emerald-600/25 hover:shadow-emerald-700/30 hover:scale-[1.02] transition-all duration-200 h-10 button-press"
                     disabled={loading}
                   >
                     {loading ? (

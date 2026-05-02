@@ -200,9 +200,9 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
     : 'U'
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="h-14 flex items-center gap-2 px-3 border-b border-border shrink-0">
+      <div className="h-14 flex items-center gap-2 px-3 border-b border-border/60 shrink-0">
         <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
           <Store className="w-5 h-5 text-white" />
         </div>
@@ -254,7 +254,7 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
       )}
 
       {/* Navigation */}
-      <ScrollArea className="flex-1 px-2 py-1.5">
+      <ScrollArea className="flex-1 min-h-0 px-2 py-1.5">
         <nav className="space-y-0.5">
           {/* Main nav items */}
           <div className="space-y-0.5">
@@ -265,7 +265,7 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
                 <Button
                   key={item.view}
                   variant={isActive ? 'secondary' : 'ghost'}
-                  className={`w-full ${collapsed ? 'justify-center h-10' : 'justify-start gap-2.5 h-9 pl-3'} relative transition-all duration-150 ${
+                  className={`w-full ${collapsed ? 'justify-center h-10' : 'justify-start gap-2.5 h-9 pl-3'} relative transition-all duration-150 button-press ${
                     isActive
                       ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
@@ -453,7 +453,7 @@ function MobileBottomNav() {
               onClick={() => setShowMore(false)}
             />
             <motion.div
-              className="fixed bottom-16 left-0 right-0 z-50 bg-card border-t border-border rounded-t-2xl shadow-2xl max-h-[60vh] overflow-y-auto"
+              className="fixed bottom-16 left-0 right-0 z-50 bg-card border-t border-border/50 rounded-t-2xl shadow-2xl dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] max-h-[70vh] overflow-y-auto overscroll-contain safe-area-bottom-inset"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
@@ -494,7 +494,7 @@ function MobileBottomNav() {
       </AnimatePresence>
 
       {/* Bottom navigation bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border lg:hidden safe-area-bottom">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/50 lg:hidden safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-2">
           {bottomNavItems.map((item) => {
             const isActive = currentView === item.view
@@ -503,7 +503,7 @@ function MobileBottomNav() {
                 key={item.view}
                 className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors min-w-[48px] ${
                   isActive
-                    ? 'text-emerald-600 dark:text-emerald-400'
+                    ? 'text-emerald-600 dark:text-emerald-400 mobile-nav-active-indicator'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 onClick={() => setView(item.view)}
@@ -519,7 +519,7 @@ function MobileBottomNav() {
           <button
             className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors min-w-[48px] ${
               showMore || secondaryNavItems.some((i) => i.view === currentView)
-                ? 'text-emerald-600 dark:text-emerald-400'
+                ? 'text-emerald-600 dark:text-emerald-400 mobile-nav-active-indicator'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
             onClick={() => setShowMore(!showMore)}
@@ -626,8 +626,8 @@ export default function DashboardLayout() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="min-h-screen flex flex-col bg-background">
-        <div className="flex flex-1">
+      <div className="h-screen flex flex-col bg-background">
+        <div className="flex flex-1 min-h-0">
           {/* Desktop Sidebar */}
           <motion.aside
             className="hidden lg:flex flex-col border-r border-border overflow-hidden shrink-0 sticky top-0 h-screen"
@@ -646,7 +646,7 @@ export default function DashboardLayout() {
                   : undefined,
               }}
             />
-            <div className="relative z-10 h-full">
+            <div className="relative z-10 h-full min-h-0">
               <SidebarContent
                 collapsed={!sidebarOpen}
                 onNavigate={() => {}}
@@ -655,7 +655,7 @@ export default function DashboardLayout() {
           </motion.aside>
 
           {/* Main content area */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 min-h-0">
             {/* Top header */}
             <header className={`h-14 border-b border-border bg-card flex items-center gap-2 px-3 lg:px-5 transition-shadow duration-200 shrink-0 ${scrolled ? 'shadow-sm' : ''}`}>
               {/* Mobile: hamburger opens Sheet */}
@@ -665,7 +665,7 @@ export default function DashboardLayout() {
                     <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-72 p-0">
+                <SheetContent side="left" className="w-72 p-0 overflow-hidden">
                   <SheetHeader className="sr-only">
                     <SheetTitle>Navigation Menu</SheetTitle>
                   </SheetHeader>
@@ -687,7 +687,7 @@ export default function DashboardLayout() {
                         {currentStore?.name || 'My Store'}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
-                    <BreadcrumbSeparator />
+                    <BreadcrumbSeparator className="text-muted-foreground/40" />
                     <BreadcrumbItem>
                       <BreadcrumbPage className="text-foreground font-medium text-sm">
                         {viewLabels[currentView] || 'Dashboard'}
@@ -715,7 +715,7 @@ export default function DashboardLayout() {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 pr-10 bg-background border-border h-8 text-sm focus:ring-1 focus:ring-emerald-500 transition-shadow pointer-events-none"
+                    className="pl-8 pr-10 bg-background border-border h-8 text-sm focus:ring-1 focus:ring-emerald-500 transition-all duration-200 pointer-events-none"
                     readOnly
                   />
                   <div className="absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:flex items-center pointer-events-none">
@@ -759,10 +759,10 @@ export default function DashboardLayout() {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentView}
-                    initial={{ opacity: 0, y: 4 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
                     {renderContent()}
                   </motion.div>
@@ -782,7 +782,7 @@ export default function DashboardLayout() {
         <Button
           variant="ghost"
           size="icon"
-          className="hidden lg:flex fixed bottom-4 left-0 z-50 w-5 h-10 rounded-none rounded-r-md bg-card border border-border border-l-0 hover:bg-accent transition-colors"
+          className="hidden lg:flex fixed bottom-4 left-0 z-50 w-5 h-10 rounded-none rounded-r-md bg-card/80 backdrop-blur-sm border border-border/50 border-l-0 hover:bg-accent transition-all duration-200 hover:w-6 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
           onClick={toggleSidebar}
         >
           <ChevronDown

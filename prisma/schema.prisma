@@ -57,6 +57,7 @@ model Store {
   notificationPreference NotificationPreference?
   giftCards             GiftCard[]
   staffs                Staff[]
+  orderNotes            OrderNote[]
 }
 
 model Category {
@@ -129,6 +130,7 @@ model Order {
   updatedAt     DateTime @updatedAt
   items         OrderItem[]
   shipments     Shipment[]
+  orderNotes    OrderNote[]
 }
 
 model OrderItem {
@@ -142,6 +144,22 @@ model OrderItem {
   quantity  Int
   total     Float
   createdAt DateTime @default(now())
+}
+
+model OrderNote {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  authorId  String?
+  authorName String?
+  content   String
+  isInternal Boolean @default(true) // internal notes vs customer-visible
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([storeId])
 }
 
 model Customer {

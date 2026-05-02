@@ -498,7 +498,7 @@ export default function GiftCardsPage() {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -522,7 +522,7 @@ export default function GiftCardsPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
           <AnimatedGiftStatCard
             value={total}

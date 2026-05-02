@@ -442,7 +442,7 @@ export default function StaffPage() {
           </div>
           <Skeleton className="h-10 w-44" />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-24 w-full rounded-lg" />
           ))}
@@ -459,7 +459,7 @@ export default function StaffPage() {
 
   // ========== MAIN VIEW ==========
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-16 lg:pb-0">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -494,7 +494,7 @@ export default function StaffPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
       >
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <AnimatedStatCard
             value={totalStaff}
             label="Total Staff"

@@ -284,10 +284,10 @@ function CounterStat({ value, suffix, label }: { value: number; suffix: string; 
   const { count, ref } = useAnimatedCounter(value, 2500)
   return (
     <div ref={ref} className="text-center">
-      <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-emerald-700">
+      <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-emerald-700 dark:text-emerald-400 dark:text-emerald-400">
         {count.toLocaleString('en-IN')}{suffix}
       </div>
-      <div className="text-sm md:text-base text-emerald-600/70 mt-1 font-medium">
+      <div className="text-sm md:text-base text-emerald-600/70 dark:text-emerald-400/70 mt-1 font-medium">
         {label}
       </div>
     </div>
@@ -425,14 +425,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-emerald-100 animate-stagger-1">
+      <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-950/80 border-b border-emerald-100 dark:border-emerald-900/50 animate-stagger-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
                 <Store className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-emerald-900">
+              <span className="text-xl font-bold text-emerald-900 dark:text-emerald-100 dark:text-emerald-100">
                 Online Vepar
               </span>
             </div>
@@ -444,7 +444,7 @@ export default function LandingPage() {
                 className={`text-sm font-medium transition-colors ${
                   activeSection === 'features'
                     ? 'nav-link-active text-emerald-600'
-                    : 'text-emerald-800 hover:text-emerald-600'
+                    : 'text-emerald-800 dark:text-emerald-200 hover:text-emerald-600'
                 }`}
               >
                 Features
@@ -454,7 +454,7 @@ export default function LandingPage() {
                 className={`text-sm font-medium transition-colors ${
                   activeSection === 'how-it-works'
                     ? 'nav-link-active text-emerald-600'
-                    : 'text-emerald-800 hover:text-emerald-600'
+                    : 'text-emerald-800 dark:text-emerald-200 hover:text-emerald-600'
                 }`}
               >
                 How It Works
@@ -464,7 +464,7 @@ export default function LandingPage() {
                 className={`text-sm font-medium transition-colors ${
                   activeSection === 'pricing'
                     ? 'nav-link-active text-emerald-600'
-                    : 'text-emerald-800 hover:text-emerald-600'
+                    : 'text-emerald-800 dark:text-emerald-200 hover:text-emerald-600'
                 }`}
               >
                 Pricing
@@ -474,7 +474,7 @@ export default function LandingPage() {
                 className={`text-sm font-medium transition-colors ${
                   activeSection === 'testimonials'
                     ? 'nav-link-active text-emerald-600'
-                    : 'text-emerald-800 hover:text-emerald-600'
+                    : 'text-emerald-800 dark:text-emerald-200 hover:text-emerald-600'
                 }`}
               >
                 Testimonials
@@ -484,13 +484,13 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center gap-3">
               <Button
                 variant="ghost"
-                className="text-emerald-700 hover:text-emerald-900 hover:bg-emerald-50"
+                className="text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 dark:hover:text-emerald-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
                 onClick={() => setView('login')}
               >
                 Login
               </Button>
               <Button
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white hover:scale-[1.02] transition-all duration-200 button-press"
                 onClick={() => setView('register')}
               >
                 Start Free Trial
@@ -515,31 +515,31 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden border-t border-emerald-100 bg-white"
+            className="md:hidden border-t border-emerald-100 dark:border-emerald-900/50 bg-white dark:bg-gray-950"
           >
             <div className="px-4 py-3 space-y-2">
-              <a href="#features" className="block py-2 text-sm font-medium text-emerald-800" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#features" className="block py-2 text-sm font-medium text-emerald-800 dark:text-emerald-200" onClick={() => setMobileMenuOpen(false)}>
                 Features
               </a>
-              <a href="#how-it-works" className="block py-2 text-sm font-medium text-emerald-800" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#how-it-works" className="block py-2 text-sm font-medium text-emerald-800 dark:text-emerald-200" onClick={() => setMobileMenuOpen(false)}>
                 How It Works
               </a>
-              <a href="#pricing" className="block py-2 text-sm font-medium text-emerald-800" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#pricing" className="block py-2 text-sm font-medium text-emerald-800 dark:text-emerald-200" onClick={() => setMobileMenuOpen(false)}>
                 Pricing
               </a>
-              <a href="#testimonials" className="block py-2 text-sm font-medium text-emerald-800" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#testimonials" className="block py-2 text-sm font-medium text-emerald-800 dark:text-emerald-200" onClick={() => setMobileMenuOpen(false)}>
                 Testimonials
               </a>
               <div className="pt-2 flex flex-col gap-2">
                 <Button
                   variant="outline"
-                  className="w-full border-emerald-200 text-emerald-700"
+                  className="w-full border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
                   onClick={() => { setView('login'); setMobileMenuOpen(false) }}
                 >
                   Login
                 </Button>
                 <Button
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white button-press"
                   onClick={() => { setView('register'); setMobileMenuOpen(false) }}
                 >
                   Start Free Trial
@@ -571,20 +571,20 @@ export default function LandingPage() {
             <Badge className="mb-6 bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200 px-4 py-1.5 text-sm">
               🎉 Now available across India
             </Badge>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-emerald-950 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-emerald-950 dark:text-emerald-50 dark:text-emerald-50 leading-[1.1]">
               Build Your Online Store{' '}
               <span className="bg-gradient-to-r from-emerald-600 via-teal-400 to-cyan-500 bg-clip-text text-transparent animate-shimmer">
                 in Minutes
               </span>
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-emerald-700/80 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-6 text-lg md:text-xl text-emerald-700/80 dark:text-emerald-300/80 max-w-2xl mx-auto leading-relaxed">
               Online Vepar makes it easy for anyone to create a beautiful online store, 
               sell products, and grow their business — no coding required.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-emerald-200 hover:shadow-emerald-300 hover:scale-[1.02] transition-all duration-200"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/50 hover:shadow-emerald-300/50 dark:hover:shadow-emerald-800/50 hover:scale-[1.02] transition-all duration-200 button-press"
                 onClick={() => setView('register')}
               >
                 Start Free Trial
@@ -593,7 +593,7 @@ export default function LandingPage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-8 py-6 text-lg rounded-xl hover:scale-[1.02] transition-all duration-200"
+                className="border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 px-8 py-6 text-lg rounded-xl hover:scale-[1.02] transition-all duration-200"
                 onClick={() => {
                   const el = document.getElementById('features')
                   el?.scrollIntoView({ behavior: 'smooth' })
@@ -606,7 +606,7 @@ export default function LandingPage() {
 
           {/* Stats bar with animated counters - larger and more prominent */}
           <motion.div
-            className="mt-16 md:mt-20 grid grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto p-6 md:p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-emerald-100/50"
+            className="mt-16 md:mt-20 grid grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto p-6 md:p-8 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm rounded-2xl border border-emerald-100/50 dark:border-emerald-800/30"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
@@ -631,7 +631,7 @@ export default function LandingPage() {
       </section>
 
       {/* Trust Badges Bar */}
-      <section className="py-10 bg-white/80 border-y border-emerald-100/50">
+      <section className="py-10 bg-white/80 dark:bg-gray-900/80 border-y border-emerald-100/50 dark:border-emerald-800/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm font-medium text-emerald-600/60 mb-6">
             Trusted by merchants across India
@@ -650,7 +650,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 md:py-28 bg-white relative overflow-hidden">
+      <section id="features" className="py-20 md:py-28 bg-white dark:bg-gray-950 relative overflow-hidden">
         {/* Grid pattern background */}
         <div className="absolute inset-0 grid-pattern" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -664,10 +664,10 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-emerald-200">
               Features
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950">
+            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
               Everything you need to sell online
             </h2>
-            <p className="mt-4 text-lg text-emerald-700/70">
+            <p className="mt-4 text-lg text-emerald-700/70 dark:text-emerald-300/70">
               Powerful tools to help you create, manage, and grow your online store.
             </p>
           </motion.div>
@@ -681,7 +681,7 @@ export default function LandingPage() {
           >
             {features.map((feature, index) => (
               <motion.div key={feature.title} variants={fadeInUp}>
-                <Card className="h-full border-emerald-100 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-50 hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                <Card className="h-full border-emerald-100 dark:border-emerald-900/50 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-lg hover:shadow-emerald-50 dark:hover:shadow-emerald-950/50 hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden card-hover">
                   {/* Feature number indicator */}
                   <div className="absolute top-4 left-4 text-xs font-mono font-bold text-emerald-300/60 select-none">
                     {String(index + 1).padStart(2, '0')}
@@ -715,7 +715,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-20 md:py-28 relative overflow-hidden">
+      <section id="how-it-works" className="py-20 md:py-28 relative overflow-hidden dark:bg-gray-950">
         {/* Flowing gradient background */}
         <div className="absolute inset-0 animate-flow-gradient" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -729,10 +729,10 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-emerald-200">
               How It Works
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950">
+            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
               Start selling in 3 simple steps
             </h2>
-            <p className="mt-4 text-lg text-emerald-700/70">
+            <p className="mt-4 text-lg text-emerald-700/70 dark:text-emerald-300/70">
               Get your store up and running in no time.
             </p>
           </motion.div>
@@ -791,7 +791,7 @@ export default function LandingPage() {
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-emerald-950 mb-2">{step.title}</h3>
+                <h3 className="text-xl font-bold text-emerald-950 dark:text-emerald-50 mb-2">{step.title}</h3>
                 <p className="text-emerald-700/70">{step.description}</p>
               </motion.div>
             ))}
@@ -807,7 +807,7 @@ export default function LandingPage() {
           >
             <Button
               size="lg"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-6 text-lg rounded-xl shadow-lg shadow-emerald-200 hover:shadow-emerald-300 hover:scale-[1.02] transition-all duration-200"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-6 text-lg rounded-xl shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/50 hover:shadow-emerald-300/50 dark:hover:shadow-emerald-800/50 hover:scale-[1.02] transition-all duration-200 button-press"
               onClick={() => setView('register')}
             >
               Get Started Now
@@ -818,7 +818,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 md:py-28 bg-white">
+      <section id="pricing" className="py-20 md:py-28 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center max-w-2xl mx-auto mb-10"
@@ -830,10 +830,10 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-emerald-200">
               Pricing
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950">
+            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
               Simple, transparent pricing
             </h2>
-            <p className="mt-4 text-lg text-emerald-700/70">
+            <p className="mt-4 text-lg text-emerald-700/70 dark:text-emerald-300/70">
               Start free and upgrade as you grow. No hidden fees.
             </p>
           </motion.div>
@@ -878,8 +878,8 @@ export default function LandingPage() {
               >
                 <Card className={`h-full relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
                   plan.popular
-                    ? 'border-emerald-300 shadow-xl animate-glow-pulse md:scale-105'
-                    : 'border-emerald-100'
+                    ? 'border-emerald-300 dark:border-emerald-700 shadow-xl animate-glow-pulse md:scale-105'
+                    : 'border-emerald-100 dark:border-emerald-900/50'
                 }`}>
                   {/* Ribbon for Most Popular */}
                   {plan.popular && (
@@ -943,7 +943,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 md:py-28 bg-gradient-to-b from-emerald-50 to-white relative overflow-hidden">
+      <section id="testimonials" className="py-20 md:py-28 bg-gradient-to-b from-emerald-50 to-white dark:from-gray-950 dark:to-gray-900 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center max-w-2xl mx-auto mb-16"
@@ -955,10 +955,10 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-emerald-200">
               Testimonials
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950">
+            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
               Loved by merchants across India
             </h2>
-            <p className="mt-4 text-lg text-emerald-700/70">
+            <p className="mt-4 text-lg text-emerald-700/70 dark:text-emerald-300/70">
               Hear from real store owners who are growing with Online Vepar.
             </p>
           </motion.div>
@@ -1012,7 +1012,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-28 bg-emerald-600 relative overflow-hidden">
+      <section className="py-20 md:py-28 bg-emerald-600 dark:bg-emerald-800 relative overflow-hidden">
         <div className="absolute inset-0 dot-pattern opacity-10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div

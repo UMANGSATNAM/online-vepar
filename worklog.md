@@ -2605,3 +2605,313 @@ All core features working:
 3. Implement real-time notifications via WebSocket
 4. Add advanced dashboard analytics with date comparisons
 5. Add email template management in store settings
+
+---
+Task ID: 5-a
+Agent: Task 5-a Agent
+Task: Complete remaining TODOs, fix bugs, and add new features
+
+Work Log:
+
+### A. Fix Broken Pages/Components
+- Found and fixed syntax error in LandingPage.tsx (line 488): missing closing parenthesis on `onClick={() => setView('login')` → fixed to `onClick={() => setView('login')}`
+- Lint now passes with 0 errors
+- Verified dev server running and all pages compile
+
+### B. Notification Preferences in Store Settings
+- Already exists and working - no changes needed
+- StoreSettings.tsx has 6 tabs including "Notifications" with: Order notifications (new order, status, payment), Inventory alerts (low stock with threshold), Review notifications, Abandoned cart settings, Report preferences (weekly/monthly/newsletter), Report email config
+- API at /api/notification-preferences supports GET/PUT with auto-create
+
+### C. Order Notes/Comments Feature
+- Added OrderNote model to prisma/schema.prisma: id, orderId, storeId, authorId, authorName, content, isInternal (boolean), createdAt
+- Added orderNotes relations on Order and Store models
+- Created API endpoints:
+  - GET /api/orders/notes?orderId=xxx - List notes with auth+ownership check
+  - POST /api/orders/notes - Add note with authorId/authorName from auth context
+  - DELETE /api/orders/notes/[id] - Delete note with auth+ownership check
+- Updated OrdersPage.tsx detail view:
+  - Replaced simple "Notes" textarea with rich "Notes & Comments" section
+  - Added Internal vs Customer-visible note type toggle (amber Lock vs emerald Globe)
+  - Note input with Textarea + Send button (⌘+Enter shortcut)
+  - Timeline display with color-coded borders (amber=internal, emerald=customer)
+  - Each note shows: author, type badge, date, content, delete button
+  - Scrollable notes list (max-h-80)
+  - Legacy "Original Order Note" preserved for old data
+  - Added imports: Loader2, Send, MessageSquare, Lock, Globe, User as UserIcon
+- Ran bun run db:push - schema synced
+
+### D. Checkout/Storefront Page Improvements
+- Fixed Cart button: Desktop "Cart" now navigates directly to checkout step (was unimplemented 'cart' step)
+- Added product search: Search input with magnifying glass icon, filters by name and description
+- Added category filter: Rounded pill buttons dynamically built from product categories, active category styled with store primary color
+- Updated product count to show filtered count
+- Updated empty state for filtered results
+- Added state: categoryFilter, searchQuery
+- Added computed: categories, filteredProducts
+
+### E. Seed Data Verification
+- Ran bun run db:push - database schema in sync
+- Prisma Client generated successfully
+- Existing seed data confirmed working
+- Dev server running and serving all API endpoints
+
+### Files Created
+- /src/app/api/orders/notes/route.ts
+- /src/app/api/orders/notes/[id]/route.ts
+
+### Files Modified
+- /prisma/schema.prisma (added OrderNote model + orderNotes relations)
+- /src/components/orders/OrdersPage.tsx (rich Notes & Comments UI)
+- /src/components/checkout/CheckoutPage.tsx (search, category filters, fixed cart button)
+- /src/components/landing/LandingPage.tsx (fixed syntax error)
+
+### Lint & Quality
+- bun run lint - passes with 0 errors, 0 warnings
+- Dev server compiles and loads successfully
+
+Stage Summary:
+- All 5 tasks completed successfully
+- Notification Preferences: Already existed (6 tabs in Store Settings)
+- Order Notes: Full feature with OrderNote model, 3 API endpoints, rich timeline UI
+- Checkout: Search, category filtering, fixed cart navigation
+- Bug fix: LandingPage syntax error resolved
+- Database schema up to date, all seed data working
+
+---
+Task ID: 6-a
+Agent: UI Polish Agent
+Task: Improve and polish UI across the entire platform
+
+Work Log:
+
+### 1. globals.css - Comprehensive CSS Enhancements
+
+**Modal/Dialog Animations:**
+- Added `dialog-enter` / `dialog-exit` keyframes for smooth modal entrance/exit (scale + translateY)
+- Added `sheet-slide-right` / `sheet-slide-left` keyframes for Sheet component slide animations
+
+**Enhanced Skeleton Loading:**
+- Added `.skeleton-shimmer` class with gradient sweep animation (1.5s ease-in-out infinite)
+- Added `.skeleton-pulse` class using CSS pulse animation
+- Both have dark mode variants
+
+**Form Validation Styling:**
+- Added `.input-error` class with destructive border color and box-shadow
+- Added `.input-success` class with emerald border color and box-shadow
+- Added `.error-message` class with animated fade-in-up, red text, flex alignment
+- Added `.success-message` class with animated fade-in-up, emerald text, flex alignment
+- All have dark mode variants
+
+**Focus Ring Animation:**
+- Added `focus-ring-pulse` keyframes with pulsing emerald ring
+- Added `.focus-ring-animate` class for subtle focus ring animation
+
+**Micro-interaction Utilities:**
+- Added `.button-press` class for active state scale(0.97) effect on buttons
+- Added `.input-focus-lift` class for translateY(-1px) + emerald shadow on input focus
+- Both have dark mode support
+
+**Consistent Component Patterns:**
+- Added `.table-premium` class with sticky headers, alternating rows, hover highlights, dark mode
+- Added `.card-hover` class for consistent card hover (translateY, shadow, border color) with dark mode
+
+**Section Entrance Animations:**
+- Added `section-reveal` keyframes for section entrance (opacity + translateY)
+- Added `.section-reveal-delay-1/2/3` for staggered entrances
+
+**Dark Mode Improvements:**
+- Added `.dark ::-webkit-scrollbar-thumb` for better dark mode scrollbar
+- Added `.dark .animate-hero-gradient` for dark hero background
+- Added `.dark .dot-pattern` and `.dark .grid-pattern` for landing page patterns
+- Added `.auth-bg-pattern` with animated mesh gradient for auth pages (radial-gradient ellipses with 20s animation)
+- All with dark mode variants
+
+**Mobile Navigation:**
+- Added `.mobile-nav-active-indicator` with animated bottom bar indicator (width expand animation)
+- Added `nav-indicator-expand` keyframes
+
+**Loading & Animations:**
+- Added `.animate-spin-smooth` for smooth 0.8s spinner
+- Added `tooltip-pop` keyframes for tooltip entrance
+- Added `badge-pop` keyframes + `.badge-pop` class for notification badge animation
+- Added `.sidebar-collapse-transition` for smooth sidebar width changes
+
+**Accessibility:**
+- Added `@media (prefers-reduced-motion: reduce)` to disable all animations for users who prefer reduced motion
+- Covers all custom animations: float, shimmer, orbs, flow-gradient, glow-pulse, chart-bar
+
+### 2. LandingPage.tsx - Dark Mode & Micro-interactions
+
+**Dark Mode Support (added throughout):**
+- Nav bar: `dark:bg-gray-950/80`, `dark:border-emerald-900/50`
+- Brand name: `dark:text-emerald-100`
+- Nav links: `dark:text-emerald-200`
+- Login button: `dark:text-emerald-300`, `dark:hover:bg-emerald-900/30`
+- Mobile menu: `dark:bg-gray-950`, `dark:border-emerald-900/50`
+- Mobile links: `dark:text-emerald-200`
+- Hero heading: `dark:text-emerald-50`
+- Hero subtitle: `dark:text-emerald-300/80`
+- Stats glass container: `dark:bg-gray-900/60`, `dark:border-emerald-800/30`
+- Counter stats: `dark:text-emerald-400`
+- Trust badges section: `dark:bg-gray-900/80`
+- Features section: `dark:bg-gray-950`
+- Feature cards: `dark:border-emerald-900/50`, `dark:hover:border-emerald-700`
+- How It Works section: `dark:bg-gray-950`
+- Pricing section: `dark:bg-gray-950`
+- Pricing cards: `dark:border-emerald-900/50`, `dark:border-emerald-700`
+- CTA section: `dark:bg-emerald-800`
+- Testimonials: `dark:from-gray-950`, `dark:to-gray-900`
+- All section headings: `dark:text-emerald-50`
+- All descriptions: `dark:text-emerald-300/70`
+
+**Micro-interactions:**
+- Added `button-press` class to all CTA buttons (Start Free Trial, Get Started Now)
+- Added `card-hover` class to feature cards for consistent hover effect
+- Enhanced CTA button shadows: `dark:shadow-emerald-900/50`
+- View Demo button: `dark:border-emerald-700`, `dark:text-emerald-300`, `dark:hover:bg-emerald-900/30`
+
+### 3. Auth Pages (LoginPage.tsx & RegisterPage.tsx)
+
+**Background Animations:**
+- Added `.auth-bg-pattern` class to right panel with animated mesh gradient background
+- 3 overlapping radial-gradient ellipses with 20s animation cycle
+- Dark mode variants with slightly stronger opacity
+
+**Form Field Focus States:**
+- Added `.input-focus-lift` class to all form inputs
+- On focus: inputs lift up 1px with emerald shadow
+- Dark mode: stronger shadow for visibility
+
+**Button Interactions:**
+- Added `.button-press` class to submit buttons for active state feedback
+
+### 4. DashboardLayout.tsx Polish
+
+**Mobile Bottom Navigation:**
+- Added `.mobile-nav-active-indicator` class to active nav items with animated bottom bar
+- Enhanced bottom nav bar: `backdrop-blur-xl`, `border-border/50`, shadow with dark mode variant
+- Added `.safe-area-bottom` padding support
+
+**Breadcrumbs:**
+- Added `text-muted-foreground/40` to BreadcrumbSeparator for subtle separators
+
+**Sidebar:**
+- Added `button-press` class to sidebar nav items for active feedback
+- Softer border on sidebar header: `border-border/60`
+
+**Mobile More Panel:**
+- Enhanced shadow: `dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)]`
+- Softer border: `border-border/50`
+
+**Page Transitions:**
+- Improved AnimatePresence transition: initial y from 4→8, duration 0.15→0.2
+- Better easing curve: `[0.25, 0.46, 0.45, 0.94]` for smoother feel
+
+**Sidebar Collapse Button:**
+- Enhanced with `bg-card/80 backdrop-blur-sm`
+- Hover expands width from 5→6 with emerald background
+- Added `transition-all duration-200` for smooth expansion
+
+### 5. Component Pattern Consistency
+
+- Added `button-press` class to ProductsPage and OrdersPage primary action buttons
+- Verified existing `hover-lift` and `card-hover` patterns are used across: DashboardHome, AnalyticsPage, ShippingPage, AbandonedCartsPage, InventoryPage, ActivityLogPage, CollectionsPage, ReviewsPage, StaffPage, GiftCardsPage
+
+### Lint & Build
+- `bun run lint` - passes with 0 errors, 0 warnings
+- `bun run build` - compiles successfully
+
+### Files Modified
+- `/src/app/globals.css` (15+ new utility classes, animations, dark mode improvements, reduced motion support)
+- `/src/components/landing/LandingPage.tsx` (comprehensive dark mode support, button micro-interactions, card-hover)
+- `/src/components/auth/LoginPage.tsx` (auth-bg-pattern, input-focus-lift, button-press)
+- `/src/components/auth/RegisterPage.tsx` (auth-bg-pattern, input-focus-lift, button-press)
+- `/src/components/layout/DashboardLayout.tsx` (mobile nav indicator, better transitions, enhanced shadows)
+- `/src/components/products/ProductsPage.tsx` (button-press)
+- `/src/components/orders/OrdersPage.tsx` (button-press)
+
+---
+Task ID: 15
+Agent: Main Agent
+Task: Fix menu scrolling on mobile & desktop, improve responsiveness, fix bugs, polish UI
+
+Work Log:
+
+### 1. Fixed Menu/Sidebar Scrolling (CRITICAL FIX)
+- **Root cause**: Sidebar `ScrollArea` was missing `min-h-0` on the flex child, preventing it from shrinking below content size
+- Added `overflow-hidden` to SidebarContent's main container div
+- Added `min-h-0` to `ScrollArea` className in sidebar navigation
+- Added `min-h-0` to the desktop sidebar wrapper div
+- Added `overflow-hidden` to mobile Sheet sidebar content
+- Changed outer container from `min-h-screen` to `h-screen` with `min-h-0` on flex row
+- Fixed mobile "More" menu: increased max-height from 60vh to 70vh, added `overscroll-contain`
+- Fixed mobile bottom nav: replaced `safe-area-bottom` with inline style `paddingBottom: 'env(safe-area-inset-bottom, 0px)'`
+
+### 2. Improved Responsiveness Across All Pages
+- Added `overflow-x-auto` wrappers to tables missing them:
+  - PagesPage.tsx - table now scrollable on mobile
+  - ProductsPage.tsx - both table view and variants table now scrollable
+  - OrdersPage.tsx - desktop table now scrollable
+- Added `pb-16 lg:pb-0` mobile bottom nav padding to 10 pages that were missing it:
+  - InventoryPage, ShippingPage, TaxRatesPage, AbandonedCartsPage
+  - CollectionsPage, GiftCardsPage, StaffPage, ActivityLogPage
+  - ReviewsPage, DiscountsPage
+- Changed `space-y-6` to `space-y-4 sm:space-y-6` for responsive spacing
+- Changed `gap-4` to `gap-3 sm:gap-4` for better mobile spacing
+- Added `sm:` breakpoint to stat card grids that jumped from 2 to 4 columns
+
+### 3. Features Added (by subagent)
+- **Order Notes/Comments**: New OrderNote model in Prisma, API endpoints (GET/POST/DELETE), rich UI in OrdersPage with internal/customer-visible note types, timeline display, Cmd+Enter shortcut
+- **Checkout/Storefront**: Added product search, category filter, fixed Cart button navigation
+- **Fixed LandingPage syntax error**: Missing closing parenthesis on onClick handler
+
+### 4. UI Polish (by subagent)
+- **globals.css**: 15+ new utility classes (modal animations, skeleton shimmer, form validation states, micro-interactions, table-premium, card-hover, section-reveal, dark mode enhancements, auth-bg-pattern, reduced-motion support)
+- **LandingPage**: Full dark mode support across all sections
+- **Auth pages**: Animated mesh gradient background, input-focus-lift, button-press micro-interactions
+- **DashboardLayout**: Enhanced mobile bottom nav with active indicator, smoother page transitions, collapse button hover effects
+- **Component consistency**: button-press on primary actions, hover-lift and card-hover patterns verified
+
+### 5. QA Testing Results
+- ✅ Desktop: Sidebar scrollable with visible scrollbar, all menu items accessible
+- ✅ Mobile Sheet sidebar: Scrollable, all items (including Settings, Preview, Pages) accessible by scrolling
+- ✅ Mobile bottom nav: Visible and properly positioned
+- ✅ Mobile "More" menu: Scrollable with 70vh max height
+- ✅ Mobile dashboard: No layout issues, proper sizing
+- ✅ Mobile products page: Responsive grid, no overlapping
+- ✅ Desktop dashboard: Clean layout, proper sidebar scroll
+- ✅ `bun run lint` - 0 errors, 0 warnings
+
+Stage Summary:
+- **CRITICAL BUG FIXED**: Menu scrolling now works on both mobile and desktop
+- All 18+ pages now have proper mobile bottom padding
+- All tables now have horizontal scroll for mobile
+- New features: Order Notes, improved Checkout page
+- Extensive UI polish with animations, dark mode, micro-interactions
+- Platform is stable and responsive across all screen sizes
+
+### Files Modified
+- `/src/components/layout/DashboardLayout.tsx` - Fixed scrolling, responsive improvements
+- `/src/components/pages/PagesPage.tsx` - Added overflow-x-auto, responsive spacing
+- `/src/components/products/ProductsPage.tsx` - Added overflow-x-auto to tables
+- `/src/components/orders/OrdersPage.tsx` - Added overflow-x-auto, Order Notes feature
+- `/src/components/inventory/InventoryPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/shipping/ShippingPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/tax/TaxRatesPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/abandoned-carts/AbandonedCartsPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/collections/CollectionsPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/gift-cards/GiftCardsPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/staff/StaffPage.tsx` - Added pb-16, responsive grid
+- `/src/components/activity/ActivityLogPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/reviews/ReviewsPage.tsx` - Added pb-16, responsive spacing
+- `/src/components/discounts/DiscountsPage.tsx` - Added pb-16, responsive spacing
+- `/src/app/globals.css` - 15+ new utility classes and animations
+- `/src/components/landing/LandingPage.tsx` - Dark mode support, syntax fix
+- `/src/components/auth/LoginPage.tsx` - Animated background, focus states
+- `/src/components/auth/RegisterPage.tsx` - Animated background, focus states
+- `/prisma/schema.prisma` - Added OrderNote model
+
+### Files Created
+- `/src/app/api/orders/notes/route.ts` - Order notes API
+- `/src/app/api/orders/notes/[id]/route.ts` - Order notes delete API

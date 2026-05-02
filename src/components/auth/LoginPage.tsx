@@ -159,7 +159,7 @@ export default function LoginPage() {
       </div>
 
       {/* ===== Right Login Form Panel ===== */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-8">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-8 auth-bg-pattern">
         <motion.div
           className="w-full max-w-md"
           variants={containerVariants}
@@ -196,7 +196,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200"
+                      className="pl-10 border-emerald-200 dark:border-emerald-800/50 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900/50 transition-all duration-200 input-focus-lift"
                     />
                   </div>
                 </motion.div>
@@ -251,7 +251,7 @@ export default function LoginPage() {
                 <motion.div variants={itemVariants}>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg shadow-emerald-600/25 hover:shadow-emerald-700/30 hover:scale-[1.02] transition-all duration-200 h-10"
+                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-lg shadow-emerald-600/25 hover:shadow-emerald-700/30 hover:scale-[1.02] transition-all duration-200 h-10 button-press"
                     disabled={loading}
                   >
                     {loading ? (

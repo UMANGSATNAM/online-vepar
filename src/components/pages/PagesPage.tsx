@@ -446,6 +446,7 @@ export default function PagesPage() {
           transition={{ duration: 0.3, delay: 0.2 }}
         >
           <Card>
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -522,6 +523,7 @@ export default function PagesPage() {
                 </AnimatePresence>
               </TableBody>
             </Table>
+            </div>
           </Card>
         </motion.div>
       )}

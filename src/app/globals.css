@@ -1453,3 +1453,398 @@ textarea,
     font-size: 1.25rem;
   }
 }
+
+/* ===== TASK 6-a: COMPREHENSIVE UI POLISH ===== */
+
+/* Smooth modal/dialog entrance animation */
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialog-exit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+}
+
+/* Dialog content entrance */
+[data-state="open"] > .dialog-content-animate {
+  animation: dialog-enter 0.2s ease-out;
+}
+
+/* Sheet slide-in variants */
+@keyframes sheet-slide-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes sheet-slide-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Enhanced skeleton loading - pulse shimmer variant */
+@keyframes skeleton-pulse-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    oklch(0.94 0.01 155 / 0.8) 37%,
+    var(--muted) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    oklch(0.25 0.015 155 / 0.6) 37%,
+    var(--muted) 63%
+  );
+  background-size: 200% 100%;
+}
+
+/* Skeleton with pulse variant */
+.skeleton-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+}
+
+/* Form validation states */
+.input-error {
+  border-color: oklch(0.577 0.245 27.325) !important;
+  box-shadow: 0 0 0 1px oklch(0.577 0.245 27.325 / 0.3);
+}
+
+.input-success {
+  border-color: oklch(0.55 0.16 155) !important;
+  box-shadow: 0 0 0 1px oklch(0.55 0.16 155 / 0.3);
+}
+
+/* Error message styling */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: oklch(0.577 0.245 27.325);
+  margin-top: 0.375rem;
+  animation: fade-in-up 0.2s ease-out;
+}
+
+.dark .error-message {
+  color: oklch(0.704 0.191 22.216);
+}
+
+/* Success message styling */
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: oklch(0.55 0.16 155);
+  margin-top: 0.375rem;
+  animation: fade-in-up 0.2s ease-out;
+}
+
+/* Focus ring with animation */
+@keyframes focus-ring-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px oklch(0.55 0.16 155 / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 4px oklch(0.55 0.16 155 / 0.15);
+  }
+}
+
+.focus-ring-animate:focus-visible {
+  animation: focus-ring-pulse 1.5s ease-in-out infinite;
+  outline: none;
+}
+
+/* Micro-interaction: button press effect */
+.button-press:active {
+  transform: scale(0.97);
+}
+
+/* Micro-interaction: input focus lift */
+.input-focus-lift {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-focus-lift:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px oklch(0.55 0.16 155 / 0.1);
+}
+
+.dark .input-focus-lift:focus {
+  box-shadow: 0 2px 8px oklch(0.55 0.16 155 / 0.15);
+}
+
+/* Consistent table styling */
+.table-premium {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-premium thead th {
+  background-color: oklch(0.97 0.005 155);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dark .table-premium thead th {
+  background-color: oklch(0.16 0.015 155);
+}
+
+.table-premium tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table-premium tbody tr:nth-child(even) {
+  background-color: oklch(0.98 0.003 155 / 0.5);
+}
+
+.dark .table-premium tbody tr:nth-child(even) {
+  background-color: oklch(0.16 0.01 155 / 0.3);
+}
+
+.table-premium tbody tr:hover {
+  background-color: oklch(0.55 0.16 155 / 0.04);
+}
+
+.dark .table-premium tbody tr:hover {
+  background-color: oklch(0.55 0.16 155 / 0.08);
+}
+
+.table-premium td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+/* Card hover effect - consistent across all cards */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.08), 0 4px 10px -6px rgb(0 0 0 / 0.04);
+  border-color: oklch(0.55 0.16 155 / 0.3);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.25), 0 4px 10px -6px rgb(0 0 0 / 0.15);
+  border-color: oklch(0.55 0.16 155 / 0.4);
+}
+
+/* Section entrance animation */
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-reveal {
+  animation: section-reveal 0.6s ease-out both;
+}
+
+.section-reveal-delay-1 { animation-delay: 0.1s; }
+.section-reveal-delay-2 { animation-delay: 0.2s; }
+.section-reveal-delay-3 { animation-delay: 0.3s; }
+
+/* Enhanced scrollbar for dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.55 0.16 155 / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.16 155 / 0.5);
+}
+
+/* Landing page dark mode adjustments */
+.dark .animate-hero-gradient {
+  background: linear-gradient(-45deg, #022c22, #064e3b, #0f3d3e, #042f2e, #022c22);
+  background-size: 400% 400%;
+}
+
+.dark .dot-pattern {
+  background-image: radial-gradient(circle, oklch(0.55 0.16 155 / 0.15) 1px, transparent 1px);
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(oklch(0.55 0.16 155 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.55 0.16 155 / 0.06) 1px, transparent 1px);
+}
+
+/* Auth page background pattern */
+@keyframes mesh-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+.auth-bg-pattern {
+  background:
+    radial-gradient(ellipse at 20% 50%, oklch(0.55 0.16 155 / 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, oklch(0.65 0.12 160 / 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, oklch(0.55 0.14 170 / 0.05) 0%, transparent 50%);
+  background-size: 200% 200%;
+  animation: mesh-gradient 20s ease infinite;
+}
+
+.dark .auth-bg-pattern {
+  background:
+    radial-gradient(ellipse at 20% 50%, oklch(0.55 0.16 155 / 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, oklch(0.65 0.12 160 / 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, oklch(0.55 0.14 170 / 0.06) 0%, transparent 50%);
+  background-size: 200% 200%;
+}
+
+/* Mobile bottom nav active indicator */
+@keyframes nav-indicator-expand {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.mobile-nav-active-indicator {
+  position: relative;
+}
+
+.mobile-nav-active-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: oklch(0.55 0.16 155);
+  border-radius: 1px;
+  animation: nav-indicator-expand 0.3s ease-out;
+}
+
+/* Loading spinner */
+@keyframes spin-smooth {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-smooth {
+  animation: spin-smooth 0.8s linear infinite;
+}
+
+/* Fade through transition for content switches */
+@keyframes fade-through {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Tooltip entrance */
+@keyframes tooltip-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Badge pulse animation for notifications */
+@keyframes badge-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.badge-pop {
+  animation: badge-pop 0.3s ease-out;
+}
+
+/* Smooth collapse animation for sidebar */
+.sidebar-collapse-transition {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-float,
+  .animate-shimmer,
+  .animate-hero-gradient,
+  .animate-orb-1,
+  .animate-orb-2,
+  .animate-orb-3,
+  .animate-flow-gradient,
+  .animate-glow-pulse,
+  .animate-chart-bar {
+    animation: none !important;
+  }
+}
