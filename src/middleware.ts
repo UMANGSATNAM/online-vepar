@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
   // Platform domain - e.g. onlinevepar.com or localhost
   const platformDomain = process.env.PLATFORM_DOMAIN || 'onlinevepar.com'
   const isDev = hostname.includes('localhost') || hostname.includes('127.0.0.1')
+  const isPlatformHost = hostname === platformDomain || hostname.includes('.up.railway.app')
 
   // Admin panel - let it through
   if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api')) {
@@ -41,7 +42,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Custom domain - not our platform domain
-  if (!hostname.endsWith(platformDomain)) {
+  if (!isPlatformHost) {
     const rewriteUrl = url.clone()
     rewriteUrl.pathname = `/store-domain/${hostname}${url.pathname}`
     return NextResponse.rewrite(rewriteUrl)
