@@ -240,13 +240,20 @@ export default function DashboardHome() {
     }
   }
 
+  const [mounted, setMounted] = useState(false)
+  const [greetingInfo, setGreetingInfo] = useState<{greeting: string, icon: typeof Sun}>({ greeting: 'Welcome', icon: Sun })
+  const [todayDate, setTodayDate] = useState('')
+
   useEffect(() => {
+    setMounted(true)
+    setGreetingInfo(getTimeGreeting())
+    setTodayDate(getTodayDate())
     fetchData()
   }, [currentStore?.id])
 
   const firstName = currentUser?.name?.split(' ')[0] || 'Merchant'
   const storeName = currentStore?.name || 'your store'
-  const { greeting, icon: GreetingIcon } = getTimeGreeting()
+  const { greeting, icon: GreetingIcon } = greetingInfo
 
   // Stats card config
   const statsCards = data
@@ -387,7 +394,9 @@ export default function DashboardHome() {
               </p>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground hidden sm:block">{getTodayDate()}</p>
+          <p className="text-xs text-muted-foreground hidden sm:block">
+            {mounted ? todayDate : ''}
+          </p>
         </div>
       </motion.div>
 
