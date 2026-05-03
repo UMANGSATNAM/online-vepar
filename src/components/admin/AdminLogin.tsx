@@ -61,8 +61,8 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 flex flex-col justify-center relative overflow-hidden">
       {/* Abstract Background Elements */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-600/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-400/20 rounded-full blur-[120px]" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
       </div>
 
@@ -76,7 +76,7 @@ export default function AdminLogin() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm mb-6">
                 <Shield className="w-4 h-4" />
                 <span>Restricted Access</span>
               </div>
@@ -111,7 +111,7 @@ export default function AdminLogin() {
               className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl relative overflow-hidden"
             >
               {/* Top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-blue-500" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
               
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-white">
@@ -143,7 +143,7 @@ export default function AdminLogin() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                        className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-violet-500" 
+                        className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-emerald-500" 
                         placeholder="Super Admin" 
                       />
                     </div>
@@ -159,7 +159,7 @@ export default function AdminLogin() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-violet-500" 
+                      className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-emerald-500" 
                       placeholder="admin@onlinevepar.com" 
                     />
                   </div>
@@ -168,7 +168,7 @@ export default function AdminLogin() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label className="text-zinc-400 text-xs uppercase tracking-wider">Master Password</Label>
-                    {isLogin && <span className="text-xs text-violet-400 hover:text-violet-300 cursor-pointer">Forgot?</span>}
+                    {isLogin && <span className="text-xs text-emerald-400 hover:text-emerald-300 cursor-pointer">Forgot?</span>}
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
@@ -177,7 +177,7 @@ export default function AdminLogin() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-violet-500" 
+                      className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-emerald-500" 
                       placeholder="••••••••" 
                     />
                   </div>
@@ -186,7 +186,7 @@ export default function AdminLogin() {
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] transition-all mt-4"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all mt-4"
                 >
                   {isLoading ? 'Authenticating...' : (isLogin ? 'Establish Connection' : 'Initialize Account')}
                   {!isLoading && <ArrowRight className="w-4 h-4 ml-2" />}

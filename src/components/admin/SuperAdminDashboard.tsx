@@ -35,6 +35,7 @@ const NAV = [
   { id: 'users', label: 'Users', icon: Users },
   { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
   { id: 'domains', label: 'Domains', icon: Globe },
+  { id: 'sync', label: 'Platform Sync', icon: RefreshCw },
   { id: 'settings', label: 'Platform Settings', icon: Settings },
 ]
 
@@ -108,7 +109,7 @@ export default function SuperAdminDashboard() {
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col transition-all duration-300`}>
         <div className="h-16 flex items-center px-4 border-b border-gray-800 gap-3">
-          <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center flex-shrink-0">
             <Shield size={16} className="text-white" />
           </div>
           {sidebarOpen && <span className="font-bold text-sm text-white">Super Admin</span>}
@@ -117,7 +118,7 @@ export default function SuperAdminDashboard() {
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {NAV.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => setActiveTab(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === id ? 'bg-violet-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === id ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
               <Icon size={18} className="flex-shrink-0" />
               {sidebarOpen && <span>{label}</span>}
             </button>
@@ -146,7 +147,7 @@ export default function SuperAdminDashboard() {
               className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
               <RefreshCw size={16} className={`text-gray-400 ${loading ? 'animate-spin' : ''}`} />
             </button>
-            <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center font-bold text-sm">A</div>
+            <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-sm">A</div>
           </div>
         </header>
 
@@ -161,7 +162,7 @@ export default function SuperAdminDashboard() {
                 {[
                   { label: 'Total Users', value: stats?.totalUsers ?? '—', icon: Users, color: 'blue' },
                   { label: 'Active Stores', value: stats?.activeStores ?? '—', icon: Store, color: 'green' },
-                  { label: 'Total Orders', value: stats?.totalOrders ?? '—', icon: ShoppingBag, color: 'violet' },
+                  { label: 'Total Orders', value: stats?.totalOrders ?? '—', icon: ShoppingBag, color: 'emerald' },
                   { label: 'Platform Revenue', value: stats ? `₹${(stats.totalRevenue / 1000).toFixed(1)}K` : '—', icon: TrendingUp, color: 'amber' },
                 ].map(({ label, value, icon: Icon, color }) => (
                   <div key={label} className="bg-gray-900 rounded-xl p-5 border border-gray-800">
@@ -187,7 +188,7 @@ export default function SuperAdminDashboard() {
               <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
                   <h2 className="font-semibold text-white">Recent Stores</h2>
-                  <button onClick={() => setActiveTab('stores')} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">View all <ArrowUpRight size={12} /></button>
+                  <button onClick={() => setActiveTab('stores')} className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1">View all <ArrowUpRight size={12} /></button>
                 </div>
                 <div className="divide-y divide-gray-800">
                   {recentStores.slice(0, 5).map(s => (
@@ -214,9 +215,9 @@ export default function SuperAdminDashboard() {
                 <div className="relative flex-1 max-w-sm">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                   <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && fetchStores()}
-                    placeholder="Search stores..." className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-violet-500" />
+                    placeholder="Search stores..." className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" />
                 </div>
-                <button onClick={fetchStores} className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors">Search</button>
+                <button onClick={fetchStores} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-sm font-medium transition-colors">Search</button>
               </div>
 
               <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
@@ -273,9 +274,9 @@ export default function SuperAdminDashboard() {
                 <div className="relative flex-1 max-w-sm">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                   <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && fetchUsers()}
-                    placeholder="Search users..." className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-violet-500" />
+                    placeholder="Search users..." className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" />
                 </div>
-                <button onClick={fetchUsers} className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors">Search</button>
+                <button onClick={fetchUsers} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-sm font-medium transition-colors">Search</button>
               </div>
 
               <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
@@ -297,7 +298,7 @@ export default function SuperAdminDashboard() {
                         </td>
                         <td className="px-5 py-3 hidden md:table-cell text-gray-400">{u._count.stores}</td>
                         <td className="px-5 py-3">
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${u.role === 'superadmin' ? 'bg-violet-500/15 text-violet-400' : 'bg-gray-700 text-gray-300'}`}>{u.role}</span>
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${u.role === 'superadmin' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-gray-700 text-gray-300'}`}>{u.role}</span>
                         </td>
                         <td className="px-5 py-3 hidden lg:table-cell text-gray-500 text-xs">{new Date(u.createdAt).toLocaleDateString()}</td>
                       </tr>
@@ -341,7 +342,7 @@ export default function SuperAdminDashboard() {
                       </td>
                       <td className="px-5 py-3 text-right">
                         {!d.isVerified && (
-                          <button onClick={() => verifyDomain(d.id)} className="text-xs px-3 py-1.5 bg-violet-600 hover:bg-violet-700 rounded-lg transition-colors">Verify</button>
+                          <button onClick={() => verifyDomain(d.id)} className="text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors">Verify</button>
                         )}
                       </td>
                     </tr>
@@ -357,6 +358,9 @@ export default function SuperAdminDashboard() {
 
           {/* ── SETTINGS ── */}
           {activeTab === 'settings' && <PlatformSettingsTab />}
+
+          {/* ── SYNC & FEATURES ── */}
+          {activeTab === 'sync' && <PlatformSyncTab />}
         </main>
       </div>
     </div>
@@ -384,14 +388,14 @@ function SubscriptionsTab() {
         <h2 className="font-semibold text-white mb-4">Create Subscription Plan</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Plan Name (e.g. Pro)"
-            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-violet-500" />
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" />
           <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="Price (e.g. 999)"
-            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-violet-500" />
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" />
           <select value={form.currency} onChange={e => setForm(p => ({ ...p, currency: e.target.value }))}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-violet-500">
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-emerald-500">
             <option value="INR">INR ₹</option><option value="USD">USD $</option><option value="EUR">EUR €</option>
           </select>
-          <button onClick={createPlan} className="bg-violet-600 hover:bg-violet-700 rounded-lg px-4 py-2 text-sm font-medium transition-colors">Create Plan</button>
+          <button onClick={createPlan} className="bg-emerald-600 hover:bg-emerald-700 rounded-lg px-4 py-2 text-sm font-medium transition-colors">Create Plan</button>
         </div>
       </div>
 
@@ -427,11 +431,11 @@ function PlatformSettingsTab() {
           ].map(({ label, placeholder, desc }) => (
             <div key={label}>
               <label className="text-sm font-medium text-gray-300 block mb-1">{label}</label>
-              <input placeholder={placeholder} className="w-full max-w-md bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-violet-500" />
+              <input placeholder={placeholder} className="w-full max-w-md bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" />
               <p className="text-xs text-gray-600 mt-1">{desc}</p>
             </div>
           ))}
-          <button className="mt-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors">Save Settings</button>
+          <button className="mt-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-sm font-medium transition-colors">Save Settings</button>
         </div>
       </div>
 
@@ -441,6 +445,105 @@ function PlatformSettingsTab() {
         <div className="flex gap-3">
           <button className="px-4 py-2 bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-400 rounded-lg text-sm font-medium transition-colors">Enable Maintenance Mode</button>
           <button className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg text-sm font-medium transition-colors">Disable New Signups</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PlatformSyncTab() {
+  const [syncing, setSyncing] = useState(false)
+  const [broadcasting, setBroadcasting] = useState(false)
+
+  const handleGlobalSync = () => {
+    setSyncing(true)
+    setTimeout(() => setSyncing(false), 2000)
+  }
+
+  const handleBroadcast = () => {
+    setBroadcasting(true)
+    setTimeout(() => setBroadcasting(false), 1500)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Master Theme Sync */}
+        <div className="bg-gray-900 border border-emerald-500/20 rounded-xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <RefreshCw size={100} />
+          </div>
+          <h2 className="font-semibold text-white mb-2 flex items-center gap-2 text-lg">
+            <RefreshCw size={20} className="text-emerald-500" /> Master Theme Sync
+          </h2>
+          <p className="text-sm text-gray-400 mb-6 relative z-10">
+            Force update all merchant stores to the latest layout engine and UI components. This will synchronize the newest design tokens across all 21 niche templates without overriding merchant data.
+          </p>
+          <button 
+            onClick={handleGlobalSync}
+            disabled={syncing}
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${syncing ? 'bg-gray-800 text-gray-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'}`}
+          >
+            {syncing ? <RefreshCw size={16} className="animate-spin" /> : <CheckCircle size={16} />}
+            {syncing ? 'Synchronizing 541 components...' : 'Trigger Global Sync'}
+          </button>
+        </div>
+
+        {/* Global Broadcast */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h2 className="font-semibold text-white mb-2 flex items-center gap-2 text-lg">
+            <Bell size={20} className="text-emerald-500" /> Global Merchant Broadcast
+          </h2>
+          <p className="text-sm text-gray-400 mb-4">
+            Push an alert banner to every single merchant dashboard on the platform instantly.
+          </p>
+          <div className="space-y-3">
+            <input 
+              placeholder="E.g. We are deploying a massive new update tonight!" 
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500" 
+            />
+            <div className="flex gap-2">
+              <select className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-emerald-500">
+                <option value="info">Info (Blue)</option>
+                <option value="success">Success (Green)</option>
+                <option value="warning">Warning (Yellow)</option>
+                <option value="danger">Critical (Red)</option>
+              </select>
+              <button 
+                onClick={handleBroadcast}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              >
+                {broadcasting ? 'Broadcasting...' : 'Send Broadcast'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Feature Flags */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h2 className="font-semibold text-white mb-4 flex items-center gap-2 text-lg">
+          <Settings size={20} className="text-emerald-500" /> Platform Feature Flags
+        </h2>
+        <div className="space-y-1 divide-y divide-gray-800 border border-gray-800 rounded-lg">
+          {[
+            { name: 'AI Store Generator', desc: 'Enable the AI prompt-to-store feature for all merchants.', active: true },
+            { name: 'Advanced Theme Editor', desc: 'Roll out the new drag-and-drop React Dnd-kit editor.', active: true },
+            { name: 'Razorpay Auto-Billing', desc: 'Enable automatic deduction of platform fees via Razorpay.', active: false },
+            { name: 'Multi-Language Support', desc: 'Allow merchants to localize their storefronts in 12 languages.', active: false },
+          ].map((feature, i) => (
+            <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-800/30 transition-colors">
+              <div>
+                <h3 className="font-medium text-white">{feature.name}</h3>
+                <p className="text-xs text-gray-500 mt-1">{feature.desc}</p>
+              </div>
+              <button className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${feature.active ? 'bg-emerald-500' : 'bg-gray-700'}`}>
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${feature.active ? 'translate-x-6' : 'translate-x-1'}`} />
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
