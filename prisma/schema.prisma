@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,7 @@ model User {
   password  String
   name      String
   avatar    String?
-  role      String   @default("owner") // owner, staff
+  role      String   @default("owner") // owner, staff, superadmin
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   stores    Store[]
@@ -58,6 +58,12 @@ model Store {
   giftCards             GiftCard[]
   staffs                Staff[]
   orderNotes            OrderNote[]
+  subscriptions         StoreSubscription[]
+  domains               Domain[]
+  facebookPixelId       String?
+  googleAnalyticsId     String?
+  seoTitle              String?
+  seoDescription        String?
 }
 
 model Category {
@@ -503,4 +509,73 @@ model GiftCard {
   @@index([storeId])
   @@index([code])
   @@index([status])
+}
+
+// --- SaaS Billing & Subscriptions ---
+
+model SubscriptionPlan {
+  id            String   @id @default(cuid())
+  name          String   // e.g., "Pro Plan"
+  price         Float    // e.g., 999.00
+  currency      String   @default("INR")
+  interval      String   @default("month") // month, year
+  stripePriceId String?
+  razorpayPlanId String?
+  features      String   @default("[]") // JSON array of features
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subscriptions StoreSubscription[]
+}
+
+model StoreSubscription {
+  id                     String   @id @default(cuid())
+  storeId                String
+  store                  Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  planId                 String
+  plan                   SubscriptionPlan @relation(fields: [planId], references: [id])
+  status                 String   @default("active") // active, past_due, canceled, unpaid
+  currentPeriodStart     DateTime
+  currentPeriodEnd       DateTime
+  cancelAtPeriodEnd      Boolean  @default(false)
+  paymentProvider        String   // "stripe" or "razorpay"
+  providerSubscriptionId String   @unique
+  providerCustomerId     String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([providerSubscriptionId])
+}
+
+// --- Domain Management ---
+
+model Domain {
+  id            String   @id @default(cuid())
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  domain        String   @unique // e.g., "www.mybrand.com" or "mybrand.onlinevepar.com"
+  isCustom      Boolean  @default(true)
+  isVerified    Boolean  @default(false)
+  sslStatus     String   @default("pending") // pending, active, failed
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([domain])
+}
+
+// --- Super Admin & Platform Config ---
+
+model PlatformSettings {
+  id                  String   @id @default("global") // Single row pattern
+  maintenanceMode     Boolean  @default(false)
+  allowNewSignups     Boolean  @default(true)
+  defaultTrialDays    Int      @default(14)
+  platformFeePercent  Float    @default(0) // future-proofing for taking a cut of sales
+  supportEmail        String   @default("support@onlinevepar.com")
+  razorpayWebhookSecret String?
+  stripeWebhookSecret   String?
+  updatedAt           DateTime @updatedAt
 }

@@ -65,6 +65,7 @@ export default function Home() {
     case 'collections':
     case 'gift-cards':
     case 'staff':
+    case 'store-editor':
       return <DashboardLayout />
     default:
       return <LandingPage />

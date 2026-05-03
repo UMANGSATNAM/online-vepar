@@ -26,6 +26,11 @@ export type ViewType =
   | 'collections'
   | 'gift-cards'
   | 'staff'
+  | 'superadmin'
+  | 'domain-settings'
+  | 'billing'
+  | 'seo-settings'
+  | 'store-editor'
 
 export interface User {
   id: string
@@ -50,6 +55,10 @@ export interface Store {
   ownerId: string
   createdAt: string
   updatedAt?: string
+  facebookPixelId?: string
+  googleAnalyticsId?: string
+  seoTitle?: string
+  seoDescription?: string
 }
 
 export interface CartItem {

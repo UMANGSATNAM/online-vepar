@@ -36,6 +36,7 @@ import {
   ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
+  Shield,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -90,6 +91,10 @@ import GiftCardsPage from '@/components/gift-cards/GiftCardsPage'
 import StaffPage from '@/components/staff/StaffPage'
 import NotificationsPanel from '@/components/layout/NotificationsPanel'
 import GlobalSearch from '@/components/layout/GlobalSearch'
+import DomainSettings from '@/components/store/DomainSettings'
+import BillingSettings from '@/components/store/BillingSettings'
+import SeoSettings from '@/components/store/SeoSettings'
+import StoreEditor from '@/components/store/StoreEditor'
 
 // --- Navigation Items ---
 const mainNavItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -111,9 +116,13 @@ const secondaryNavItems: { view: ViewType; label: string; icon: React.ComponentT
   { view: 'abandoned-carts', label: 'Abandoned Carts', icon: ShoppingBag, group: 'Operations' },
   { view: 'activity', label: 'Activity Log', icon: Clock, group: 'Operations' },
   { view: 'staff', label: 'Staff', icon: Users, group: 'Settings' },
-  { view: 'store-settings', label: 'Settings', icon: Settings, group: 'Settings' },
+  { view: 'store-settings', label: 'General', icon: Settings, group: 'Settings' },
+  { view: 'domain-settings', label: 'Domains', icon: Globe, group: 'Settings' },
+  { view: 'billing', label: 'Billing', icon: CreditCard, group: 'Settings' },
+  { view: 'seo-settings', label: 'SEO & Marketing', icon: Search, group: 'Settings' },
   { view: 'store-preview', label: 'Preview', icon: Globe, group: 'Settings' },
   { view: 'pages', label: 'Pages', icon: FileText, group: 'Settings' },
+  { view: 'store-editor', label: 'Store Editor', icon: LayoutGrid, group: 'Settings' },
 ]
 
 const viewLabels: Record<string, string> = {
@@ -140,6 +149,10 @@ const viewLabels: Record<string, string> = {
   checkout: 'Storefront',
   collections: 'Collections',
   staff: 'Staff',
+  'domain-settings': 'Custom Domains',
+  billing: 'Billing & Plan',
+  'seo-settings': 'SEO & Marketing',
+  'store-editor': 'Store Editor',
 }
 
 function ThemeToggle() {
@@ -409,6 +422,15 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
+            {currentUser?.role === 'superadmin' && (
+              <>
+                <DropdownMenuItem onClick={() => window.open('/admin', '_blank')}>
+                  <Shield className="w-4 h-4 mr-2 text-violet-500" />
+                  <span className="text-violet-500 font-medium">Super Admin</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem onClick={() => handleNav('store-settings')}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
@@ -639,6 +661,14 @@ export default function DashboardLayout() {
         return <StaffPage />
       case 'create-store':
         return <CreateStoreDialog />
+      case 'domain-settings':
+        return <DomainSettings />
+      case 'billing':
+        return <BillingSettings />
+      case 'seo-settings':
+        return <SeoSettings />
+      case 'store-editor':
+        return <StoreEditor />
       default:
         return <DashboardHome />
     }

@@ -45,7 +45,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, description, logo, banner, theme, primaryColor, currency, domain, isActive } = body;
+    const { name, description, logo, banner, theme, primaryColor, currency, domain, isActive, seoTitle, seoDescription, facebookPixelId, googleAnalyticsId } = body;
 
     // Verify ownership
     const existingStore = await db.store.findFirst({
@@ -66,6 +66,10 @@ export async function PUT(
     if (currency !== undefined) updateData.currency = currency;
     if (domain !== undefined) updateData.domain = domain;
     if (isActive !== undefined) updateData.isActive = isActive;
+    if (seoTitle !== undefined) updateData.seoTitle = seoTitle;
+    if (seoDescription !== undefined) updateData.seoDescription = seoDescription;
+    if (facebookPixelId !== undefined) updateData.facebookPixelId = facebookPixelId;
+    if (googleAnalyticsId !== undefined) updateData.googleAnalyticsId = googleAnalyticsId;
 
     const store = await db.store.update({
       where: { id },
@@ -107,3 +111,5 @@ export async function DELETE(
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export const PATCH = PUT;
