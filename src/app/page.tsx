@@ -21,6 +21,10 @@ export default function Home() {
           const data = await res.json()
           if (data.user) {
             setUser(data.user)
+            if (data.user.role === 'superadmin') {
+              window.location.href = '/admin'
+              return
+            }
             if (data.stores && data.stores.length > 0) {
               setStores(data.stores)
               setStore(data.stores[0])
