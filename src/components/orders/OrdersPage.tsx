@@ -245,6 +245,19 @@ export default function OrdersPage() {
     }
   }, [toast])
 
+  // Fetch order notes/comments
+  const fetchOrderNotes = useCallback(async (orderId: string) => {
+    try {
+      const res = await fetch(`/api/orders/notes?orderId=${orderId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setOrderNoteList(data.notes || [])
+      }
+    } catch {
+      // silently fail
+    }
+  }, [])
+
   useEffect(() => {
     fetchOrders()
   }, [fetchOrders])
@@ -374,18 +387,6 @@ export default function OrdersPage() {
     await updateOrderStatus(selectedOrder.id, { notes: orderNotes })
   }
 
-  // Fetch order notes/comments
-  const fetchOrderNotes = useCallback(async (orderId: string) => {
-    try {
-      const res = await fetch(`/api/orders/notes?orderId=${orderId}`)
-      if (res.ok) {
-        const data = await res.json()
-        setOrderNoteList(data.notes || [])
-      }
-    } catch {
-      // silently fail
-    }
-  }, [])
 
   // Add order note
   const handleAddNote = async () => {
