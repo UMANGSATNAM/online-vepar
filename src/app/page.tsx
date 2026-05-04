@@ -70,6 +70,9 @@ export default function Home() {
     case 'gift-cards':
     case 'staff':
     case 'store-editor':
+    case 'domain-settings':
+    case 'billing':
+    case 'seo-settings':
       return <DashboardLayout />
     default:
       return <LandingPage />
