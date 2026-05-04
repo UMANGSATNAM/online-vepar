@@ -45,7 +45,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, description, logo, banner, theme, primaryColor, currency, domain, isActive, seoTitle, seoDescription, facebookPixelId, googleAnalyticsId } = body;
+    const { name, description, logo, banner, theme, primaryColor, currency, domain, isActive, seoTitle, seoDescription, facebookPixelId, googleAnalyticsId, sectionsConfig } = body;
 
     // Verify ownership
     const existingStore = await db.store.findFirst({
@@ -70,6 +70,7 @@ export async function PUT(
     if (seoDescription !== undefined) updateData.seoDescription = seoDescription;
     if (facebookPixelId !== undefined) updateData.facebookPixelId = facebookPixelId;
     if (googleAnalyticsId !== undefined) updateData.googleAnalyticsId = googleAnalyticsId;
+    if (sectionsConfig !== undefined) updateData.sectionsConfig = sectionsConfig;
 
     const store = await db.store.update({
       where: { id },

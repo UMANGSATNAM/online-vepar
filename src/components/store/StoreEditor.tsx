@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Layout, Settings, Save, Move, Plus, Trash2, 
@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/lib/store'
+import { useToast } from '@/hooks/use-toast'
 
 interface SectionData {
   id: string
@@ -38,7 +39,9 @@ interface SectionData {
 // Available section blueprints
 const SECTION_TYPES = [
   { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
+  { type: 'categories', label: 'Categories List', icon: Layout, defaultSettings: { title: 'Shop by Category' } },
   { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4 } },
+  { type: 'allProducts', label: 'All Products Grid', icon: Layout, defaultSettings: { title: 'All Products' } },
   { type: 'textWithImage', label: 'Text with Image', icon: ImageIcon, defaultSettings: { title: 'Our Story', content: 'We make the best products...', imagePosition: 'left' } },
   { type: 'testimonials', label: 'Testimonials', icon: Type, defaultSettings: { title: 'What Customers Say' } },
 ]
@@ -98,15 +101,34 @@ function SortableSectionItem({
 }
 
 export default function StoreEditor() {
-  const { currentStore } = useAppStore()
+  const { currentStore, setStore } = useAppStore()
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState<'sections' | 'theme'>('sections')
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
-  const [sections, setSections] = useState<SectionData[]>([
-    { id: '1', type: 'hero', label: 'Hero Banner', settings: { title: 'Welcome to ' + (currentStore?.name || 'Store'), subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
-    { id: '2', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Best Sellers', count: 4 } },
-    { id: '3', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Quality Guaranteed', content: 'We offer only the best...', imagePosition: 'right' } }
-  ])
+  const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+
+  // Load sections from currentStore
+  useEffect(() => {
+    if (currentStore?.sectionsConfig) {
+      try {
+        const parsed = JSON.parse(currentStore.sectionsConfig)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSections(parsed)
+          return
+        }
+      } catch (e) {
+        console.error('Failed to parse sectionsConfig', e)
+      }
+    }
+    // Default sections if none found
+    setSections([
+      { id: '1', type: 'hero', label: 'Hero Banner', settings: { title: 'Welcome to ' + (currentStore?.name || 'Store'), subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
+      { id: '2', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Best Sellers', count: 4 } },
+      { id: '3', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Quality Guaranteed', content: 'We offer only the best...', imagePosition: 'right' } }
+    ])
+  }, [currentStore?.sectionsConfig, currentStore?.name])
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -147,6 +169,28 @@ export default function StoreEditor() {
       if (s.id === id) return { ...s, settings: { ...s.settings, [key]: value } }
       return s
     }))
+  }
+
+  const handleSave = async () => {
+    if (!currentStore) return
+    setIsSaving(true)
+    try {
+      const res = await fetch(`/api/stores/${currentStore.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sectionsConfig: JSON.stringify(sections) })
+      })
+      
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to save')
+      
+      setStore(data.store)
+      toast({ title: 'Success', description: 'Store layout saved successfully!' })
+    } catch (e: any) {
+      toast({ title: 'Error', description: e.message, variant: 'destructive' })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const activeSection = sections.find(s => s.id === activeSectionId)
@@ -242,8 +286,9 @@ export default function StoreEditor() {
         </div>
         
         <div className="p-4 border-t bg-muted/10">
-          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-            <Save className="w-4 h-4 mr-2" /> Save Store Layout
+          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={isSaving}>
+            <Save className={`w-4 h-4 mr-2 ${isSaving ? 'animate-pulse' : ''}`} /> 
+            {isSaving ? 'Saving...' : 'Save Store Layout'}
           </Button>
         </div>
       </div>
@@ -312,6 +357,34 @@ export default function StoreEditor() {
                             <div className="aspect-square bg-muted rounded-xl"></div>
                             <div className="h-4 bg-muted rounded w-2/3"></div>
                             <div className="h-4 bg-muted rounded w-1/3"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'categories' && (
+                    <div className="py-12 px-6 md:px-12 bg-background border-b border-muted/30">
+                      <h2 className="text-xl font-bold mb-6">{section.settings.title || 'Shop by Category'}</h2>
+                      <div className="flex gap-4 overflow-x-auto pb-4">
+                        {['All', 'Electronics', 'Clothing', 'Home'].map((cat, i) => (
+                          <div key={i} className={`px-6 py-2 rounded-full border-2 ${i === 0 ? 'border-emerald-600 text-emerald-600 bg-emerald-50' : 'border-muted text-muted-foreground'}`}>
+                            {cat}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'allProducts' && (
+                    <div className="py-16 px-6 md:px-12 bg-background">
+                      <h2 className="text-2xl font-bold mb-8">{section.settings.title || 'All Products'}</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => (
+                          <div key={i} className="space-y-3">
+                            <div className="aspect-square bg-muted rounded-xl"></div>
+                            <div className="h-4 bg-muted rounded w-3/4"></div>
+                            <div className="h-4 bg-muted rounded w-1/4"></div>
                           </div>
                         ))}
                       </div>

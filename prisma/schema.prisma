@@ -34,6 +34,7 @@ model Store {
   primaryColor String  @default("#10b981") // emerald green for Online Vepar
   currency    String   @default("INR")
   domain      String?
+  sectionsConfig String? @default("[]")
   isActive    Boolean  @default(true)
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)

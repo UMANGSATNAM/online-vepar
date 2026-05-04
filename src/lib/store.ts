@@ -58,6 +58,7 @@ export interface Store {
   facebookPixelId?: string
   googleAnalyticsId?: string
   seoTitle?: string
+  sectionsConfig?: string
   seoDescription?: string
 }
 

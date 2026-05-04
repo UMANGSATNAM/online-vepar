@@ -37,6 +37,7 @@ interface Store {
   products: Product[]
   categories: Category[]
   collections: Collection[]
+  sectionsConfig?: string | null
 }
 
 interface CartItem { product: Product; quantity: number }
@@ -83,6 +84,25 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
   const featuredProducts = filteredProducts.filter(p => p.featured)
   const allProducts = filteredProducts
+
+  let sections: any[] = []
+  try {
+    if (store.sectionsConfig) {
+      sections = JSON.parse(store.sectionsConfig)
+    }
+  } catch (e) {
+    console.error('Failed to parse sections', e)
+  }
+
+  // If no custom layout is saved, fallback to a default layout
+  if (!sections || sections.length === 0) {
+    sections = [
+      { id: '1', type: 'hero', settings: { title: store.seoTitle || `Welcome to ${store.name}`, subtitle: store.description || 'Discover our amazing collection of products', buttonText: 'Shop Now' } },
+      { id: '2', type: 'categories', settings: { title: 'Shop by Category' } },
+      { id: '3', type: 'featuredProducts', settings: { title: '⭐ Featured Products', count: 4 } },
+      { id: '4', type: 'allProducts', settings: { title: 'All Products' } }
+    ]
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -147,77 +167,128 @@ export default function StorefrontPage({ store }: { store: Store }) {
         )}
       </header>
 
-      {/* ── HERO BANNER ── */}
-      <section className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)` }}>
-        {store.banner && (
-          <Image src={store.banner} alt="Banner" fill className="object-cover opacity-20" />
-        )}
-        <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
-            {store.seoTitle || `Welcome to ${store.name}`}
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            {store.description || store.seoDescription || 'Discover our amazing collection of products'}
-          </p>
-          <a href="#products" className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5"
-            style={{ background: primary }}>
-            Shop Now <ChevronRight size={20} />
-          </a>
-        </div>
-      </section>
+      {/* ── DYNAMIC SECTIONS RENDERER ── */}
+      {sections.map((section) => {
+        const { type, settings, id } = section;
 
-      {/* ── CATEGORIES ── */}
-      {store.categories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Shop by Category</h2>
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            <button onClick={() => setSelectedCategory(null)}
-              className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
-              style={{ borderColor: !selectedCategory ? primary : '#e5e7eb', color: !selectedCategory ? primary : '#6b7280', background: !selectedCategory ? `${primary}10` : 'white' }}>
-              All
-            </button>
-            {store.categories.map(c => (
-              <button key={c.id} onClick={() => setSelectedCategory(c.name === selectedCategory ? null : c.name)}
-                className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
-                style={{ borderColor: selectedCategory === c.name ? primary : '#e5e7eb', color: selectedCategory === c.name ? primary : '#6b7280', background: selectedCategory === c.name ? `${primary}10` : 'white' }}>
-                {c.name}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+        switch (type) {
+          case 'hero':
+            return (
+              <section key={id} className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)` }}>
+                {store.banner && (
+                  <Image src={store.banner} alt="Banner" fill className="object-cover opacity-20" />
+                )}
+                <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
+                  <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
+                    {settings.title}
+                  </h1>
+                  <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+                    {settings.subtitle}
+                  </p>
+                  <a href="#products" className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5"
+                    style={{ background: primary }}>
+                    {settings.buttonText || 'Shop Now'} <ChevronRight size={20} />
+                  </a>
+                </div>
+              </section>
+            );
 
-      {/* ── FEATURED PRODUCTS ── */}
-      {featuredProducts.length > 0 && !search && !selectedCategory && (
-        <section className="max-w-7xl mx-auto px-4 pb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">⭐ Featured Products</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {featuredProducts.slice(0, 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
-          </div>
-        </section>
-      )}
+          case 'categories':
+            if (store.categories.length === 0) return null;
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{settings.title || 'Shop by Category'}</h2>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                  <button onClick={() => setSelectedCategory(null)}
+                    className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
+                    style={{ borderColor: !selectedCategory ? primary : '#e5e7eb', color: !selectedCategory ? primary : '#6b7280', background: !selectedCategory ? `${primary}10` : 'white' }}>
+                    All
+                  </button>
+                  {store.categories.map(c => (
+                    <button key={c.id} onClick={() => setSelectedCategory(c.name === selectedCategory ? null : c.name)}
+                      className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
+                      style={{ borderColor: selectedCategory === c.name ? primary : '#e5e7eb', color: selectedCategory === c.name ? primary : '#6b7280', background: selectedCategory === c.name ? `${primary}10` : 'white' }}>
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            );
 
-      {/* ── ALL PRODUCTS ── */}
-      <section id="products" className="max-w-7xl mx-auto px-4 pb-20">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {selectedCategory ? selectedCategory : 'All Products'}
-            <span className="ml-2 text-sm font-normal text-gray-500">({allProducts.length} items)</span>
-          </h2>
-        </div>
-        {allProducts.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
-            <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
-            <p className="text-lg">No products found</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {allProducts.map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
-          </div>
-        )}
-      </section>
+          case 'featuredProducts':
+            if (featuredProducts.length === 0) return null;
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">{settings.title}</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {featuredProducts.slice(0, settings.count || 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
+                </div>
+              </section>
+            );
+
+          case 'textWithImage':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-16">
+                <div className={`flex flex-col ${settings.imagePosition === 'left' ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12`}>
+                  <div className="flex-1 space-y-6">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{settings.title}</h2>
+                    <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">{settings.content}</p>
+                  </div>
+                  <div className="flex-1 w-full aspect-[4/3] bg-gray-100 rounded-2xl overflow-hidden relative">
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+                      <ImageIcon size={64} className="opacity-20" />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'testimonials':
+            return (
+              <section key={id} className="bg-gray-50 py-20">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-12">{settings.title}</h2>
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center space-y-4">
+                        <div className="flex justify-center gap-1 text-yellow-400">{'⭐⭐⭐⭐⭐'}</div>
+                        <p className="text-gray-600 italic leading-relaxed">"{settings.subtitle || 'Amazing quality and fast shipping! Will definitely buy again.'}"</p>
+                        <p className="font-semibold text-gray-900">- Customer {i}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'allProducts':
+            return (
+              <section key={id} id="products" className="max-w-7xl mx-auto px-4 pb-20 pt-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {selectedCategory ? selectedCategory : settings.title || 'All Products'}
+                    <span className="ml-2 text-sm font-normal text-gray-500">({allProducts.length} items)</span>
+                  </h2>
+                </div>
+                {allProducts.length === 0 ? (
+                  <div className="text-center py-20 text-gray-500">
+                    <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
+                    <p className="text-lg">No products found</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {allProducts.map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
+                  </div>
+                )}
+              </section>
+            );
+
+          default:
+            return null;
+        }
+      })}
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-gray-100" style={{ background: `${primary}08` }}>
