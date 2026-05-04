@@ -167,6 +167,12 @@ export default function StorefrontPage({ store }: { store: Store }) {
         )}
       </header>
 
+      {/* ── STICKY ADD TO CART FLOATER (Mobile Only or Always) ── */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 md:hidden flex justify-between items-center">
+        <div className="font-bold text-lg">{formatPrice(cartTotal, store.currency)}</div>
+        <button className="px-8 py-3 rounded-full text-white font-bold" style={{ background: primary }}>Checkout Now</button>
+      </div>
+
       {/* ── DYNAMIC SECTIONS RENDERER ── */}
       {sections.map((section) => {
         const { type, settings, id } = section;
@@ -224,6 +230,72 @@ export default function StorefrontPage({ store }: { store: Store }) {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {featuredProducts.slice(0, settings.count || 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
+                </div>
+              </section>
+            );
+
+          case 'promoBanner':
+            return (
+              <div key={id} style={{ backgroundColor: settings.backgroundColor || '#000', color: settings.textColor || '#fff' }} className="py-2 px-4 text-center text-sm font-medium w-full">
+                {settings.text}
+              </div>
+            );
+
+          case 'countdownTimer':
+            return (
+              <section key={id} className="py-12 px-4 bg-red-50 text-center">
+                <h3 className="text-xl font-bold text-red-600 mb-4">{settings.title}</h3>
+                <div className="flex justify-center gap-4 text-2xl font-mono font-bold text-red-900">
+                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">12</span><span className="text-xs text-red-500 mt-1 uppercase">Hours</span></div>
+                  <span>:</span>
+                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">45</span><span className="text-xs text-red-500 mt-1 uppercase">Mins</span></div>
+                  <span>:</span>
+                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">30</span><span className="text-xs text-red-500 mt-1 uppercase">Secs</span></div>
+                </div>
+              </section>
+            );
+
+          case 'trustBadges':
+            return (
+              <section key={id} className="py-12 bg-white border-y border-gray-100">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                  <h3 className="text-lg font-bold text-gray-900 mb-8">{settings.title}</h3>
+                  <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
+                    {(settings.badges || 'Secure Checkout, Free Shipping, 24/7 Support').split(',').map((badge: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 font-medium">
+                        <Sparkles size={20} className="text-emerald-500" />
+                        <span>{badge.trim()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'faq':
+            return (
+              <section key={id} className="py-20 px-4 max-w-4xl mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-10">{settings.title}</h2>
+                <div className="space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="border border-gray-200 rounded-xl p-5">
+                      <h4 className="font-bold flex justify-between">Question {i}? <ChevronRight size={18} className="rotate-90 text-gray-400" /></h4>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            );
+
+          case 'newsletter':
+            return (
+              <section key={id} className="py-24 px-4 bg-emerald-900 text-white text-center">
+                <div className="max-w-2xl mx-auto space-y-6">
+                  <h2 className="text-3xl md:text-4xl font-bold">{settings.title}</h2>
+                  <p className="text-emerald-100/80">{settings.subtitle}</p>
+                  <div className="flex max-w-md mx-auto mt-6">
+                    <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-l-lg text-gray-900 outline-none" />
+                    <button className="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-r-lg font-bold transition-colors">Subscribe</button>
+                  </div>
                 </div>
               </section>
             );

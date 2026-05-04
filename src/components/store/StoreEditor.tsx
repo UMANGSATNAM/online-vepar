@@ -36,14 +36,45 @@ interface SectionData {
   settings: Record<string, any>
 }
 
-// Available section blueprints
 const SECTION_TYPES = [
   { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
+  { type: 'slideshow', label: 'Slideshow', icon: ImageIcon, defaultSettings: { slideCount: 3, delay: 5 } },
   { type: 'categories', label: 'Categories List', icon: Layout, defaultSettings: { title: 'Shop by Category' } },
-  { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4 } },
+  { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4, collectionId: '' } },
   { type: 'allProducts', label: 'All Products Grid', icon: Layout, defaultSettings: { title: 'All Products' } },
   { type: 'textWithImage', label: 'Text with Image', icon: ImageIcon, defaultSettings: { title: 'Our Story', content: 'We make the best products...', imagePosition: 'left' } },
+  { type: 'promoBanner', label: 'Promo Banner', icon: Sparkles, defaultSettings: { text: 'Free shipping on orders over $50!', backgroundColor: '#000000', textColor: '#ffffff' } },
+  { type: 'countdownTimer', label: 'Countdown Timer', icon: Sparkles, defaultSettings: { title: 'Flash Sale Ends In:', targetDate: new Date(Date.now() + 86400000).toISOString().split('T')[0] } },
+  { type: 'trustBadges', label: 'Trust Badges', icon: Sparkles, defaultSettings: { title: 'Why shop with us?', badges: 'Free Shipping, 30-Day Returns, Secure Checkout' } },
+  { type: 'faq', label: 'FAQ Accordion', icon: Type, defaultSettings: { title: 'Frequently Asked Questions' } },
   { type: 'testimonials', label: 'Testimonials', icon: Type, defaultSettings: { title: 'What Customers Say' } },
+  { type: 'newsletter', label: 'Newsletter Signup', icon: Type, defaultSettings: { title: 'Subscribe to our newsletter', subtitle: 'Get 10% off your first order' } },
+]
+
+// Pre-made template configurations
+const PREMADE_TEMPLATES = [
+  { id: 't1', name: 'Minimal Fashion', niche: 'Fashion', primaryColor: '#111827', theme: 'minimal', sections: [
+    { id: '1', type: 'promoBanner', label: 'Promo Banner', settings: { text: 'Free Worldwide Shipping on all orders', backgroundColor: '#111827', textColor: '#ffffff' } },
+    { id: '2', type: 'hero', label: 'Hero Banner', settings: { title: 'Summer Collection 2026', subtitle: 'Elevate your everyday style.', buttonText: 'Explore Now' } },
+    { id: '3', type: 'categories', label: 'Categories List', settings: { title: 'Shop by Category' } },
+    { id: '4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Trending Now', count: 4 } },
+    { id: '5', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Sustainable Fashion', content: 'We believe in ethical manufacturing...', imagePosition: 'left' } },
+    { id: '6', type: 'newsletter', label: 'Newsletter', settings: { title: 'Join our club', subtitle: 'Get exclusive offers directly to your inbox.' } }
+  ]},
+  { id: 't2', name: 'Tech Gadgets Pro', niche: 'Electronics', primaryColor: '#2563eb', theme: 'modern', sections: [
+    { id: '1', type: 'slideshow', label: 'Slideshow', settings: { slideCount: 3, delay: 5 } },
+    { id: '2', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Premium Guarantees', badges: '2 Year Warranty, Next Day Delivery, 24/7 Support' } },
+    { id: '3', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'New Arrivals', count: 8 } },
+    { id: '4', type: 'countdownTimer', label: 'Countdown Timer', settings: { title: 'Deal of the Week Ends In:', targetDate: new Date(Date.now() + 172800000).toISOString().split('T')[0] } },
+    { id: '5', type: 'faq', label: 'FAQ', settings: { title: 'Got Questions?' } }
+  ]},
+  { id: 't3', name: 'Organic Beauty', niche: 'Beauty', primaryColor: '#059669', theme: 'classic', sections: [
+    { id: '1', type: 'hero', label: 'Hero Banner', settings: { title: 'Pure. Natural. You.', subtitle: 'Skincare powered by nature.', buttonText: 'Shop Skincare' } },
+    { id: '2', type: 'categories', label: 'Categories List', settings: { title: 'Our Lines' } },
+    { id: '3', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Bestsellers', count: 4 } },
+    { id: '4', type: 'testimonials', label: 'Testimonials', settings: { title: 'Real Results' } },
+    { id: '5', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Our Promise', badges: 'Cruelty Free, 100% Vegan, Recyclable Packaging' } }
+  ]}
 ]
 
 function SortableSectionItem({ 
@@ -103,7 +134,7 @@ function SortableSectionItem({
 export default function StoreEditor() {
   const { currentStore, setStore } = useAppStore()
   const { toast } = useToast()
-  const [activeTab, setActiveTab] = useState<'sections' | 'theme'>('sections')
+  const [activeTab, setActiveTab] = useState<'templates' | 'sections' | 'theme'>('sections')
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
@@ -210,20 +241,55 @@ export default function StoreEditor() {
 
         <div className="flex border-b">
           <button 
-            className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === 'sections' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'templates' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            onClick={() => setActiveTab('templates')}
+          >
+            Templates
+          </button>
+          <button 
+            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'sections' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
             onClick={() => setActiveTab('sections')}
           >
             Sections
           </button>
           <button 
-            className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === 'theme' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'theme' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
             onClick={() => setActiveTab('theme')}
           >
-            Theme Settings
+            Theme
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {activeTab === 'templates' && (
+            <div className="space-y-4">
+              <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
+                <p className="text-xs text-emerald-800 dark:text-emerald-300">Applying a template will overwrite your current layout sections and colors.</p>
+              </div>
+              <div className="space-y-3">
+                {PREMADE_TEMPLATES.map(template => (
+                  <div key={template.id} className="border rounded-lg p-3 hover:border-emerald-400 transition-colors cursor-pointer bg-card" 
+                       onClick={() => {
+                         if(confirm(`Apply the ${template.name} template? This will replace your current sections.`)) {
+                           setSections(template.sections)
+                           toast({ title: 'Template Applied', description: `Loaded ${template.name} layout.` })
+                           setActiveTab('sections')
+                         }
+                       }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-sm">{template.name}</h4>
+                      <Badge variant="secondary" className="text-[10px]">{template.niche}</Badge>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-4 h-4 rounded-full border" style={{ background: template.primaryColor }}></div>
+                      <span className="text-xs text-muted-foreground">{template.sections.length} Sections</span>
+                    </div>
+                    <Button variant="outline" size="sm" className="w-full h-7 text-xs">Apply Template</Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {activeTab === 'sections' && (
             <>
               <div className="flex items-center justify-between">
@@ -482,6 +548,16 @@ export default function StoreEditor() {
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
                     className="w-full text-sm border rounded-md p-2 bg-background min-h-[80px]"
                   />
+                ) : key === 'collectionId' || key === 'productId' ? (
+                  <select 
+                    className="w-full text-sm border rounded-md p-1.5 bg-background h-8"
+                    value={activeSection.settings[key]}
+                    onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                  >
+                    <option value="">Select an option...</option>
+                    <option value="col_1">Summer Collection</option>
+                    <option value="col_2">Winter Wear</option>
+                  </select>
                 ) : (
                   <Input 
                     value={activeSection.settings[key]} 
