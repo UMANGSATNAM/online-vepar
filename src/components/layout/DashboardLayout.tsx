@@ -136,6 +136,9 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
     } else {
       if (isDev) {
         window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
+      } else if (platformDomain.includes('up.railway.app')) {
+        // Railway free domains don't support wildcard subdomains natively
+        window.open(`https://${platformDomain}/store/${currentStore.slug}`, '_blank')
       } else {
         window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
       }
@@ -317,6 +320,9 @@ export default function DashboardLayout() {
     } else {
       if (isDev) {
         window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
+      } else if (platformDomain.includes('up.railway.app')) {
+        // Railway free domains don't support wildcard subdomains natively
+        window.open(`https://${platformDomain}/store/${currentStore.slug}`, '_blank')
       } else {
         window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
       }
