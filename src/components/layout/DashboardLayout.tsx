@@ -126,6 +126,22 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
   const initials = currentUser?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
   const storeInit = currentStore?.name?.[0]?.toUpperCase() || 'S'
 
+  const handleVisitStore = () => {
+    if (!currentStore) return
+    const isDev = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+    const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'
+    
+    if (currentStore.domain) {
+      window.open(`https://${currentStore.domain}`, '_blank')
+    } else {
+      if (isDev) {
+        window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
+      } else {
+        window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col h-full bg-card border-r border-border/60">
       {/* Logo */}
@@ -211,7 +227,7 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
 
       {/* Visit Store */}
       <div className={`border-t border-border/40 py-2 ${collapsed ? 'px-2' : 'px-3'}`}>
-        <NavItem view="checkout" label="Visit Store" icon={Globe} collapsed={collapsed} onClick={() => nav('checkout')} />
+        <NavItem view="checkout" label="Visit Store" icon={Globe} collapsed={collapsed} onClick={handleVisitStore} />
       </div>
 
       {/* User */}
@@ -291,6 +307,22 @@ export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const initials = currentUser?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
 
+  const handleVisitStore = () => {
+    if (!currentStore) return
+    const isDev = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+    const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'
+    
+    if (currentStore.domain) {
+      window.open(`https://${currentStore.domain}`, '_blank')
+    } else {
+      if (isDev) {
+        window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
+      } else {
+        window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
+      }
+    }
+  }
+
   useEffect(() => {
     const el = document.getElementById('main-content')
     if (!el) return
@@ -367,7 +399,7 @@ export default function DashboardLayout() {
               <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground" onClick={toggleSidebar}>
                 {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
               </Button>
-              <Button variant="outline" size="sm" className="hidden sm:flex h-7 gap-1.5 text-[11px] border-border/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg" onClick={() => setView('checkout')}>
+              <Button variant="outline" size="sm" className="hidden sm:flex h-7 gap-1.5 text-[11px] border-border/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg" onClick={handleVisitStore}>
                 <Globe className="w-3 h-3" /><span className="hidden md:inline">Visit Store</span>
               </Button>
               <ThemeToggle />

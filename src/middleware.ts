@@ -19,19 +19,28 @@ export function middleware(request: NextRequest) {
   }
 
   if (isDev) {
-    // In dev, allow subdomain simulation via ?store=slug query param
+    // Check if it's a local subdomain (e.g., myshop.localhost:3000)
+    const [domainPart] = hostname.split(':')
+    if (domainPart.endsWith('.localhost') && domainPart !== 'localhost') {
+      const subdomain = domainPart.replace('.localhost', '')
+      const rewriteUrl = url.clone()
+      rewriteUrl.pathname = `/store/${subdomain}${url.pathname}`
+      return NextResponse.rewrite(rewriteUrl)
+    }
+
+    // In dev, also allow subdomain simulation via ?store=slug query param
     const storeSlug = url.searchParams.get('store')
     if (storeSlug && !url.pathname.startsWith('/store/')) {
       const rewriteUrl = url.clone()
       rewriteUrl.pathname = `/store/${storeSlug}${url.pathname}`
       return NextResponse.rewrite(rewriteUrl)
     }
-    return NextResponse.next()
   }
 
   // Check if it's a subdomain of our platform (e.g. myshop.onlinevepar.com)
-  if (hostname.endsWith(`.${platformDomain}`)) {
-    const subdomain = hostname.replace(`.${platformDomain}`, '')
+  const [domainWithoutPort] = hostname.split(':')
+  if (domainWithoutPort.endsWith(`.${platformDomain}`)) {
+    const subdomain = domainWithoutPort.replace(`.${platformDomain}`, '')
     // Skip www
     if (subdomain && subdomain !== 'www') {
       const rewriteUrl = url.clone()
