@@ -102,16 +102,28 @@ export default function DomainSettings() {
             <div className="flex items-center gap-3">
               <Globe className="w-5 h-5 text-emerald-600" />
               <div>
-                <p className="font-medium">{currentStore.slug}.onlinevepar.com</p>
+                <p className="font-medium">
+                  {typeof window !== 'undefined' && window.location.hostname.includes('up.railway.app')
+                    ? `${window.location.hostname}/store/${currentStore.slug}`
+                    : `${currentStore.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'}`}
+                </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                   <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Connected
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm" asChild>
-              <a href={`http://${currentStore.slug}.onlinevepar.com`} target="_blank" rel="noreferrer">
-                Visit <ExternalLink className="w-3 h-3 ml-2" />
-              </a>
+            <Button variant="outline" size="sm" onClick={() => {
+              const currentHostname = window.location.hostname;
+              const isDev = currentHostname.includes('localhost') || currentHostname.includes('127.0.0.1');
+              if (isDev) {
+                window.open(`http://${currentStore.slug}.localhost:3000`, '_blank');
+              } else if (currentHostname.includes('up.railway.app')) {
+                window.open(`https://${currentHostname}/store/${currentStore.slug}`, '_blank');
+              } else {
+                window.open(`https://${currentStore.slug}.${currentHostname}`, '_blank');
+              }
+            }}>
+              Visit <ExternalLink className="w-3 h-3 ml-2" />
             </Button>
           </div>
         </CardContent>
