@@ -34,5 +34,10 @@ export default async function StoreSlugPage({ params }: { params: Promise<{ slug
 
   if (!store) return notFound()
 
-  return <StorefrontPage store={store} />
+  const mappedStore = {
+    ...store,
+    products: store.products.map(p => ({ ...p, storeSlug: store.slug }))
+  }
+
+  return <StorefrontPage store={mappedStore} />
 }

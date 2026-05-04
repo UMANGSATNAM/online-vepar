@@ -7,8 +7,10 @@ import {
   Eye, Filter, ChevronLeft, ChevronRight, X, ImageIcon, Upload, GripVertical,
   Tag, ArrowUpDown, CheckCircle2, Archive, CircleDot, Star, ArrowLeft,
   IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download, Layers,
-  GripVertical as DragHandle, Minus, Copy, Sparkles, Loader2
+  GripVertical as DragHandle, Minus, Copy, Sparkles, Loader2, FileUp
 } from 'lucide-react'
+import Papa from 'papaparse'
+import { useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -242,6 +244,8 @@ export default function ProductsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
   const [detailProductId, setDetailProductId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isImporting, setIsImporting] = useState(false)
 
   // List state
   const [products, setProducts] = useState<ProductData[]>([])
@@ -655,6 +659,60 @@ export default function ProductsPage() {
     }
   }
 
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !currentStore) return
+    setIsImporting(true)
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const products = results.data.map((row: any) => ({
+            name: row.name || row.Name || row.Title,
+            price: parseFloat(row.price || row.Price) || 0,
+            comparePrice: parseFloat(row.comparePrice || row['Compare Price']) || null,
+            stock: parseInt(row.stock || row.Stock || row.Quantity) || 0,
+            sku: row.sku || row.SKU || '',
+            barcode: row.barcode || row.Barcode || '',
+            description: row.description || row.Description || '',
+            category: row.category || row.Category || '',
+            weight: parseFloat(row.weight || row.Weight) || null,
+            status: row.status || row.Status || 'active',
+            storeId: currentStore.id
+          })).filter((p: any) => p.name)
+
+          if (products.length === 0) throw new Error('No valid products found in CSV')
+
+          // Using a sequential or batched insert approach
+          for (let i = 0; i < products.length; i += 10) {
+            const batch = products.slice(i, i + 10)
+            await Promise.all(batch.map(async (prod: any) => {
+              await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prod)
+              })
+            }))
+          }
+
+          toast({ title: 'Import Successful', description: `Imported ${products.length} products.` })
+          fetchProducts()
+        } catch (err: any) {
+          toast({ title: 'Import Failed', description: err.message, variant: 'destructive' })
+        } finally {
+          setIsImporting(false)
+          if (fileInputRef.current) fileInputRef.current.value = ''
+        }
+      },
+      error: () => {
+        toast({ title: 'Import Failed', description: 'Failed to parse CSV file.', variant: 'destructive' })
+        setIsImporting(false)
+        if (fileInputRef.current) fileInputRef.current.value = ''
+      }
+    })
+  }
+
   // ─── Form Handlers ───────────────────────────────────────────
 
   const openAddForm = () => {
@@ -870,13 +928,15 @@ export default function ProductsPage() {
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage your product catalog</p>
         </div>
         <div className="flex items-center gap-2">
+          <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleImport} />
           <Button
-            onClick={openAddForm}
-            className="btn-gradient text-white h-9 sm:h-10"
+            variant="outline"
+            className="h-9 sm:h-10"
+            disabled={isImporting}
+            onClick={() => fileInputRef.current?.click()}
           >
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Add Product</span>
-            <span className="sm:hidden">Add</span>
+            {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileUp className="w-4 h-4" />}
+            <span className="hidden sm:inline ml-2">{isImporting ? 'Importing...' : 'Import'}</span>
           </Button>
           <Button
             variant="outline"
@@ -885,6 +945,14 @@ export default function ProductsPage() {
           >
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline ml-2">Export</span>
+          </Button>
+          <Button
+            onClick={openAddForm}
+            className="btn-gradient text-white h-9 sm:h-10"
+          >
+            <Plus className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
