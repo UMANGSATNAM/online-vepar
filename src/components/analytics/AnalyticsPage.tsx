@@ -1008,8 +1008,8 @@ export default function AnalyticsPage() {
                     <div className="p-3 rounded-lg bg-muted/50 text-center">
                       <p className="text-xs text-muted-foreground mb-1">Orders / Customer</p>
                       <p className="text-sm font-bold">
-                        {(data?.stats.totalCustomers || 0) > 0
-                          ? (data.stats.totalOrders / data.stats.totalCustomers).toFixed(1)
+                        {(data?.stats?.totalCustomers || 0) > 0
+                          ? ((data?.stats?.totalOrders || 0) / (data?.stats?.totalCustomers || 1)).toFixed(1)
                           : '0'}
                       </p>
                     </div>

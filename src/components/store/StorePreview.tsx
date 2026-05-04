@@ -1360,7 +1360,7 @@ function ProductCard({
 }: {
   product: Product
   storeData: { primaryColor: string; theme: string }
-  currentTheme: typeof themeStyles.modern
+  currentTheme: any
   getProductImage: (product: Product, index: number) => string
   formatPrice: (price: number) => string
   getDiscountPercent: (price: number, comparePrice?: number) => number
