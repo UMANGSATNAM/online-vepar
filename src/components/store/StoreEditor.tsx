@@ -38,7 +38,7 @@ interface SectionData {
 }
 
 const SECTION_TYPES = [
-  { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now', height: '600px' } },
+  { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now', height: '600px', imageUrl: '' } },
   { type: 'slideshow', label: 'Slideshow', icon: ImageIcon, defaultSettings: { slideCount: 3, delay: 5, autoPlay: true } },
   { type: 'categories', label: 'Categories Grid', icon: Layout, defaultSettings: { title: 'Shop by Category', columns: 4 } },
   { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4, collectionId: '' } },

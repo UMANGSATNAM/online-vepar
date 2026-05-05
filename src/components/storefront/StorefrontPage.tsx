@@ -184,8 +184,8 @@ export default function StorefrontPage({ store }: { store: Store }) {
           case 'hero':
             return (
               <section key={id} className="relative overflow-hidden flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)`, minHeight: settings.height || '600px' }}>
-                {store.banner && (
-                  <Image src={store.banner} alt="Banner" fill className="object-cover opacity-20" />
+                {(settings.imageUrl || store.banner) && (
+                  <Image src={settings.imageUrl || store.banner} alt="Banner" fill className="object-cover opacity-20" />
                 )}
                 <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
                   <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
