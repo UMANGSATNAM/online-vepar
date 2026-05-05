@@ -160,26 +160,24 @@ function SortableSectionItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group p-3 border rounded-lg cursor-pointer transition-colors ${
-        isActive ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-border bg-card hover:border-emerald-300'
+      className={`relative group p-3 cursor-pointer transition-colors flex items-center gap-3 ${
+        isActive ? 'bg-[#ebf5fa] border-l-4 border-l-[#005bd3]' : 'bg-white border-b border-[#dfe3e8] hover:bg-[#f9fafb]'
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground">
-          <Move className="w-4 h-4" />
-        </div>
-        <Icon className="w-4 h-4 text-emerald-600" />
-        <span className="text-sm font-medium flex-1">{section.label}</span>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-6 w-6 opacity-0 group-hover:opacity-100 text-destructive"
-          onClick={(e) => { e.stopPropagation(); onRemove(); }}
-        >
-          <Trash2 className="w-3 h-3" />
-        </Button>
+      <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
+        <Layout className="w-4 h-4 opacity-50" />
       </div>
+      <Icon className={`w-4 h-4 ${isActive ? 'text-[#005bd3]' : 'text-gray-500'}`} />
+      <span className={`text-sm flex-1 ${isActive ? 'font-semibold text-[#005bd3]' : 'font-medium text-gray-700'}`}>{section.label}</span>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="h-6 w-6 opacity-0 group-hover:opacity-100 text-red-500 hover:bg-red-50"
+        onClick={(e) => { e.stopPropagation(); onRemove(); }}
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </Button>
     </div>
   )
 }
@@ -282,85 +280,96 @@ export default function StoreEditor() {
   const { setView } = useAppStore()
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden">
-      {/* TOP HEADER: Theme Editor */}
-      <div className="h-14 border-b flex items-center justify-between px-4 bg-card shrink-0 shadow-sm z-20">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-muted-foreground hover:text-foreground">
+    <div className="fixed inset-0 z-[100] bg-[#f4f6f8] flex flex-col overflow-hidden text-[#202223]">
+      {/* TOP HEADER: Theme Editor (Shopify Style) */}
+      <div className="h-14 bg-white border-b border-[#dfe3e8] flex items-center justify-between px-4 shrink-0 shadow-sm z-20">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-gray-600 hover:text-black hover:bg-gray-100 px-2 h-8">
             <ArrowLeft className="w-4 h-4 mr-2" /> Exit
           </Button>
-          <div className="h-4 w-px bg-border"></div>
-          <span className="font-semibold text-sm">Theme Editor <Badge variant="secondary" className="ml-2 text-[10px] bg-emerald-100 text-emerald-800">Pro</Badge></span>
+          <div className="h-4 w-px bg-gray-300 mx-2"></div>
+          <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+            <span className="font-semibold text-[13px]">Home page</span>
+            <ChevronDown className="w-3 h-3 text-gray-500" />
+          </div>
         </div>
         
-        <div className="flex bg-muted p-1 rounded-lg">
-          <Button variant={viewport === 'desktop' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('desktop')}>
-            <Monitor className="w-4 h-4" />
+        <div className="flex bg-[#f4f6f8] p-0.5 rounded-lg border border-[#dfe3e8]">
+          <Button variant={viewport === 'desktop' ? 'secondary' : 'ghost'} size="sm" className={`h-7 px-3 rounded-md ${viewport === 'desktop' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`} onClick={() => setViewport('desktop')}>
+            <Monitor className="w-4 h-4 text-gray-700" />
           </Button>
-          <Button variant={viewport === 'tablet' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('tablet')}>
-            <Tablet className="w-4 h-4" />
+          <Button variant={viewport === 'mobile' ? 'secondary' : 'ghost'} size="sm" className={`h-7 px-3 rounded-md ${viewport === 'mobile' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`} onClick={() => setViewport('mobile')}>
+            <Smartphone className="w-4 h-4 text-gray-700" />
           </Button>
-          <Button variant={viewport === 'mobile' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('mobile')}>
-            <Smartphone className="w-4 h-4" />
+          <Button variant={viewport === 'tablet' ? 'secondary' : 'ghost'} size="sm" className={`h-7 px-3 rounded-md ${viewport === 'tablet' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`} onClick={() => setViewport('tablet')}>
+            <Tablet className="w-4 h-4 text-gray-700" />
           </Button>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-8 hidden md:flex">
-            <Eye className="w-4 h-4 mr-2" /> Preview
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" className="h-8 text-gray-600 hover:bg-gray-100">
+            <Eye className="w-4 h-4" />
           </Button>
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white h-8" onClick={handleSave} disabled={isSaving}>
+          <Button size="sm" className="bg-[#008060] hover:bg-[#006e52] text-white h-8 px-4 rounded font-medium shadow-sm" onClick={handleSave} disabled={isSaving}>
             <Save className={`w-3.5 h-3.5 mr-2 ${isSaving ? 'animate-pulse' : ''}`} /> 
-            {isSaving ? 'Saving...' : 'Save Theme'}
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden bg-muted/20">
-        {/* LEFT SIDEBAR: Tools & Sections list */}
-        <div className="w-80 border-r bg-card flex flex-col shadow-sm z-10 shrink-0">
-
-        <div className="flex border-b">
+      <div className="flex flex-1 overflow-hidden relative">
+        
+        {/* MINI LEFT NAV */}
+        <div className="w-[60px] bg-white border-r border-[#dfe3e8] flex flex-col items-center py-4 gap-4 z-20 shrink-0">
           <button 
-            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'themes' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-            onClick={() => setActiveTab('themes')}
-          >
-            Themes
-          </button>
-          <button 
-            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'sections' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`w-10 h-10 flex justify-center items-center rounded-lg transition-colors ${activeTab === 'sections' ? 'bg-[#ebf5fa] text-[#005bd3]' : 'text-gray-500 hover:bg-gray-100'}`}
             onClick={() => setActiveTab('sections')}
+            title="Sections"
           >
-            Sections
+            <Layout className="w-5 h-5" />
           </button>
           <button 
-            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'theme_settings' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`w-10 h-10 flex justify-center items-center rounded-lg transition-colors ${activeTab === 'theme_settings' ? 'bg-[#ebf5fa] text-[#005bd3]' : 'text-gray-500 hover:bg-gray-100'}`}
             onClick={() => setActiveTab('theme_settings')}
+            title="Theme Settings"
           >
-            Settings
+            <Settings className="w-5 h-5" />
+          </button>
+          <button 
+            className={`w-10 h-10 flex justify-center items-center rounded-lg transition-colors ${activeTab === 'themes' ? 'bg-[#ebf5fa] text-[#005bd3]' : 'text-gray-500 hover:bg-gray-100'}`}
+            onClick={() => setActiveTab('themes')}
+            title="Theme Library"
+          >
+            <Sparkles className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* MAIN LEFT SIDEBAR */}
+        <div className="w-[300px] bg-[#f4f6f8] border-r border-[#dfe3e8] flex flex-col z-10 shrink-0 shadow-[4px_0_10px_rgba(0,0,0,0.02)]">
+          <div className="p-4 border-b border-[#dfe3e8] bg-white">
+            <h2 className="font-semibold text-base text-[#202223]">
+              {activeTab === 'sections' ? 'Sections' : activeTab === 'theme_settings' ? 'Theme settings' : 'Theme Library'}
+            </h2>
+          </div>
+
+        <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#f4f6f8]">
           {activeTab === 'themes' && (
             <div className="space-y-4">
-              <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
-                <p className="text-xs text-emerald-800 dark:text-emerald-300">Applying a Premium Theme will inject high-converting sections and replace your current layout.</p>
+              <div className="bg-[#ebf5fa] p-3 rounded-lg border border-[#b4e1fa]">
+                <p className="text-[13px] text-[#005bd3]">Applying a Premium Theme will inject high-converting sections and replace your current layout.</p>
               </div>
 
               {/* Developer Theme Upload */}
-              <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
-                <UploadCloud className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <h4 className="font-semibold text-sm">Upload Custom Theme</h4>
-                <p className="text-xs text-muted-foreground mb-3 mt-1">For Developers: Upload a .zip containing theme JSON and custom code sections.</p>
-                <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => toast({ title: 'Theme Upload', description: 'Developer theme upload API will be available soon.'})}>
-                  Upload .zip
-                </Button>
+              <div className="bg-white border border-dashed border-[#c9cccf] rounded-lg p-5 text-center hover:bg-[#f9fafb] transition-colors cursor-pointer" onClick={() => toast({ title: 'Theme Upload', description: 'Developer theme upload API will be available soon.'})}>
+                <UploadCloud className="w-6 h-6 text-[#8c9196] mx-auto mb-2" />
+                <h4 className="font-semibold text-[13px] text-[#202223]">Upload Custom Theme</h4>
+                <p className="text-xs text-[#6d7175] mb-3 mt-1">For Developers: Upload a .zip containing theme JSON and custom code sections.</p>
+                <span className="text-xs font-medium text-[#005bd3]">Upload .zip</span>
               </div>
               
               <div className="space-y-3 pt-2">
                 {PREMIUM_THEMES.map(theme => (
-                  <div key={theme.id} className="border rounded-lg p-3 hover:border-emerald-400 transition-colors cursor-pointer bg-card group" 
+                  <div key={theme.id} className="border border-[#dfe3e8] bg-white rounded-lg p-4 hover:border-[#c9cccf] transition-colors cursor-pointer group shadow-sm" 
                        onClick={() => {
                          if(confirm(`Apply the ${theme.name} premium theme? This will replace your current sections.`)) {
                            setSections(theme.sections)
@@ -368,15 +377,15 @@ export default function StoreEditor() {
                            setActiveTab('sections')
                          }
                        }}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-sm group-hover:text-emerald-600 transition-colors">{theme.name}</h4>
-                      <Badge variant="secondary" className="text-[10px]">{theme.niche}</Badge>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-[14px] text-[#202223]">{theme.name}</h4>
+                      <Badge variant="secondary" className="text-[10px] bg-[#f4f6f8] text-[#6d7175] border-[#dfe3e8]">{theme.niche}</Badge>
                     </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-4 h-4 rounded-full border shadow-sm" style={{ background: theme.primaryColor }}></div>
-                      <span className="text-xs text-muted-foreground">{theme.sections.length} Sections included</span>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-4 h-4 rounded-full border border-gray-200" style={{ background: theme.primaryColor }}></div>
+                      <span className="text-xs text-[#6d7175]">{theme.sections.length} Sections included</span>
                     </div>
-                    <Button variant="default" size="sm" className="w-full h-8 text-xs bg-emerald-600 hover:bg-emerald-700">Apply Theme</Button>
+                    <Button variant="outline" size="sm" className="w-full h-8 text-[13px] text-[#202223] hover:bg-[#f9fafb] border-[#c9cccf]">Apply theme</Button>
                   </div>
                 ))}
               </div>
@@ -384,37 +393,37 @@ export default function StoreEditor() {
           )}
           {activeTab === 'sections' && (
             <>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Active Sections</span>
-              </div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-[#6d7175] px-1">Template</div>
               
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                  <div className="space-y-2">
-                    {sections.map(section => (
-                      <SortableSectionItem 
-                        key={section.id} 
-                        section={section} 
-                        onSelect={() => setActiveSectionId(section.id)}
-                        onRemove={() => removeSection(section.id)}
-                        isActive={activeSectionId === section.id}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+              <div className="bg-white border border-[#dfe3e8] rounded-lg shadow-sm overflow-hidden">
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                    <div className="flex flex-col">
+                      {sections.map(section => (
+                        <SortableSectionItem 
+                          key={section.id} 
+                          section={section} 
+                          onSelect={() => setActiveSectionId(section.id)}
+                          onRemove={() => removeSection(section.id)}
+                          isActive={activeSectionId === section.id}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
 
-              <div className="pt-4 border-t">
-                <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 block">Add Section</span>
+              <div className="pt-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#6d7175] mb-3 block px-1">Add section</span>
                 <div className="grid grid-cols-2 gap-2">
                   {SECTION_TYPES.map(type => (
                     <button
                       key={type.type}
                       onClick={() => addSection(type.type)}
-                      className="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-border/60 bg-muted/20 hover:bg-emerald-50 hover:border-emerald-200 dark:hover:bg-emerald-900/20 transition-all text-center"
+                      className="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-[#dfe3e8] bg-white hover:bg-[#f9fafb] hover:border-[#c9cccf] transition-all text-center shadow-sm"
                     >
-                      <type.icon className="w-5 h-5 text-emerald-600" />
-                      <span className="text-xs font-medium">{type.label}</span>
+                      <type.icon className="w-4 h-4 text-[#8c9196]" />
+                      <span className="text-[11px] font-medium text-[#202223] leading-tight">{type.label}</span>
                     </button>
                   ))}
                 </div>
@@ -423,17 +432,17 @@ export default function StoreEditor() {
           )}
 
           {activeTab === 'theme_settings' && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">Primary Color</label>
+            <div className="space-y-4 bg-white border border-[#dfe3e8] p-4 rounded-lg shadow-sm">
+              <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-[#202223]">Primary Color</label>
                 <div className="flex items-center gap-2">
-                  <input type="color" defaultValue={currentStore?.primaryColor || '#10b981'} className="w-8 h-8 rounded border p-0 cursor-pointer" />
-                  <Input defaultValue={currentStore?.primaryColor || '#10b981'} className="h-8 font-mono text-xs" />
+                  <input type="color" defaultValue={currentStore?.primaryColor || '#10b981'} className="w-8 h-8 rounded border border-[#c9cccf] p-0 cursor-pointer" />
+                  <Input defaultValue={currentStore?.primaryColor || '#10b981'} className="h-8 font-mono text-xs border-[#c9cccf] bg-[#f4f6f8]" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">Font Family</label>
-                <select className="w-full text-sm border rounded-md p-2 bg-background">
+              <div className="space-y-1.5 mt-4">
+                <label className="text-[13px] font-medium text-[#202223]">Font Family</label>
+                <select className="w-full text-[13px] border border-[#c9cccf] rounded-md p-2 bg-white text-[#202223]">
                   <option>Inter (Default)</option>
                   <option>Roboto</option>
                   <option>Playfair Display</option>
@@ -445,23 +454,24 @@ export default function StoreEditor() {
       </div>
 
       {/* CENTER PREVIEW AREA */}
-      <div className="flex-1 flex flex-col bg-muted/10 relative">
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start shadow-inner">
+      <div className="flex-1 flex flex-col relative bg-transparent">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
           <motion.div 
             layout
-            className="bg-background shadow-2xl rounded-xl border border-border/50 transition-all duration-300 overflow-hidden"
+            className="bg-white shadow-[0_0_0_1px_rgba(63,63,68,0.05),0_1px_3px_0_rgba(63,63,68,0.15)] rounded-md transition-all duration-300 overflow-hidden"
             style={{ 
               width: viewport === 'desktop' ? '100%' : viewport === 'tablet' ? '768px' : '375px',
-              minHeight: '800px'
+              minHeight: '800px',
+              maxWidth: '1200px'
             }}
           >
             {/* Header Mock */}
-            <div className="h-16 border-b flex items-center justify-between px-6 bg-card">
-              <span className="font-bold text-lg">{currentStore?.name || 'My Store'}</span>
-              <div className="hidden md:flex gap-6 text-sm font-medium">
-                <span>Home</span>
-                <span>Shop</span>
-                <span>About</span>
+            <div className="h-16 border-b flex items-center justify-between px-6 bg-white">
+              <span className="font-bold text-lg tracking-tight">{currentStore?.name || 'My Store'}</span>
+              <div className="hidden md:flex gap-6 text-[13px] font-medium text-gray-600">
+                <span className="hover:text-black cursor-pointer">Home</span>
+                <span className="hover:text-black cursor-pointer">Catalog</span>
+                <span className="hover:text-black cursor-pointer">Contact</span>
               </div>
             </div>
 
@@ -470,7 +480,7 @@ export default function StoreEditor() {
               {sections.map(section => (
                 <div 
                   key={section.id} 
-                  className={`relative group ${activeSectionId === section.id ? 'ring-2 ring-emerald-500 ring-inset' : 'hover:ring-2 hover:ring-emerald-500/50 hover:ring-inset'} transition-all cursor-pointer`}
+                  className={`relative group ${activeSectionId === section.id ? 'ring-2 ring-[#005bd3] ring-inset z-10' : 'hover:ring-2 hover:ring-[#005bd3]/50 hover:ring-inset z-0'} transition-all cursor-pointer`}
                   onClick={() => setActiveSectionId(section.id)}
                 >
                   {/* Visual Render based on type */}
@@ -723,7 +733,7 @@ export default function StoreEditor() {
 
                   {/* Highlight overlay for active state */}
                   {activeSectionId === section.id && (
-                    <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">
+                    <div className="absolute top-0 right-0 bg-[#005bd3] text-white text-[10px] font-bold px-2 py-0.5 rounded-bl shadow-sm flex items-center gap-1">
                       {section.label}
                     </div>
                   )}
@@ -731,16 +741,16 @@ export default function StoreEditor() {
               ))}
               
               {sections.length === 0 && (
-                <div className="py-32 flex flex-col items-center justify-center text-muted-foreground">
+                <div className="py-32 flex flex-col items-center justify-center text-gray-400 bg-gray-50">
                   <Layout className="w-12 h-12 mb-4 opacity-20" />
-                  <p>Your store is empty. Add sections from the sidebar.</p>
+                  <p className="text-sm font-medium">Your store is empty. Add sections from the sidebar.</p>
                 </div>
               )}
             </div>
 
             {/* Footer Mock */}
-            <div className="py-12 px-6 border-t bg-card text-center text-sm text-muted-foreground">
-              <p>&copy; 2026 {currentStore?.name || 'Store'}. All rights reserved.</p>
+            <div className="py-12 px-6 border-t border-gray-200 bg-white text-center text-sm text-gray-500">
+              <p>&copy; 2026 {currentStore?.name || 'Store'}. Powered by Online Vepar.</p>
             </div>
           </motion.div>
         </div>
@@ -748,95 +758,115 @@ export default function StoreEditor() {
 
       {/* RIGHT SIDEBAR: Section Settings */}
       {activeSection && (
-        <div className="w-72 border-l bg-card flex flex-col shadow-sm shrink-0 z-10 animate-in slide-in-from-right-4 duration-200">
-          <div className="p-4 border-b flex items-center justify-between bg-muted/10">
-            <h3 className="font-semibold text-sm">{activeSection.label} Settings</h3>
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setActiveSectionId(null)}>
-              <Trash2 className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+        <div className="w-[320px] bg-white border-l border-[#dfe3e8] flex flex-col shadow-xl shrink-0 z-50 absolute right-0 top-14 bottom-0 animate-in slide-in-from-right-8 duration-200">
+          <div className="p-4 border-b border-[#dfe3e8] flex items-center justify-between bg-white sticky top-0 z-10 shadow-sm">
+            <h3 className="font-semibold text-[14px] text-[#202223]">{activeSection.label}</h3>
+            <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-gray-100 rounded-md" onClick={() => setActiveSectionId(null)}>
+              <ArrowLeft className="w-4 h-4 text-gray-600 rotate-180" />
             </Button>
           </div>
           
-          <div className="p-4 space-y-4 overflow-y-auto">
+          <div className="p-5 space-y-6 overflow-y-auto bg-[#f4f6f8] flex-1">
             {Object.keys(activeSection.settings).map(key => (
               <div key={key} className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground capitalize">
+                <label className="text-[13px] font-medium text-[#202223] capitalize">
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </label>
                 
                 {key === 'count' || key === 'slideCount' || key === 'delay' || key === 'delaySeconds' || key === 'columns' ? (
-                  <Input 
-                    type="number" 
-                    value={activeSection.settings[key]} 
-                    onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
-                    className="text-sm h-8"
-                  />
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="range"
+                      min="1"
+                      max="12"
+                      value={activeSection.settings[key]}
+                      onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
+                      className="flex-1 accent-[#008060]"
+                    />
+                    <Input 
+                      type="number" 
+                      value={activeSection.settings[key]} 
+                      onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
+                      className="text-[13px] h-8 w-16 border-[#c9cccf] bg-white text-center"
+                    />
+                  </div>
                 ) : key === 'imagePosition' ? (
                   <select 
-                    className="w-full text-sm border rounded-md p-1.5 bg-background h-8"
+                    className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
                     value={activeSection.settings[key]}
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
                   >
-                    <option value="left">Image Left</option>
-                    <option value="right">Image Right</option>
+                    <option value="left">Image first</option>
+                    <option value="right">Text first</option>
                   </select>
                 ) : key.toLowerCase().includes('image') || key === 'videoUrl' ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3 p-3 bg-white border border-[#dfe3e8] rounded-lg shadow-sm">
+                    {activeSection.settings[key] && key.toLowerCase().includes('image') ? (
+                      <div className="aspect-video w-full rounded border border-[#dfe3e8] overflow-hidden bg-gray-50 relative group">
+                        <img src={activeSection.settings[key]} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <Button size="sm" variant="secondary" className="h-7 text-xs" onClick={() => updateSectionSettings(activeSection.id, key, '')}>Remove</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-video w-full rounded border border-dashed border-[#c9cccf] bg-[#f9fafb] flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50" onClick={() => toast({ title: 'Media Manager', description: 'Opening media manager...' })}>
+                        <UploadCloud className="w-6 h-6 text-[#8c9196]" />
+                        <span className="text-xs text-[#6d7175] font-medium">Select image</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <Input 
                         value={activeSection.settings[key]} 
                         onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                        className="text-sm h-8 flex-1"
-                        placeholder="https://..."
+                        className="text-[12px] h-8 flex-1 border-[#c9cccf] bg-white shadow-inner"
+                        placeholder="Or enter URL directly..."
                       />
-                      <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={() => toast({ title: 'Media Manager', description: 'Opening media manager...' })}>
-                        <UploadCloud className="w-4 h-4 text-muted-foreground" />
-                      </Button>
                     </div>
-                    {activeSection.settings[key] && key.toLowerCase().includes('image') && (
-                      <div className="aspect-video w-full rounded border overflow-hidden bg-muted relative">
-                        <img src={activeSection.settings[key]} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                      </div>
-                    )}
                   </div>
                 ) : key === 'code' ? (
                   <textarea 
                     value={activeSection.settings[key]} 
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                    className="w-full text-xs font-mono border rounded-md p-2 bg-slate-900 text-emerald-400 min-h-[200px]"
+                    className="w-full text-[12px] font-mono border border-[#c9cccf] rounded-md p-3 bg-[#202223] text-[#47c1bf] min-h-[250px] shadow-inner focus:ring-1 focus:ring-[#005bd3] outline-none"
                     placeholder="<!-- HTML/CSS Code -->"
                   />
                 ) : key === 'content' || key === 'subtitle' || key === 'badges' || key === 'text' ? (
                   <textarea 
                     value={activeSection.settings[key]} 
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                    className="w-full text-sm border rounded-md p-2 bg-background min-h-[80px]"
+                    className="w-full text-[13px] border border-[#c9cccf] rounded-md p-2 bg-white min-h-[100px] shadow-inner focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
                   />
                 ) : key === 'collectionId' || key === 'productId' ? (
                   <select 
-                    className="w-full text-sm border rounded-md p-1.5 bg-background h-8"
+                    className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
                     value={activeSection.settings[key]}
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
                   >
                     <option value="">Select an option...</option>
-                    {/* Placeholder dynamic data */}
                     <option value="col_1">Summer Collection</option>
                     <option value="col_2">Winter Wear</option>
                     <option value="col_3">New Arrivals</option>
                   </select>
                 ) : key.toLowerCase().includes('color') ? (
-                  <div className="flex items-center gap-2">
-                    <input type="color" value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="w-8 h-8 rounded border p-0 cursor-pointer" />
-                    <Input value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="h-8 font-mono text-xs" />
+                  <div className="flex items-center gap-3 p-2 bg-white border border-[#dfe3e8] rounded-md shadow-sm">
+                    <input type="color" value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 p-0" />
+                    <Input value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="h-7 font-mono text-xs border-0 shadow-none bg-transparent focus-visible:ring-0 px-0 flex-1 uppercase" />
                   </div>
                 ) : (
                   <Input 
                     value={activeSection.settings[key]} 
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                    className="text-sm h-8"
+                    className="text-[13px] h-8 border-[#c9cccf] bg-white shadow-inner focus-visible:ring-[#005bd3]"
                   />
                 )}
               </div>
             ))}
+            
+            <div className="pt-6 border-t border-[#dfe3e8] mt-6">
+              <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300" onClick={() => removeSection(activeSection.id)}>
+                <Trash2 className="w-4 h-4 mr-2" /> Remove section
+              </Button>
+            </div>
           </div>
         </div>
       )}
