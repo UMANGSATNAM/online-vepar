@@ -66,7 +66,7 @@ const secondaryNav: { view: ViewType; label: string; icon: React.ComponentType<{
   { view: 'seo-settings', label: 'SEO & Marketing', icon: Search, group: 'Settings' },
   { view: 'store-preview', label: 'Preview Store', icon: Globe, group: 'Settings' },
   { view: 'pages', label: 'Pages', icon: FileText, group: 'Settings' },
-  { view: 'store-editor', label: 'Store Editor', icon: LayoutGrid, group: 'Settings' },
+  { view: 'store-editor', label: 'Theme Editor', icon: LayoutGrid, group: 'Settings' },
 ]
 
 const viewLabels: Record<string, string> = {
@@ -76,7 +76,7 @@ const viewLabels: Record<string, string> = {
   inventory: 'Inventory', shipping: 'Shipping', 'tax-rates': 'Tax Rates',
   'abandoned-carts': 'Abandoned Carts', reviews: 'Reviews', activity: 'Activity Log',
   collections: 'Collections', staff: 'Staff', 'domain-settings': 'Domains',
-  billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Store Editor',
+  billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Theme Editor',
 }
 
 function NavItem({ view, label, icon: Icon, collapsed, active, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; onClick: () => void }) {

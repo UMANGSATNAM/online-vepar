@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Layout, Settings, Save, Move, Plus, Trash2, 
-  Eye, Monitor, Tablet, Smartphone, ChevronDown, Type, Image as ImageIcon, Sparkles
+  Eye, Monitor, Tablet, Smartphone, ChevronDown, Type, Image as ImageIcon, Sparkles,
+  Code, ArrowLeft, UploadCloud
 } from 'lucide-react'
 import {
   DndContext,
@@ -59,6 +60,7 @@ const SECTION_TYPES = [
   { type: 'richText', label: 'Rich Text', icon: Type, defaultSettings: { title: 'About Us', content: 'Detailed rich text content here...' } },
   { type: 'map', label: 'Store Location Map', icon: Layout, defaultSettings: { title: 'Visit Us', address: '123 Main St, City' } },
   { type: 'imageGallery', label: 'Image Gallery', icon: ImageIcon, defaultSettings: { title: 'Gallery', columns: 3 } },
+  { type: 'customCode', label: 'Custom Code / HTML', icon: Code, defaultSettings: { code: '<div style="padding: 20px; text-align: center; border: 1px dashed #ccc;">Your custom HTML here</div>' } },
 ]
 
 // Premium Full Themes with 21+ sections utilization
@@ -277,18 +279,46 @@ export default function StoreEditor() {
 
   const activeSection = sections.find(s => s.id === activeSectionId)
 
+  const { setView } = useAppStore()
+
   return (
-    <div className="flex h-[calc(100vh-100px)] -mx-4 lg:-mx-6 -my-4 lg:-my-6 bg-muted/30 overflow-hidden">
-      
-      {/* LEFT SIDEBAR: Tools & Sections list */}
-      <div className="w-80 border-r bg-card flex flex-col shadow-sm z-10 shrink-0">
-        <div className="p-4 border-b">
-          <h2 className="font-semibold text-lg flex items-center gap-2">
-            <Layout className="w-5 h-5 text-emerald-600" />
-            Store Editor
-          </h2>
-          <p className="text-xs text-muted-foreground mt-1">Customize your storefront layout</p>
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden">
+      {/* TOP HEADER: Theme Editor */}
+      <div className="h-14 border-b flex items-center justify-between px-4 bg-card shrink-0 shadow-sm z-20">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Exit
+          </Button>
+          <div className="h-4 w-px bg-border"></div>
+          <span className="font-semibold text-sm">Theme Editor <Badge variant="secondary" className="ml-2 text-[10px] bg-emerald-100 text-emerald-800">Pro</Badge></span>
         </div>
+        
+        <div className="flex bg-muted p-1 rounded-lg">
+          <Button variant={viewport === 'desktop' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('desktop')}>
+            <Monitor className="w-4 h-4" />
+          </Button>
+          <Button variant={viewport === 'tablet' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('tablet')}>
+            <Tablet className="w-4 h-4" />
+          </Button>
+          <Button variant={viewport === 'mobile' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-3" onClick={() => setViewport('mobile')}>
+            <Smartphone className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-8 hidden md:flex">
+            <Eye className="w-4 h-4 mr-2" /> Preview
+          </Button>
+          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white h-8" onClick={handleSave} disabled={isSaving}>
+            <Save className={`w-3.5 h-3.5 mr-2 ${isSaving ? 'animate-pulse' : ''}`} /> 
+            {isSaving ? 'Saving...' : 'Save Theme'}
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-1 overflow-hidden bg-muted/20">
+        {/* LEFT SIDEBAR: Tools & Sections list */}
+        <div className="w-80 border-r bg-card flex flex-col shadow-sm z-10 shrink-0">
 
         <div className="flex border-b">
           <button 
@@ -317,7 +347,18 @@ export default function StoreEditor() {
               <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
                 <p className="text-xs text-emerald-800 dark:text-emerald-300">Applying a Premium Theme will inject high-converting sections and replace your current layout.</p>
               </div>
-              <div className="space-y-3">
+
+              {/* Developer Theme Upload */}
+              <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
+                <UploadCloud className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <h4 className="font-semibold text-sm">Upload Custom Theme</h4>
+                <p className="text-xs text-muted-foreground mb-3 mt-1">For Developers: Upload a .zip containing theme JSON and custom code sections.</p>
+                <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => toast({ title: 'Theme Upload', description: 'Developer theme upload API will be available soon.'})}>
+                  Upload .zip
+                </Button>
+              </div>
+              
+              <div className="space-y-3 pt-2">
                 {PREMIUM_THEMES.map(theme => (
                   <div key={theme.id} className="border rounded-lg p-3 hover:border-emerald-400 transition-colors cursor-pointer bg-card group" 
                        onClick={() => {
@@ -401,38 +442,14 @@ export default function StoreEditor() {
             </div>
           )}
         </div>
-        
-        <div className="p-4 border-t bg-muted/10">
-          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSave} disabled={isSaving}>
-            <Save className={`w-4 h-4 mr-2 ${isSaving ? 'animate-pulse' : ''}`} /> 
-            {isSaving ? 'Saving...' : 'Save Store Layout'}
-          </Button>
-        </div>
       </div>
 
       {/* CENTER PREVIEW AREA */}
-      <div className="flex-1 flex flex-col">
-        <div className="h-14 border-b flex items-center justify-between px-6 bg-card shrink-0">
-          <div className="flex bg-muted p-1 rounded-lg">
-            <Button variant={viewport === 'desktop' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-2" onClick={() => setViewport('desktop')}>
-              <Monitor className="w-4 h-4" />
-            </Button>
-            <Button variant={viewport === 'tablet' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-2" onClick={() => setViewport('tablet')}>
-              <Tablet className="w-4 h-4" />
-            </Button>
-            <Button variant={viewport === 'mobile' ? 'secondary' : 'ghost'} size="sm" className="h-7 px-2" onClick={() => setViewport('mobile')}>
-              <Smartphone className="w-4 h-4" />
-            </Button>
-          </div>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Eye className="w-4 h-4" /> Live Preview
-          </Button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+      <div className="flex-1 flex flex-col bg-muted/10 relative">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start shadow-inner">
           <motion.div 
             layout
-            className="bg-background shadow-xl rounded-b-xl border transition-all duration-300 overflow-hidden"
+            className="bg-background shadow-2xl rounded-xl border border-border/50 transition-all duration-300 overflow-hidden"
             style={{ 
               width: viewport === 'desktop' ? '100%' : viewport === 'tablet' ? '768px' : '375px',
               minHeight: '800px'
@@ -577,11 +594,11 @@ export default function StoreEditor() {
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </label>
                 
-                {key === 'count' ? (
+                {key === 'count' || key === 'slideCount' || key === 'delay' || key === 'delaySeconds' || key === 'columns' ? (
                   <Input 
                     type="number" 
                     value={activeSection.settings[key]} 
-                    onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 4)}
+                    onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
                     className="text-sm h-8"
                   />
                 ) : key === 'imagePosition' ? (
@@ -593,7 +610,33 @@ export default function StoreEditor() {
                     <option value="left">Image Left</option>
                     <option value="right">Image Right</option>
                   </select>
-                ) : key === 'content' || key === 'subtitle' ? (
+                ) : key.toLowerCase().includes('image') || key === 'videoUrl' ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        value={activeSection.settings[key]} 
+                        onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                        className="text-sm h-8 flex-1"
+                        placeholder="https://..."
+                      />
+                      <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={() => toast({ title: 'Media Manager', description: 'Opening media manager...' })}>
+                        <UploadCloud className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </div>
+                    {activeSection.settings[key] && key.toLowerCase().includes('image') && (
+                      <div className="aspect-video w-full rounded border overflow-hidden bg-muted relative">
+                        <img src={activeSection.settings[key]} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                      </div>
+                    )}
+                  </div>
+                ) : key === 'code' ? (
+                  <textarea 
+                    value={activeSection.settings[key]} 
+                    onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                    className="w-full text-xs font-mono border rounded-md p-2 bg-slate-900 text-emerald-400 min-h-[200px]"
+                    placeholder="<!-- HTML/CSS Code -->"
+                  />
+                ) : key === 'content' || key === 'subtitle' || key === 'badges' || key === 'text' ? (
                   <textarea 
                     value={activeSection.settings[key]} 
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
@@ -606,9 +649,16 @@ export default function StoreEditor() {
                     onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
                   >
                     <option value="">Select an option...</option>
+                    {/* Placeholder dynamic data */}
                     <option value="col_1">Summer Collection</option>
                     <option value="col_2">Winter Wear</option>
+                    <option value="col_3">New Arrivals</option>
                   </select>
+                ) : key.toLowerCase().includes('color') ? (
+                  <div className="flex items-center gap-2">
+                    <input type="color" value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="w-8 h-8 rounded border p-0 cursor-pointer" />
+                    <Input value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="h-8 font-mono text-xs" />
+                  </div>
                 ) : (
                   <Input 
                     value={activeSection.settings[key]} 
@@ -621,6 +671,8 @@ export default function StoreEditor() {
           </div>
         </div>
       )}
+      
+      </div>
     </div>
   )
 }

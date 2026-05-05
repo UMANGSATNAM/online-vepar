@@ -432,6 +432,13 @@ export default function StorefrontPage({ store }: { store: Store }) {
               </section>
             );
 
+          case 'customCode':
+            return (
+              <section key={id} className="w-full">
+                <div dangerouslySetInnerHTML={{ __html: settings.code || '' }} />
+              </section>
+            );
+
           case 'textWithImage':
             return (
               <section key={id} className="max-w-7xl mx-auto px-4 py-16">
