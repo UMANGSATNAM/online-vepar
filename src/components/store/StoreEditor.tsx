@@ -37,11 +37,11 @@ interface SectionData {
 }
 
 const SECTION_TYPES = [
-  { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
-  { type: 'slideshow', label: 'Slideshow', icon: ImageIcon, defaultSettings: { slideCount: 3, delay: 5 } },
-  { type: 'categories', label: 'Categories List', icon: Layout, defaultSettings: { title: 'Shop by Category' } },
+  { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now', height: '600px' } },
+  { type: 'slideshow', label: 'Slideshow', icon: ImageIcon, defaultSettings: { slideCount: 3, delay: 5, autoPlay: true } },
+  { type: 'categories', label: 'Categories Grid', icon: Layout, defaultSettings: { title: 'Shop by Category', columns: 4 } },
   { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4, collectionId: '' } },
-  { type: 'allProducts', label: 'All Products Grid', icon: Layout, defaultSettings: { title: 'All Products' } },
+  { type: 'allProducts', label: 'All Products Grid', icon: Layout, defaultSettings: { title: 'All Products', columns: 4 } },
   { type: 'textWithImage', label: 'Text with Image', icon: ImageIcon, defaultSettings: { title: 'Our Story', content: 'We make the best products...', imagePosition: 'left' } },
   { type: 'promoBanner', label: 'Promo Banner', icon: Sparkles, defaultSettings: { text: 'Free shipping on orders over $50!', backgroundColor: '#000000', textColor: '#ffffff' } },
   { type: 'countdownTimer', label: 'Countdown Timer', icon: Sparkles, defaultSettings: { title: 'Flash Sale Ends In:', targetDate: new Date(Date.now() + 86400000).toISOString().split('T')[0] } },
@@ -49,31 +49,82 @@ const SECTION_TYPES = [
   { type: 'faq', label: 'FAQ Accordion', icon: Type, defaultSettings: { title: 'Frequently Asked Questions' } },
   { type: 'testimonials', label: 'Testimonials', icon: Type, defaultSettings: { title: 'What Customers Say' } },
   { type: 'newsletter', label: 'Newsletter Signup', icon: Type, defaultSettings: { title: 'Subscribe to our newsletter', subtitle: 'Get 10% off your first order' } },
+  { type: 'video', label: 'Product Video', icon: ImageIcon, defaultSettings: { title: 'See it in action', videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } },
+  { type: 'blogPosts', label: 'Latest Blog Posts', icon: Type, defaultSettings: { title: 'From the Blog', count: 3 } },
+  { type: 'contactForm', label: 'Contact Form', icon: Type, defaultSettings: { title: 'Get in Touch', email: 'support@store.com' } },
+  { type: 'promoPopups', label: 'Promo Popup', icon: Sparkles, defaultSettings: { title: 'Wait!', subtitle: 'Get 20% off before you go', delaySeconds: 5 } },
+  { type: 'lookbook', label: 'Lookbook (Hotspots)', icon: ImageIcon, defaultSettings: { title: 'Shop the Look', imageUrl: '' } },
+  { type: 'promoTiles', label: 'Promo Grid Tiles', icon: Layout, defaultSettings: { title: 'Special Offers', count: 2 } },
+  { type: 'logoList', label: 'Logo List / Brands', icon: ImageIcon, defaultSettings: { title: 'As Seen On' } },
+  { type: 'richText', label: 'Rich Text', icon: Type, defaultSettings: { title: 'About Us', content: 'Detailed rich text content here...' } },
+  { type: 'map', label: 'Store Location Map', icon: Layout, defaultSettings: { title: 'Visit Us', address: '123 Main St, City' } },
+  { type: 'imageGallery', label: 'Image Gallery', icon: ImageIcon, defaultSettings: { title: 'Gallery', columns: 3 } },
 ]
 
-// Pre-made template configurations
-const PREMADE_TEMPLATES = [
-  { id: 't1', name: 'Minimal Fashion', niche: 'Fashion', primaryColor: '#111827', theme: 'minimal', sections: [
-    { id: '1', type: 'promoBanner', label: 'Promo Banner', settings: { text: 'Free Worldwide Shipping on all orders', backgroundColor: '#111827', textColor: '#ffffff' } },
-    { id: '2', type: 'hero', label: 'Hero Banner', settings: { title: 'Summer Collection 2026', subtitle: 'Elevate your everyday style.', buttonText: 'Explore Now' } },
-    { id: '3', type: 'categories', label: 'Categories List', settings: { title: 'Shop by Category' } },
-    { id: '4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Trending Now', count: 4 } },
-    { id: '5', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Sustainable Fashion', content: 'We believe in ethical manufacturing...', imagePosition: 'left' } },
-    { id: '6', type: 'newsletter', label: 'Newsletter', settings: { title: 'Join our club', subtitle: 'Get exclusive offers directly to your inbox.' } }
+// Premium Full Themes with 21+ sections utilization
+const PREMIUM_THEMES = [
+  { id: 'th1', name: 'Luxe', niche: 'Fashion & Apparel', primaryColor: '#000000', theme: 'minimal', sections: [
+    { id: 's1', type: 'promoBanner', label: 'Promo Banner', settings: { text: 'Free Express Shipping on Orders over $150', backgroundColor: '#000000', textColor: '#ffffff' } },
+    { id: 's2', type: 'hero', label: 'Hero Banner', settings: { title: 'Autumn Collection 2026', subtitle: 'Elegance redefined.', buttonText: 'Shop the Look', height: '800px' } },
+    { id: 's3', type: 'logoList', label: 'Brands', settings: { title: 'Featured In' } },
+    { id: 's4', type: 'lookbook', label: 'Lookbook', settings: { title: 'Streetwear Essentials' } },
+    { id: 's5', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Trending Now', count: 8 } },
+    { id: 's6', type: 'video', label: 'Product Video', settings: { title: 'Behind the Scenes' } },
+    { id: 's7', type: 'promoTiles', label: 'Promo Grid', settings: { title: 'Shop by Vibe' } },
+    { id: 's8', type: 'newsletter', label: 'Newsletter', settings: { title: 'The Inner Circle', subtitle: 'Exclusive early access to drops.' } },
+    { id: 's9', type: 'promoPopups', label: 'Popup', settings: { title: 'Unlock 15% Off', delaySeconds: 10 } }
   ]},
-  { id: 't2', name: 'Tech Gadgets Pro', niche: 'Electronics', primaryColor: '#2563eb', theme: 'modern', sections: [
-    { id: '1', type: 'slideshow', label: 'Slideshow', settings: { slideCount: 3, delay: 5 } },
-    { id: '2', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Premium Guarantees', badges: '2 Year Warranty, Next Day Delivery, 24/7 Support' } },
-    { id: '3', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'New Arrivals', count: 8 } },
-    { id: '4', type: 'countdownTimer', label: 'Countdown Timer', settings: { title: 'Deal of the Week Ends In:', targetDate: new Date(Date.now() + 172800000).toISOString().split('T')[0] } },
-    { id: '5', type: 'faq', label: 'FAQ', settings: { title: 'Got Questions?' } }
+  { id: 'th2', name: 'TechPro', niche: 'Electronics & Gadgets', primaryColor: '#2563eb', theme: 'modern', sections: [
+    { id: 's1', type: 'slideshow', label: 'Slideshow', settings: { slideCount: 3, delay: 5 } },
+    { id: 's2', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Premium Guarantees', badges: '2 Year Warranty, Next Day Delivery, 24/7 Support' } },
+    { id: 's3', type: 'countdownTimer', label: 'Countdown Timer', settings: { title: 'Flash Sale: Ends In' } },
+    { id: 's4', type: 'categories', label: 'Categories Grid', settings: { title: 'Shop by Device', columns: 6 } },
+    { id: 's5', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'New Arrivals', count: 4 } },
+    { id: 's6', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Next-Gen Processing', content: 'Experience the power of our latest chips.', imagePosition: 'left' } },
+    { id: 's7', type: 'faq', label: 'FAQ Accordion', settings: { title: 'Technical Specifications' } },
+    { id: 's8', type: 'blogPosts', label: 'Latest News', settings: { title: 'Tech Reviews' } }
   ]},
-  { id: 't3', name: 'Organic Beauty', niche: 'Beauty', primaryColor: '#059669', theme: 'classic', sections: [
-    { id: '1', type: 'hero', label: 'Hero Banner', settings: { title: 'Pure. Natural. You.', subtitle: 'Skincare powered by nature.', buttonText: 'Shop Skincare' } },
-    { id: '2', type: 'categories', label: 'Categories List', settings: { title: 'Our Lines' } },
-    { id: '3', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Bestsellers', count: 4 } },
-    { id: '4', type: 'testimonials', label: 'Testimonials', settings: { title: 'Real Results' } },
-    { id: '5', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Our Promise', badges: 'Cruelty Free, 100% Vegan, Recyclable Packaging' } }
+  { id: 'th3', name: 'Pure', niche: 'Health & Beauty', primaryColor: '#059669', theme: 'classic', sections: [
+    { id: 's1', type: 'hero', label: 'Hero Banner', settings: { title: 'Pure. Natural. You.', subtitle: 'Skincare powered by nature.', buttonText: 'Discover Routine' } },
+    { id: 's2', type: 'categories', label: 'Categories List', settings: { title: 'Shop by Concern' } },
+    { id: 's3', type: 'richText', label: 'Rich Text', settings: { title: 'Our Philosophy', content: 'We believe in 100% cruelty-free, vegan ingredients.' } },
+    { id: 's4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Bestsellers', count: 4 } },
+    { id: 's5', type: 'video', label: 'Video', settings: { title: 'How to use our serum' } },
+    { id: 's6', type: 'testimonials', label: 'Testimonials', settings: { title: 'Real Results from Real Women' } },
+    { id: 's7', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Our Promise', badges: 'Cruelty Free, 100% Vegan, Recyclable Packaging' } }
+  ]},
+  { id: 'th4', name: 'Crave', niche: 'Food & Restaurant', primaryColor: '#dc2626', theme: 'modern', sections: [
+    { id: 's1', type: 'promoBanner', label: 'Promo Banner', settings: { text: 'Free Delivery on all orders over $30!', backgroundColor: '#dc2626', textColor: '#ffffff' } },
+    { id: 's2', type: 'slideshow', label: 'Slideshow', settings: { slideCount: 3 } },
+    { id: 's3', type: 'categories', label: 'Categories Grid', settings: { title: 'Our Menu' } },
+    { id: 's4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Chef Recommendations', count: 6 } },
+    { id: 's5', type: 'imageGallery', label: 'Gallery', settings: { title: 'Follow us on Instagram' } },
+    { id: 's6', type: 'map', label: 'Map', settings: { title: 'Visit Our Restaurant' } },
+    { id: 's7', type: 'contactForm', label: 'Contact', settings: { title: 'Book a Table' } }
+  ]},
+  { id: 'th5', name: 'Studio', niche: 'Furniture & Home', primaryColor: '#78716c', theme: 'minimal', sections: [
+    { id: 's1', type: 'hero', label: 'Hero', settings: { title: 'Design your sanctuary', subtitle: 'Modern minimalism for every room' } },
+    { id: 's2', type: 'lookbook', label: 'Lookbook', settings: { title: 'Shop the Living Room' } },
+    { id: 's3', type: 'categories', label: 'Categories Grid', settings: { title: 'Rooms' } },
+    { id: 's4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'New Arrivals' } },
+    { id: 's5', type: 'textWithImage', label: 'About', settings: { title: 'Sustainable Craftsmanship' } },
+    { id: 's6', type: 'blogPosts', label: 'Blog', settings: { title: 'Interior Design Tips' } }
+  ]},
+  { id: 'th6', name: 'Active', niche: 'Sports & Fitness', primaryColor: '#f97316', theme: 'modern', sections: [
+    { id: 's1', type: 'hero', label: 'Hero', settings: { title: 'Push Your Limits', subtitle: 'Gear built for performance', buttonText: 'Shop Gear' } },
+    { id: 's2', type: 'countdownTimer', label: 'Timer', settings: { title: 'Summer Sale Ends:' } },
+    { id: 's3', type: 'promoTiles', label: 'Promo Tiles', settings: { title: 'Shop by Sport' } },
+    { id: 's4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Top Rated Equipment' } },
+    { id: 's5', type: 'video', label: 'Video', settings: { title: 'See the gear in action' } },
+    { id: 's6', type: 'trustBadges', label: 'Trust Badges', settings: { title: 'Why choose us?', badges: 'Lifetime Warranty, Free Returns, Expert Advice' } }
+  ]},
+  { id: 'th7', name: 'Craft', niche: 'Jewelry & Handmade', primaryColor: '#b45309', theme: 'classic', sections: [
+    { id: 's1', type: 'slideshow', label: 'Slideshow', settings: { slideCount: 3 } },
+    { id: 's2', type: 'richText', label: 'Rich Text', settings: { title: 'Artisan Crafted', content: 'Every piece tells a story.' } },
+    { id: 's3', type: 'imageGallery', label: 'Gallery', settings: { title: 'Our Collections' } },
+    { id: 's4', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Featured Pieces' } },
+    { id: 's5', type: 'textWithImage', label: 'Story', settings: { title: 'Meet the Maker', imagePosition: 'right' } },
+    { id: 's6', type: 'testimonials', label: 'Testimonials', settings: { title: 'Client Love' } }
   ]}
 ]
 
@@ -134,7 +185,7 @@ function SortableSectionItem({
 export default function StoreEditor() {
   const { currentStore, setStore } = useAppStore()
   const { toast } = useToast()
-  const [activeTab, setActiveTab] = useState<'templates' | 'sections' | 'theme'>('sections')
+  const [activeTab, setActiveTab] = useState<'themes' | 'sections' | 'theme_settings'>('sections')
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
@@ -241,10 +292,10 @@ export default function StoreEditor() {
 
         <div className="flex border-b">
           <button 
-            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'templates' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-            onClick={() => setActiveTab('templates')}
+            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'themes' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            onClick={() => setActiveTab('themes')}
           >
-            Templates
+            Themes
           </button>
           <button 
             className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'sections' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
@@ -253,38 +304,38 @@ export default function StoreEditor() {
             Sections
           </button>
           <button 
-            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'theme' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-            onClick={() => setActiveTab('theme')}
+            className={`flex-1 py-2 text-xs font-medium border-b-2 transition-colors ${activeTab === 'theme_settings' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            onClick={() => setActiveTab('theme_settings')}
           >
-            Theme
+            Settings
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {activeTab === 'templates' && (
+          {activeTab === 'themes' && (
             <div className="space-y-4">
               <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
-                <p className="text-xs text-emerald-800 dark:text-emerald-300">Applying a template will overwrite your current layout sections and colors.</p>
+                <p className="text-xs text-emerald-800 dark:text-emerald-300">Applying a Premium Theme will inject high-converting sections and replace your current layout.</p>
               </div>
               <div className="space-y-3">
-                {PREMADE_TEMPLATES.map(template => (
-                  <div key={template.id} className="border rounded-lg p-3 hover:border-emerald-400 transition-colors cursor-pointer bg-card" 
+                {PREMIUM_THEMES.map(theme => (
+                  <div key={theme.id} className="border rounded-lg p-3 hover:border-emerald-400 transition-colors cursor-pointer bg-card group" 
                        onClick={() => {
-                         if(confirm(`Apply the ${template.name} template? This will replace your current sections.`)) {
-                           setSections(template.sections)
-                           toast({ title: 'Template Applied', description: `Loaded ${template.name} layout.` })
+                         if(confirm(`Apply the ${theme.name} premium theme? This will replace your current sections.`)) {
+                           setSections(theme.sections)
+                           toast({ title: 'Theme Applied', description: `Loaded ${theme.name} layout.` })
                            setActiveTab('sections')
                          }
                        }}>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-sm">{template.name}</h4>
-                      <Badge variant="secondary" className="text-[10px]">{template.niche}</Badge>
+                      <h4 className="font-semibold text-sm group-hover:text-emerald-600 transition-colors">{theme.name}</h4>
+                      <Badge variant="secondary" className="text-[10px]">{theme.niche}</Badge>
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-4 h-4 rounded-full border" style={{ background: template.primaryColor }}></div>
-                      <span className="text-xs text-muted-foreground">{template.sections.length} Sections</span>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-4 h-4 rounded-full border shadow-sm" style={{ background: theme.primaryColor }}></div>
+                      <span className="text-xs text-muted-foreground">{theme.sections.length} Sections included</span>
                     </div>
-                    <Button variant="outline" size="sm" className="w-full h-7 text-xs">Apply Template</Button>
+                    <Button variant="default" size="sm" className="w-full h-8 text-xs bg-emerald-600 hover:bg-emerald-700">Apply Theme</Button>
                   </div>
                 ))}
               </div>
@@ -330,7 +381,7 @@ export default function StoreEditor() {
             </>
           )}
 
-          {activeTab === 'theme' && (
+          {activeTab === 'theme_settings' && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs font-medium text-muted-foreground">Primary Color</label>

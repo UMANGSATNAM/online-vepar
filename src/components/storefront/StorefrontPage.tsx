@@ -183,7 +183,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
         switch (type) {
           case 'hero':
             return (
-              <section key={id} className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)` }}>
+              <section key={id} className="relative overflow-hidden flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)`, minHeight: settings.height || '600px' }}>
                 {store.banner && (
                   <Image src={store.banner} alt="Banner" fill className="object-cover opacity-20" />
                 )}
@@ -291,14 +291,143 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
           case 'newsletter':
             return (
-              <section key={id} className="py-24 px-4 bg-emerald-900 text-white text-center">
+              <section key={id} className="py-24 px-4 text-white text-center" style={{ background: primary }}>
                 <div className="max-w-2xl mx-auto space-y-6">
                   <h2 className="text-3xl md:text-4xl font-bold">{settings.title}</h2>
-                  <p className="text-emerald-100/80">{settings.subtitle}</p>
+                  <p className="opacity-80">{settings.subtitle}</p>
                   <div className="flex max-w-md mx-auto mt-6">
                     <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-l-lg text-gray-900 outline-none" />
-                    <button className="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-r-lg font-bold transition-colors">Subscribe</button>
+                    <button className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-r-lg font-bold transition-colors">Subscribe</button>
                   </div>
+                </div>
+              </section>
+            );
+
+          case 'slideshow':
+            return (
+              <section key={id} className="w-full relative bg-gray-900 text-white flex items-center justify-center" style={{ minHeight: '500px' }}>
+                <div className="text-center z-10 px-4">
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">{settings.title || 'Slideshow'}</h2>
+                  <p className="text-lg opacity-80">[{settings.slideCount} slides rotating every {settings.delay}s]</p>
+                </div>
+              </section>
+            );
+
+          case 'video':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-20 text-center">
+                <h2 className="text-3xl font-bold mb-8">{settings.title}</h2>
+                <div className="aspect-video bg-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
+                  <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-xl pl-2">▶</div>
+                </div>
+              </section>
+            );
+
+          case 'blogPosts':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-20">
+                <h2 className="text-3xl font-bold mb-8 text-center">{settings.title}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="group cursor-pointer">
+                      <div className="aspect-[4/3] bg-gray-200 rounded-xl mb-4 overflow-hidden">
+                        <div className="w-full h-full bg-gray-100 group-hover:scale-105 transition-transform"></div>
+                      </div>
+                      <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Category</p>
+                      <h4 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">Amazing Blog Post Title {i}</h4>
+                      <p className="text-gray-600 line-clamp-2">A short excerpt of the blog post goes right here, enticing the reader to click and learn more.</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            );
+
+          case 'contactForm':
+            return (
+              <section key={id} className="max-w-3xl mx-auto px-4 py-20 text-center">
+                <h2 className="text-3xl font-bold mb-4">{settings.title}</h2>
+                <p className="text-gray-500 mb-10">We'd love to hear from you. Email us directly at {settings.email || 'hello@store.com'}.</p>
+                <div className="space-y-4 max-w-lg mx-auto text-left">
+                  <input type="text" placeholder="Name" className="w-full border rounded-lg p-3 outline-none focus:border-black" />
+                  <input type="email" placeholder="Email" className="w-full border rounded-lg p-3 outline-none focus:border-black" />
+                  <textarea placeholder="Message" rows={4} className="w-full border rounded-lg p-3 outline-none focus:border-black"></textarea>
+                  <button className="w-full text-white font-bold py-3 rounded-lg" style={{ background: primary }}>Send Message</button>
+                </div>
+              </section>
+            );
+
+          case 'promoPopups':
+            return null; // Automatically triggered via useEffect in real environment
+
+          case 'lookbook':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-20 text-center">
+                <h2 className="text-3xl font-bold mb-10">{settings.title}</h2>
+                <div className="w-full aspect-video bg-gray-100 rounded-2xl relative flex items-center justify-center border border-gray-200">
+                  <span className="text-gray-400">Lookbook Image</span>
+                  <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white rounded-full shadow-lg animate-pulse"></div>
+                  <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-white rounded-full shadow-lg animate-pulse"></div>
+                </div>
+              </section>
+            );
+
+          case 'promoTiles':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
+                <h2 className="text-3xl font-bold mb-8 text-center">{settings.title}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="aspect-[4/3] bg-gray-900 rounded-2xl text-white flex flex-col justify-end p-8">
+                    <h3 className="text-2xl font-bold mb-2">Summer Essentials</h3>
+                    <a href="#" className="underline font-medium hover:text-gray-300">Shop Collection</a>
+                  </div>
+                  <div className="aspect-[4/3] bg-gray-800 rounded-2xl text-white flex flex-col justify-end p-8">
+                    <h3 className="text-2xl font-bold mb-2">New Arrivals</h3>
+                    <a href="#" className="underline font-medium hover:text-gray-300">Shop Collection</a>
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'logoList':
+            return (
+              <section key={id} className="border-y border-gray-100 bg-white py-12">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                  <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8">{settings.title}</p>
+                  <div className="flex flex-wrap justify-center gap-10 md:gap-20 opacity-50 grayscale">
+                    {['VOGUE', 'GQ', 'FORBES', 'WIRED', 'TECHCRUNCH'].map(brand => (
+                      <h4 key={brand} className="text-2xl font-black">{brand}</h4>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'richText':
+            return (
+              <section key={id} className="max-w-3xl mx-auto px-4 py-24 text-center">
+                <h2 className="text-3xl font-bold mb-6">{settings.title}</h2>
+                <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">{settings.content}</p>
+              </section>
+            );
+
+          case 'map':
+            return (
+              <section key={id} className="w-full bg-gray-200 aspect-[21/9] flex items-center justify-center relative">
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{settings.title}</h3>
+                  <p className="text-gray-600 bg-white/80 px-4 py-2 rounded-lg backdrop-blur-sm">{settings.address}</p>
+                </div>
+              </section>
+            );
+
+          case 'imageGallery':
+            return (
+              <section key={id} className="max-w-7xl mx-auto px-4 py-20">
+                <h2 className="text-3xl font-bold mb-10 text-center">{settings.title}</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                    <div key={i} className={`bg-gray-100 rounded-xl ${i === 1 || i === 4 ? 'row-span-2 aspect-[1/2]' : 'aspect-square'}`}></div>
+                  ))}
                 </div>
               </section>
             );
