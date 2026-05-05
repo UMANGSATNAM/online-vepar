@@ -552,6 +552,175 @@ export default function StoreEditor() {
                     </div>
                   )}
 
+                  {section.type === 'slideshow' && (
+                    <div className="w-full bg-slate-800 text-white flex items-center justify-center min-h-[400px]">
+                      <div className="text-center">
+                        <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                        <h2 className="text-3xl font-bold">{section.settings.title || 'Slideshow'}</h2>
+                        <p className="opacity-80">[{section.settings.slideCount} slides]</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'promoBanner' && (
+                    <div style={{ backgroundColor: section.settings.backgroundColor || '#000', color: section.settings.textColor || '#fff' }} className="py-3 px-4 text-center text-sm font-medium w-full">
+                      {section.settings.text}
+                    </div>
+                  )}
+
+                  {section.type === 'countdownTimer' && (
+                    <div className="py-12 px-4 bg-red-50 text-center">
+                      <h3 className="text-xl font-bold text-red-600 mb-4">{section.settings.title}</h3>
+                      <div className="flex justify-center gap-4 text-2xl font-mono font-bold text-red-900">
+                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">12</span><span className="text-xs text-red-500 mt-1 uppercase">Hours</span></div>
+                        <span>:</span>
+                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">45</span><span className="text-xs text-red-500 mt-1 uppercase">Mins</span></div>
+                        <span>:</span>
+                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">30</span><span className="text-xs text-red-500 mt-1 uppercase">Secs</span></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'trustBadges' && (
+                    <div className="py-12 bg-white border-y border-gray-100 text-center">
+                      <h3 className="text-lg font-bold text-gray-900 mb-8">{section.settings.title}</h3>
+                      <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
+                        {(section.settings.badges || 'Secure Checkout, Free Shipping, 24/7 Support').split(',').map((badge: string, i: number) => (
+                          <div key={i} className="flex items-center gap-2 font-medium">
+                            <Sparkles size={20} className="text-emerald-500" />
+                            <span>{badge.trim()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'faq' && (
+                    <div className="py-16 px-6 max-w-3xl mx-auto">
+                      <h2 className="text-2xl font-bold text-center mb-8">{section.settings.title}</h2>
+                      <div className="space-y-4">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="border rounded-xl p-4 flex justify-between font-medium">
+                            <span>FAQ Question {i}?</span>
+                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'newsletter' && (
+                    <div className="py-20 px-4 bg-slate-900 text-white text-center">
+                      <h2 className="text-3xl font-bold mb-4">{section.settings.title}</h2>
+                      <p className="opacity-80 mb-6">{section.settings.subtitle}</p>
+                      <div className="flex max-w-md mx-auto">
+                        <input type="email" placeholder="Email" disabled className="flex-1 px-4 py-2 rounded-l-md text-black" />
+                        <button className="bg-emerald-600 px-6 py-2 rounded-r-md font-bold">Subscribe</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'video' && (
+                    <div className="py-16 px-6 text-center">
+                      <h2 className="text-2xl font-bold mb-8">{section.settings.title}</h2>
+                      <div className="aspect-video bg-slate-200 rounded-xl flex items-center justify-center">
+                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg text-2xl pl-1">▶</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'blogPosts' && (
+                    <div className="py-16 px-6">
+                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="space-y-3">
+                            <div className="aspect-[4/3] bg-muted rounded-xl"></div>
+                            <h4 className="font-bold">Blog Post Title {i}</h4>
+                            <div className="h-3 bg-muted w-full rounded"></div>
+                            <div className="h-3 bg-muted w-2/3 rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'contactForm' && (
+                    <div className="py-16 px-6 max-w-xl mx-auto text-center">
+                      <h2 className="text-2xl font-bold mb-6">{section.settings.title}</h2>
+                      <div className="space-y-4">
+                        <div className="h-10 bg-muted rounded-md w-full"></div>
+                        <div className="h-10 bg-muted rounded-md w-full"></div>
+                        <div className="h-24 bg-muted rounded-md w-full"></div>
+                        <div className="h-10 bg-emerald-600 rounded-md w-full opacity-50"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'lookbook' && (
+                    <div className="py-16 px-6 text-center">
+                      <h2 className="text-2xl font-bold mb-8">{section.settings.title}</h2>
+                      <div className="aspect-video bg-muted rounded-xl relative flex items-center justify-center">
+                        <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
+                        <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white rounded-full shadow-lg"></div>
+                        <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-white rounded-full shadow-lg"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'promoTiles' && (
+                    <div className="py-12 px-6">
+                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="aspect-[4/3] bg-slate-800 rounded-xl"></div>
+                        <div className="aspect-[4/3] bg-slate-900 rounded-xl"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'logoList' && (
+                    <div className="py-12 border-y bg-white text-center">
+                      <p className="text-xs font-bold uppercase text-gray-400 mb-6">{section.settings.title}</p>
+                      <div className="flex flex-wrap justify-center gap-8 opacity-40">
+                        {['LOGO 1', 'LOGO 2', 'LOGO 3', 'LOGO 4'].map(l => <h4 key={l} className="text-xl font-black">{l}</h4>)}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'richText' && (
+                    <div className="py-20 px-6 max-w-2xl mx-auto text-center">
+                      <h2 className="text-2xl font-bold mb-6">{section.settings.title}</h2>
+                      <p className="text-muted-foreground">{section.settings.content}</p>
+                    </div>
+                  )}
+
+                  {section.type === 'map' && (
+                    <div className="w-full aspect-[21/9] bg-slate-200 flex items-center justify-center">
+                      <div className="bg-white p-4 rounded-lg shadow text-center">
+                        <h3 className="font-bold">{section.settings.title}</h3>
+                        <p className="text-sm text-muted-foreground">{section.settings.address}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'imageGallery' && (
+                    <div className="py-16 px-6">
+                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <div key={i} className="aspect-square bg-muted rounded-xl"></div>)}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'customCode' && (
+                    <div className="w-full relative">
+                      <div className="absolute inset-0 bg-blue-500/10 border-2 border-dashed border-blue-500 z-10 pointer-events-none flex items-center justify-center">
+                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Custom HTML Component</span>
+                      </div>
+                      <div dangerouslySetInnerHTML={{ __html: section.settings.code || '<div style="padding: 40px; text-align: center;">Mock Output</div>' }} />
+                    </div>
+                  )}
+
                   {/* Highlight overlay for active state */}
                   {activeSectionId === section.id && (
                     <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">
