@@ -181,253 +181,274 @@ export default function StorefrontPage({ store }: { store: Store }) {
         const { type, settings, id } = section;
 
         switch (type) {
-          case 'hero':
+          case 'announcementBar':
             return (
-              <section key={id} className="relative overflow-hidden flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${primary}15, ${primary}05)`, minHeight: settings.height || '600px' }}>
-                {(settings.imageUrl || store.banner) && (
-                  <Image src={settings.imageUrl || store.banner} alt="Banner" fill className="object-cover opacity-20" />
-                )}
-                <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
-                  <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
-                    {settings.title}
-                  </h1>
-                  <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-                    {settings.subtitle}
-                  </p>
-                  <a href="#products" className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5"
-                    style={{ background: primary }}>
-                    {settings.buttonText || 'Shop Now'} <ChevronRight size={20} />
-                  </a>
-                </div>
-              </section>
-            );
-
-          case 'categories':
-            if (store.categories.length === 0) return null;
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">{settings.title || 'Shop by Category'}</h2>
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  <button onClick={() => setSelectedCategory(null)}
-                    className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
-                    style={{ borderColor: !selectedCategory ? primary : '#e5e7eb', color: !selectedCategory ? primary : '#6b7280', background: !selectedCategory ? `${primary}10` : 'white' }}>
-                    All
-                  </button>
-                  {store.categories.map(c => (
-                    <button key={c.id} onClick={() => setSelectedCategory(c.name === selectedCategory ? null : c.name)}
-                      className="flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all"
-                      style={{ borderColor: selectedCategory === c.name ? primary : '#e5e7eb', color: selectedCategory === c.name ? primary : '#6b7280', background: selectedCategory === c.name ? `${primary}10` : 'white' }}>
-                      {c.name}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            );
-
-          case 'featuredProducts':
-            if (featuredProducts.length === 0) return null;
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">{settings.title}</h2>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {featuredProducts.slice(0, settings.count || 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
-                </div>
-              </section>
-            );
-
-          case 'promoBanner':
-            return (
-              <div key={id} style={{ backgroundColor: settings.backgroundColor || '#000', color: settings.textColor || '#fff' }} className="py-2 px-4 text-center text-sm font-medium w-full">
-                {settings.text}
+              <div key={id} style={{ backgroundColor: settings.backgroundColor || '#000', color: settings.textColor || '#fff' }} className="py-2.5 px-4 text-center text-[10px] sm:text-xs font-bold tracking-widest uppercase w-full flex items-center justify-center gap-2">
+                <span className="animate-pulse">🔥</span> {settings.text} <span className="animate-pulse">🔥</span>
               </div>
             );
 
-          case 'countdownTimer':
+          case 'heroBannerAdvanced':
             return (
-              <section key={id} className="py-12 px-4 bg-red-50 text-center">
-                <h3 className="text-xl font-bold text-red-600 mb-4">{settings.title}</h3>
-                <div className="flex justify-center gap-4 text-2xl font-mono font-bold text-red-900">
-                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">12</span><span className="text-xs text-red-500 mt-1 uppercase">Hours</span></div>
-                  <span>:</span>
-                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">45</span><span className="text-xs text-red-500 mt-1 uppercase">Mins</span></div>
-                  <span>:</span>
-                  <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">30</span><span className="text-xs text-red-500 mt-1 uppercase">Secs</span></div>
+              <section key={id} className="relative w-full bg-[#111111] text-white overflow-hidden flex flex-col md:flex-row min-h-[600px] md:min-h-[800px]">
+                {/* Left Content */}
+                <div className="flex-1 p-8 md:p-16 flex flex-col justify-center relative z-10 border-r border-white/10">
+                  <div className="bg-[#cc4444] text-white rounded-md mb-6 w-max uppercase tracking-wider text-[10px] font-bold px-3 py-1">
+                    ● {settings.productTag || 'BESTSELLER'}
+                  </div>
+                  <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-[#ccff00] mb-2">
+                    DRESS<br/>BOLD.
+                  </h1>
+                  <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-white mb-8">
+                    LIVE LOUD
+                  </h1>
+                  <p className="text-gray-400 text-sm md:text-base max-w-md mb-10 leading-relaxed">
+                    Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 mb-16">
+                    <button className="bg-[#ccff00] hover:bg-[#bbee00] text-black font-bold h-14 px-8 text-sm tracking-widest uppercase transition-colors">
+                      SHOP NEW ARRIVALS →
+                    </button>
+                    <button className="border border-white/20 hover:bg-white/10 text-white font-bold h-14 px-8 text-sm tracking-widest uppercase bg-transparent transition-colors">
+                      WATCH LOOKBOOK
+                    </button>
+                  </div>
+                  
+                  {/* Stats Footer */}
+                  <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 w-full mt-auto">
+                    <div>
+                      <p className="text-2xl font-black mb-1">50K+</p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">HAPPY CUSTOMERS</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black mb-1">200+</p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">STYLES AVAILABLE</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black mb-1 flex items-center gap-1">{settings.rating || '4.9'} <Sparkles className="w-4 h-4 text-[#ccff00]"/></p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{settings.statLabel || 'AVERAGE RATING'}</p>
+                    </div>
+                  </div>
                 </div>
-              </section>
-            );
-
-          case 'trustBadges':
-            return (
-              <section key={id} className="py-12 bg-white border-y border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 text-center">
-                  <h3 className="text-lg font-bold text-gray-900 mb-8">{settings.title}</h3>
-                  <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
-                    {(settings.badges || 'Secure Checkout, Free Shipping, 24/7 Support').split(',').map((badge: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2 font-medium">
-                        <Sparkles size={20} className="text-emerald-500" />
-                        <span>{badge.trim()}</span>
-                      </div>
-                    ))}
+                
+                {/* Right Imagery */}
+                <div className="flex-1 relative flex flex-col md:grid md:grid-cols-2 md:grid-rows-2">
+                  <div className="md:col-span-2 md:row-span-1 bg-[#1a1a1a] relative group overflow-hidden border-b border-white/10 min-h-[400px]">
+                    {settings.imageUrl ? (
+                      <img src={settings.imageUrl} alt="Hero" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white/20">Main Image</div>
+                    )}
+                    <div className="absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 tracking-widest uppercase">
+                      {settings.productTag}
+                    </div>
+                    <div className="absolute bottom-4 right-4 bg-white text-black p-3 flex flex-col items-end shadow-2xl">
+                      <span className="text-xs text-gray-500 line-through font-medium">{settings.originalPrice}</span>
+                      <span className="text-xl font-black">{settings.currentPrice}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#222222] relative group overflow-hidden border-r border-white/10 min-h-[300px]">
+                      {settings.gridImage1 ? (
+                      <img src={settings.gridImage1} alt="Grid 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 1</div>
+                    )}
+                    <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                      <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{settings.subTag1}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#1a1a1a] relative group overflow-hidden min-h-[300px]">
+                      {settings.gridImage2 ? (
+                      <img src={settings.gridImage2} alt="Grid 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 2</div>
+                    )}
+                    <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                      <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{settings.subTag2}</span>
+                    </div>
                   </div>
                 </div>
               </section>
             );
 
-          case 'faq':
+          case 'featuresBand':
             return (
-              <section key={id} className="py-20 px-4 max-w-4xl mx-auto">
-                <h2 className="text-3xl font-bold text-center mb-10">{settings.title}</h2>
-                <div className="space-y-4">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="border border-gray-200 rounded-xl p-5">
-                      <h4 className="font-bold flex justify-between">Question {i}? <ChevronRight size={18} className="rotate-90 text-gray-400" /></h4>
+              <section key={id} className="py-6 border-y border-gray-200 bg-white">
+                <div className="flex flex-wrap justify-center gap-8 md:gap-24 text-center">
+                  {[settings.text1, settings.text2, settings.text3].filter(Boolean).map((txt, i) => (
+                    <div key={i} className="flex items-center gap-3 font-black text-sm uppercase tracking-widest text-black">
+                      <div className="w-2 h-2 rounded-full bg-[#ccff00]"></div>
+                      {txt}
                     </div>
                   ))}
                 </div>
               </section>
             );
 
-          case 'newsletter':
+          case 'categoryGrid':
             return (
-              <section key={id} className="py-24 px-4 text-white text-center" style={{ background: primary }}>
-                <div className="max-w-2xl mx-auto space-y-6">
-                  <h2 className="text-3xl md:text-4xl font-bold">{settings.title}</h2>
-                  <p className="opacity-80">{settings.subtitle}</p>
-                  <div className="flex max-w-md mx-auto mt-6">
-                    <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-l-lg text-gray-900 outline-none" />
-                    <button className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-r-lg font-bold transition-colors">Subscribe</button>
-                  </div>
+              <section key={id} className="py-20 px-4 md:px-8 bg-gray-50 max-w-[1400px] mx-auto">
+                <div className="flex justify-between items-end mb-10">
+                  <h2 className="text-3xl font-black uppercase tracking-tight">{settings.title}</h2>
+                  <a href="#" className="text-xs font-bold border-b-2 border-black pb-1 uppercase tracking-widest hover:text-gray-600 transition-colors">VIEW ALL</a>
                 </div>
-              </section>
-            );
-
-          case 'slideshow':
-            return (
-              <section key={id} className="w-full relative bg-gray-900 text-white flex items-center justify-center" style={{ minHeight: '500px' }}>
-                <div className="text-center z-10 px-4">
-                  <h2 className="text-4xl md:text-5xl font-bold mb-4">{settings.title || 'Slideshow'}</h2>
-                  <p className="text-lg opacity-80">[{settings.slideCount} slides rotating every {settings.delay}s]</p>
-                </div>
-              </section>
-            );
-
-          case 'video':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-20 text-center">
-                <h2 className="text-3xl font-bold mb-8">{settings.title}</h2>
-                <div className="aspect-video bg-gray-200 rounded-2xl flex items-center justify-center shadow-lg">
-                  <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-xl pl-2">▶</div>
-                </div>
-              </section>
-            );
-
-          case 'blogPosts':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-20">
-                <h2 className="text-3xl font-bold mb-8 text-center">{settings.title}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="group cursor-pointer">
-                      <div className="aspect-[4/3] bg-gray-200 rounded-xl mb-4 overflow-hidden">
-                        <div className="w-full h-full bg-gray-100 group-hover:scale-105 transition-transform"></div>
-                      </div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Category</p>
-                      <h4 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">Amazing Blog Post Title {i}</h4>
-                      <p className="text-gray-600 line-clamp-2">A short excerpt of the blog post goes right here, enticing the reader to click and learn more.</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            );
-
-          case 'contactForm':
-            return (
-              <section key={id} className="max-w-3xl mx-auto px-4 py-20 text-center">
-                <h2 className="text-3xl font-bold mb-4">{settings.title}</h2>
-                <p className="text-gray-500 mb-10">We'd love to hear from you. Email us directly at {settings.email || 'hello@store.com'}.</p>
-                <div className="space-y-4 max-w-lg mx-auto text-left">
-                  <input type="text" placeholder="Name" className="w-full border rounded-lg p-3 outline-none focus:border-black" />
-                  <input type="email" placeholder="Email" className="w-full border rounded-lg p-3 outline-none focus:border-black" />
-                  <textarea placeholder="Message" rows={4} className="w-full border rounded-lg p-3 outline-none focus:border-black"></textarea>
-                  <button className="w-full text-white font-bold py-3 rounded-lg" style={{ background: primary }}>Send Message</button>
-                </div>
-              </section>
-            );
-
-          case 'promoPopups':
-            return null; // Automatically triggered via useEffect in real environment
-
-          case 'lookbook':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-20 text-center">
-                <h2 className="text-3xl font-bold mb-10">{settings.title}</h2>
-                <div className="w-full aspect-video bg-gray-100 rounded-2xl relative flex items-center justify-center border border-gray-200">
-                  <span className="text-gray-400">Lookbook Image</span>
-                  <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white rounded-full shadow-lg animate-pulse"></div>
-                  <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-white rounded-full shadow-lg animate-pulse"></div>
-                </div>
-              </section>
-            );
-
-          case 'promoTiles':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-12">
-                <h2 className="text-3xl font-bold mb-8 text-center">{settings.title}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="aspect-[4/3] bg-gray-900 rounded-2xl text-white flex flex-col justify-end p-8">
-                    <h3 className="text-2xl font-bold mb-2">Summer Essentials</h3>
-                    <a href="#" className="underline font-medium hover:text-gray-300">Shop Collection</a>
-                  </div>
-                  <div className="aspect-[4/3] bg-gray-800 rounded-2xl text-white flex flex-col justify-end p-8">
-                    <h3 className="text-2xl font-bold mb-2">New Arrivals</h3>
-                    <a href="#" className="underline font-medium hover:text-gray-300">Shop Collection</a>
-                  </div>
-                </div>
-              </section>
-            );
-
-          case 'logoList':
-            return (
-              <section key={id} className="border-y border-gray-100 bg-white py-12">
-                <div className="max-w-7xl mx-auto px-4 text-center">
-                  <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8">{settings.title}</p>
-                  <div className="flex flex-wrap justify-center gap-10 md:gap-20 opacity-50 grayscale">
-                    {['VOGUE', 'GQ', 'FORBES', 'WIRED', 'TECHCRUNCH'].map(brand => (
-                      <h4 key={brand} className="text-2xl font-black">{brand}</h4>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            );
-
-          case 'richText':
-            return (
-              <section key={id} className="max-w-3xl mx-auto px-4 py-24 text-center">
-                <h2 className="text-3xl font-bold mb-6">{settings.title}</h2>
-                <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">{settings.content}</p>
-              </section>
-            );
-
-          case 'map':
-            return (
-              <section key={id} className="w-full bg-gray-200 aspect-[21/9] flex items-center justify-center relative">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{settings.title}</h3>
-                  <p className="text-gray-600 bg-white/80 px-4 py-2 rounded-lg backdrop-blur-sm">{settings.address}</p>
-                </div>
-              </section>
-            );
-
-          case 'imageGallery':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-20">
-                <h2 className="text-3xl font-bold mb-10 text-center">{settings.title}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                    <div key={i} className={`bg-gray-100 rounded-xl ${i === 1 || i === 4 ? 'row-span-2 aspect-[1/2]' : 'aspect-square'}`}></div>
+                  {store.categories.length > 0 
+                    ? store.categories.slice(0, 4).map((c, i) => (
+                        <div key={c.id} onClick={() => setSelectedCategory(c.name)} className="aspect-[4/5] bg-gray-200 relative group overflow-hidden cursor-pointer">
+                          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors z-10"></div>
+                          <h3 className="absolute bottom-6 left-6 text-white font-black text-xl z-20 uppercase tracking-widest">{c.name}</h3>
+                        </div>
+                      ))
+                    : [1, 2, 3, 4].map(i => (
+                        <div key={i} className="aspect-[4/5] bg-gray-200 relative group overflow-hidden cursor-pointer">
+                          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors z-10"></div>
+                          <h3 className="absolute bottom-6 left-6 text-white font-black text-xl z-20 uppercase tracking-widest">CATEGORY {i}</h3>
+                        </div>
+                      ))
+                  }
+                </div>
+              </section>
+            );
+
+          case 'featuredCollection':
+            return (
+              <section key={id} className="py-20 px-4 md:px-8 bg-white max-w-[1400px] mx-auto">
+                <div className="flex justify-between items-end mb-10">
+                  <h2 className="text-3xl font-black uppercase tracking-tight">{settings.title}</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                  {featuredProducts.length > 0 
+                    ? featuredProducts.slice(0, settings.count || 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)
+                    : [1, 2, 3, 4].map(i => (
+                        <div key={i} className="group cursor-pointer">
+                          <div className="aspect-[3/4] bg-gray-100 mb-4 relative overflow-hidden">
+                            <div className="absolute top-3 left-3 bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest z-10 shadow-sm">NEW</div>
+                          </div>
+                          <h4 className="font-bold text-sm uppercase tracking-wider mb-1 group-hover:underline">Product Title {i}</h4>
+                          <p className="text-sm font-medium text-gray-500">₹2,499 <span className="line-through text-gray-300 ml-2">₹3,999</span></p>
+                        </div>
+                      ))
+                  }
+                </div>
+              </section>
+            );
+
+          case 'shoppableVideo':
+            return (
+              <section key={id} className="py-24 px-4 md:px-8 bg-[#111] text-white">
+                <h2 className="text-3xl font-black uppercase tracking-tight text-center mb-12">{settings.title}</h2>
+                <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+                  <div className="flex-1 aspect-[9/16] md:aspect-auto bg-gray-800 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors">
+                    <div className="w-20 h-20 bg-white/10 backdrop-blur rounded-full flex items-center justify-center pl-2 text-2xl shadow-xl hover:scale-110 transition-transform">▶</div>
+                  </div>
+                  <div className="w-full md:w-80 flex flex-col gap-4 justify-center">
+                    {[1, 2].map(i => (
+                      <div key={i} className="bg-white/5 p-4 rounded-xl flex gap-4 items-center hover:bg-white/10 transition-colors cursor-pointer">
+                        <div className="w-16 h-20 bg-white/10 rounded"></div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-sm uppercase">Featured Item {i}</h4>
+                          <p className="text-sm text-gray-400">₹1,999</p>
+                          <button className="w-full mt-2 bg-white text-black hover:bg-gray-200 text-xs py-2 font-bold uppercase tracking-wider transition-colors">ADD TO CART</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'bundleBuilder':
+            return (
+              <section key={id} className="py-24 px-4 md:px-8 bg-[#f4f6f8] text-center">
+                <div className="bg-[#ccff00] text-black mb-6 uppercase font-bold tracking-widest inline-block px-4 py-1.5 text-xs shadow-sm">{settings.discount || 'Save 20%'}</div>
+                <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-4">{settings.title}</h2>
+                <p className="text-gray-500 max-w-lg mx-auto mb-12 text-lg">Select 3 items and unlock an exclusive automatic discount at checkout.</p>
+                
+                <div className="flex justify-center items-center gap-4 md:gap-8 max-w-3xl mx-auto flex-wrap md:flex-nowrap">
+                  <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200 hover:border-black hover:text-black cursor-pointer transition-colors shadow-sm">+</div>
+                  <span className="font-black text-2xl text-gray-300 hidden md:block">+</span>
+                  <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200 hover:border-black hover:text-black cursor-pointer transition-colors shadow-sm">+</div>
+                  <span className="font-black text-2xl text-gray-300 hidden md:block">+</span>
+                  <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200 hover:border-black hover:text-black cursor-pointer transition-colors shadow-sm">+</div>
+                </div>
+                
+                <button className="mt-12 h-14 px-12 bg-black hover:bg-gray-800 text-white font-bold tracking-widest uppercase transition-colors shadow-xl">Start Building</button>
+              </section>
+            );
+
+          case 'promotionalBanners':
+            return (
+              <section key={id} className="py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="aspect-[21/9] md:aspect-[16/9] lg:aspect-[21/9] bg-[#cc4444] text-white flex flex-col justify-center items-start p-8 md:p-12 cursor-pointer hover:opacity-95 transition-opacity">
+                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-2">Buy 1 Get 1</h3>
+                    <p className="mb-6 font-medium opacity-90 text-lg">On all accessories</p>
+                    <span className="border-b-2 border-white pb-1 font-bold text-xs uppercase tracking-widest hover:text-gray-200 hover:border-gray-200 transition-colors">Shop Now</span>
+                  </div>
+                  <div className="aspect-[21/9] md:aspect-[16/9] lg:aspect-[21/9] bg-black text-white flex flex-col justify-center items-start p-8 md:p-12 cursor-pointer hover:opacity-95 transition-opacity">
+                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-2">New Drops</h3>
+                    <p className="mb-6 font-medium opacity-90 text-lg">Limited edition sneakers</p>
+                    <span className="border-b-2 border-[#ccff00] text-[#ccff00] pb-1 font-bold text-xs uppercase tracking-widest hover:text-[#bbee00] hover:border-[#bbee00] transition-colors">View Collection</span>
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'reviewsSection':
+            return (
+              <section key={id} className="py-24 px-4 md:px-8 bg-white border-y border-gray-100">
+                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-16">{settings.title}</h2>
+                <div className="grid md:grid-cols-3 gap-8 max-w-[1400px] mx-auto">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="bg-gray-50 p-8 md:p-10 hover:shadow-lg transition-shadow">
+                      <div className="flex gap-1 text-black mb-6 text-xl">{'★★★★★'}</div>
+                      <p className="text-lg font-medium leading-relaxed mb-8">"The quality is absolutely insane. I've been wearing this every single day since it arrived. Definitely buying more."</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-gray-500">— Verified Buyer {i}</p>
+                    </div>
                   ))}
+                </div>
+              </section>
+            );
+
+          case 'footer':
+            return (
+              <section key={id} className="bg-[#111] text-white py-20 px-4 md:px-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16 max-w-[1400px] mx-auto">
+                  <div>
+                    <h4 className="font-black uppercase tracking-widest mb-6">About</h4>
+                    <div className="space-y-3 text-sm text-gray-400">
+                      <p className="hover:text-white cursor-pointer transition-colors">Our Story</p>
+                      <p className="hover:text-white cursor-pointer transition-colors">Careers</p>
+                      <p className="hover:text-white cursor-pointer transition-colors">Press</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-black uppercase tracking-widest mb-6">Support</h4>
+                    <div className="space-y-3 text-sm text-gray-400">
+                      <p className="hover:text-white cursor-pointer transition-colors">FAQ</p>
+                      <p className="hover:text-white cursor-pointer transition-colors">Shipping</p>
+                      <p className="hover:text-white cursor-pointer transition-colors">Returns</p>
+                    </div>
+                  </div>
+                  <div className="col-span-2 md:col-span-2">
+                    <h4 className="font-black uppercase tracking-widest mb-6">Join the Club</h4>
+                    <p className="text-sm text-gray-400 mb-4">Subscribe for exclusive drops and 10% off your first order.</p>
+                    <div className="flex flex-col sm:flex-row">
+                      <input type="email" placeholder="Email Address" className="bg-white/10 px-4 py-3 w-full text-sm outline-none focus:bg-white/20 transition-colors text-white" />
+                      <button className="bg-white text-black px-6 py-3 font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors mt-2 sm:mt-0">Subscribe</button>
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-medium max-w-[1400px] mx-auto gap-4">
+                  <p>{settings.text}</p>
+                  <div className="flex gap-6">
+                    <span className="hover:text-white cursor-pointer transition-colors">Instagram</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">TikTok</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">Twitter</span>
+                  </div>
                 </div>
               </section>
             );
@@ -436,23 +457,6 @@ export default function StorefrontPage({ store }: { store: Store }) {
             return (
               <section key={id} className="w-full">
                 <div dangerouslySetInnerHTML={{ __html: settings.code || '' }} />
-              </section>
-            );
-
-          case 'textWithImage':
-            return (
-              <section key={id} className="max-w-7xl mx-auto px-4 py-16">
-                <div className={`flex flex-col ${settings.imagePosition === 'left' ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12`}>
-                  <div className="flex-1 space-y-6">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{settings.title}</h2>
-                    <p className="text-lg text-gray-600 leading-relaxed whitespace-pre-wrap">{settings.content}</p>
-                  </div>
-                  <div className="flex-1 w-full aspect-[4/3] bg-gray-100 rounded-2xl overflow-hidden relative">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-300">
-                      <ImageIcon size={64} className="opacity-20" />
-                    </div>
-                  </div>
-                </div>
               </section>
             );
 

@@ -38,29 +38,28 @@ interface SectionData {
 }
 
 const SECTION_TYPES = [
-  { type: 'hero', label: 'Hero Banner', icon: Sparkles, defaultSettings: { title: 'Welcome to our store', subtitle: 'Discover amazing products', buttonText: 'Shop Now', height: '600px', imageUrl: '' } },
-  { type: 'slideshow', label: 'Slideshow', icon: ImageIcon, defaultSettings: { slideCount: 3, delay: 5, autoPlay: true } },
-  { type: 'categories', label: 'Categories Grid', icon: Layout, defaultSettings: { title: 'Shop by Category', columns: 4 } },
-  { type: 'featuredProducts', label: 'Featured Products', icon: Layout, defaultSettings: { title: 'Featured Products', count: 4, collectionId: '' } },
-  { type: 'allProducts', label: 'All Products Grid', icon: Layout, defaultSettings: { title: 'All Products', columns: 4 } },
-  { type: 'textWithImage', label: 'Text with Image', icon: ImageIcon, defaultSettings: { title: 'Our Story', content: 'We make the best products...', imagePosition: 'left' } },
-  { type: 'promoBanner', label: 'Promo Banner', icon: Sparkles, defaultSettings: { text: 'Free shipping on orders over $50!', backgroundColor: '#000000', textColor: '#ffffff' } },
-  { type: 'countdownTimer', label: 'Countdown Timer', icon: Sparkles, defaultSettings: { title: 'Flash Sale Ends In:', targetDate: new Date(Date.now() + 86400000).toISOString().split('T')[0] } },
-  { type: 'trustBadges', label: 'Trust Badges', icon: Sparkles, defaultSettings: { title: 'Why shop with us?', badges: 'Free Shipping, 30-Day Returns, Secure Checkout' } },
-  { type: 'faq', label: 'FAQ Accordion', icon: Type, defaultSettings: { title: 'Frequently Asked Questions' } },
-  { type: 'testimonials', label: 'Testimonials', icon: Type, defaultSettings: { title: 'What Customers Say' } },
-  { type: 'newsletter', label: 'Newsletter Signup', icon: Type, defaultSettings: { title: 'Subscribe to our newsletter', subtitle: 'Get 10% off your first order' } },
-  { type: 'video', label: 'Product Video', icon: ImageIcon, defaultSettings: { title: 'See it in action', videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } },
-  { type: 'blogPosts', label: 'Latest Blog Posts', icon: Type, defaultSettings: { title: 'From the Blog', count: 3 } },
-  { type: 'contactForm', label: 'Contact Form', icon: Type, defaultSettings: { title: 'Get in Touch', email: 'support@store.com' } },
-  { type: 'promoPopups', label: 'Promo Popup', icon: Sparkles, defaultSettings: { title: 'Wait!', subtitle: 'Get 20% off before you go', delaySeconds: 5 } },
-  { type: 'lookbook', label: 'Lookbook (Hotspots)', icon: ImageIcon, defaultSettings: { title: 'Shop the Look', imageUrl: '' } },
-  { type: 'promoTiles', label: 'Promo Grid Tiles', icon: Layout, defaultSettings: { title: 'Special Offers', count: 2 } },
-  { type: 'logoList', label: 'Logo List / Brands', icon: ImageIcon, defaultSettings: { title: 'As Seen On' } },
-  { type: 'richText', label: 'Rich Text', icon: Type, defaultSettings: { title: 'About Us', content: 'Detailed rich text content here...' } },
-  { type: 'map', label: 'Store Location Map', icon: Layout, defaultSettings: { title: 'Visit Us', address: '123 Main St, City' } },
-  { type: 'imageGallery', label: 'Image Gallery', icon: ImageIcon, defaultSettings: { title: 'Gallery', columns: 3 } },
-  { type: 'customCode', label: 'Custom Code / HTML', icon: Code, defaultSettings: { code: '<div style="padding: 20px; text-align: center; border: 1px dashed #ccc;">Your custom HTML here</div>' } },
+  { type: 'announcementBar', label: 'Announcement Bar', icon: Type, defaultSettings: { text: '🔥 NEW SEASON DROP — USE CODE FRESH30 FOR 30% OFF', backgroundColor: '#000000', textColor: '#ffffff' } },
+  { type: 'heroBannerAdvanced', label: 'Hero Banner', icon: Sparkles, defaultSettings: { 
+      rating: '4.9', 
+      statLabel: 'Average Rating',
+      productTag: 'BESTSELLER',
+      currentPrice: '₹3,199',
+      originalPrice: '₹4,499',
+      subTag1: 'COLLAR',
+      subTag2: 'PREMIUM',
+      imageUrl: '',
+      gridImage1: '',
+      gridImage2: ''
+    } 
+  },
+  { type: 'categoryGrid', label: 'Category Grid', icon: Layout, defaultSettings: { title: 'Shop by Category', columns: 4 } },
+  { type: 'featuredCollection', label: 'Featured Collection', icon: Layout, defaultSettings: { title: 'New Arrivals', count: 4, collectionId: '' } },
+  { type: 'featuresBand', label: 'Features Band', icon: Sparkles, defaultSettings: { text1: '50K+ HAPPY CUSTOMERS', text2: '200+ STYLES', text3: 'EASY RETURNS' } },
+  { type: 'promotionalBanners', label: 'Promotional Banners', icon: ImageIcon, defaultSettings: { title: 'Special Offers', count: 2 } },
+  { type: 'shoppableVideo', label: 'Shoppable Video', icon: ImageIcon, defaultSettings: { title: 'Watch & Shop', videoUrl: 'https://youtube.com/...' } },
+  { type: 'bundleBuilder', label: 'Bundle Builder', icon: Layout, defaultSettings: { title: 'Build Your Look', discount: 'Save 20%' } },
+  { type: 'reviewsSection', label: 'Reviews Section', icon: Type, defaultSettings: { title: 'What They Say' } },
+  { type: 'footer', label: 'Footer', icon: Layout, defaultSettings: { text: '© 2026 Store Name' } },
 ]
 
 // Premium Full Themes with 21+ sections utilization
@@ -203,12 +202,19 @@ export default function StoreEditor() {
       } catch (e) {
         console.error('Failed to parse sectionsConfig', e)
       }
-    }
     // Default sections if none found
     setSections([
-      { id: '1', type: 'hero', label: 'Hero Banner', settings: { title: 'Welcome to ' + (currentStore?.name || 'Store'), subtitle: 'Discover amazing products', buttonText: 'Shop Now' } },
-      { id: '2', type: 'featuredProducts', label: 'Featured Products', settings: { title: 'Best Sellers', count: 4 } },
-      { id: '3', type: 'textWithImage', label: 'Text with Image', settings: { title: 'Quality Guaranteed', content: 'We offer only the best...', imagePosition: 'right' } }
+      { id: '1', type: 'announcementBar', label: 'Announcement Bar', settings: { text: '🔥 NEW SEASON DROP — USE CODE FRESH30 FOR 30% OFF', backgroundColor: '#000000', textColor: '#ffffff' } },
+      { id: '2', type: 'heroBannerAdvanced', label: 'Hero Banner', settings: { 
+          rating: '4.9', statLabel: 'Average Rating', productTag: 'BESTSELLER',
+          currentPrice: '₹3,199', originalPrice: '₹4,499', subTag1: 'COLLAR', subTag2: 'PREMIUM'
+      }},
+      { id: '3', type: 'featuresBand', label: 'Features Band', settings: { text1: '50K+ HAPPY CUSTOMERS', text2: '200+ STYLES', text3: 'EASY RETURNS' } },
+      { id: '4', type: 'categoryGrid', label: 'Category Grid', settings: { title: 'Shop by Category', columns: 4 } },
+      { id: '5', type: 'featuredCollection', label: 'Featured Collection', settings: { title: 'New Arrivals', count: 4 } },
+      { id: '6', type: 'shoppableVideo', label: 'Shoppable Video', settings: { title: 'Watch & Shop' } },
+      { id: '7', type: 'reviewsSection', label: 'Reviews Section', settings: { title: 'What They Say' } },
+      { id: '8', type: 'footer', label: 'Footer', settings: { text: '© 2026 Peril Jewellery' } }
     ])
   }, [currentStore?.sectionsConfig, currentStore?.name])
   
@@ -484,250 +490,258 @@ export default function StoreEditor() {
                   onClick={() => setActiveSectionId(section.id)}
                 >
                   {/* Visual Render based on type */}
-                  {section.type === 'hero' && (
-                    <div className="py-24 px-8 text-center bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/10">
-                      <h1 className="text-4xl md:text-5xl font-bold mb-4">{section.settings.title}</h1>
-                      <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">{section.settings.subtitle}</p>
-                      <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">{section.settings.buttonText}</Button>
+                  {/* Visual Render based on type */}
+                  {section.type === 'announcementBar' && (
+                    <div style={{ backgroundColor: section.settings.backgroundColor || '#000', color: section.settings.textColor || '#fff' }} className="py-2.5 px-4 text-center text-[10px] sm:text-xs font-bold tracking-widest uppercase w-full flex items-center justify-center gap-2">
+                      <span className="animate-pulse">🔥</span> {section.settings.text} <span className="animate-pulse">🔥</span>
                     </div>
                   )}
 
-                  {section.type === 'featuredProducts' && (
-                    <div className="py-16 px-6 md:px-12 bg-background">
-                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {Array.from({ length: section.settings.count || 4 }).map((_, i) => (
-                          <div key={i} className="space-y-3">
-                            <div className="aspect-square bg-muted rounded-xl"></div>
-                            <div className="h-4 bg-muted rounded w-2/3"></div>
-                            <div className="h-4 bg-muted rounded w-1/3"></div>
+                  {section.type === 'heroBannerAdvanced' && (
+                    <div className="relative w-full bg-[#111111] text-white overflow-hidden flex flex-col md:flex-row min-h-[600px] md:min-h-[800px]">
+                      {/* Left Content */}
+                      <div className="flex-1 p-8 md:p-16 flex flex-col justify-center relative z-10 border-r border-white/10">
+                        <Badge className="bg-[#cc4444] text-white hover:bg-[#aa3333] border-none mb-6 w-max uppercase tracking-wider text-[10px] font-bold">
+                          ● {section.settings.productTag || 'BESTSELLER'}
+                        </Badge>
+                        <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-[#ccff00] mb-2">
+                          DRESS<br/>BOLD.
+                        </h1>
+                        <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-white mb-8">
+                          LIVE LOUD
+                        </h1>
+                        <p className="text-gray-400 text-sm md:text-base max-w-md mb-10 leading-relaxed">
+                          Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 mb-16">
+                          <Button className="bg-[#ccff00] hover:bg-[#bbee00] text-black font-bold h-14 px-8 rounded-none text-sm tracking-widest uppercase">
+                            SHOP NEW ARRIVALS →
+                          </Button>
+                          <Button variant="outline" className="border-white/20 hover:bg-white/10 text-white font-bold h-14 px-8 rounded-none text-sm tracking-widest uppercase bg-transparent">
+                            WATCH LOOKBOOK
+                          </Button>
+                        </div>
+                        
+                        {/* Stats Footer */}
+                        <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 w-full mt-auto">
+                          <div>
+                            <p className="text-2xl font-black mb-1">50K+</p>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">HAPPY CUSTOMERS</p>
+                          </div>
+                          <div>
+                            <p className="text-2xl font-black mb-1">200+</p>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">STYLES AVAILABLE</p>
+                          </div>
+                          <div>
+                            <p className="text-2xl font-black mb-1 flex items-center gap-1">{section.settings.rating || '4.9'} <Sparkles className="w-4 h-4 text-[#ccff00]"/></p>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{section.settings.statLabel || 'AVERAGE RATING'}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Right Imagery */}
+                      <div className="flex-1 relative flex flex-col md:grid md:grid-cols-2 md:grid-rows-2">
+                        {/* Main Image */}
+                        <div className="md:col-span-2 md:row-span-1 bg-[#1a1a1a] relative group overflow-hidden border-b border-white/10 min-h-[400px]">
+                          {section.settings.imageUrl ? (
+                            <img src={section.settings.imageUrl} alt="Hero" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-white/20">Main Image</div>
+                          )}
+                          <div className="absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 tracking-widest uppercase">
+                            {section.settings.productTag}
+                          </div>
+                          <div className="absolute bottom-4 right-4 bg-white text-black p-3 flex flex-col items-end shadow-2xl">
+                            <span className="text-xs text-gray-500 line-through font-medium">{section.settings.originalPrice}</span>
+                            <span className="text-xl font-black">{section.settings.currentPrice}</span>
+                          </div>
+                        </div>
+                        
+                        {/* Grid Bottom Left */}
+                        <div className="bg-[#222222] relative group overflow-hidden border-r border-white/10 min-h-[300px]">
+                           {section.settings.gridImage1 ? (
+                            <img src={section.settings.gridImage1} alt="Grid 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 1</div>
+                          )}
+                          <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                            <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{section.settings.subTag1}</span>
+                          </div>
+                        </div>
+                        
+                        {/* Grid Bottom Right */}
+                        <div className="bg-[#1a1a1a] relative group overflow-hidden min-h-[300px]">
+                           {section.settings.gridImage2 ? (
+                            <img src={section.settings.gridImage2} alt="Grid 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 2</div>
+                          )}
+                          <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
+                            <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{section.settings.subTag2}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'featuresBand' && (
+                    <div className="py-6 border-y border-gray-200 bg-white">
+                      <div className="flex flex-wrap justify-center gap-8 md:gap-24 text-center">
+                        {[section.settings.text1, section.settings.text2, section.settings.text3].map((txt, i) => (
+                          <div key={i} className="flex items-center gap-3 font-black text-sm uppercase tracking-widest text-black">
+                            <div className="w-2 h-2 rounded-full bg-[#ccff00]"></div>
+                            {txt}
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {section.type === 'categories' && (
-                    <div className="py-12 px-6 md:px-12 bg-background border-b border-muted/30">
-                      <h2 className="text-xl font-bold mb-6">{section.settings.title || 'Shop by Category'}</h2>
-                      <div className="flex gap-4 overflow-x-auto pb-4">
-                        {['All', 'Electronics', 'Clothing', 'Home'].map((cat, i) => (
-                          <div key={i} className={`px-6 py-2 rounded-full border-2 ${i === 0 ? 'border-emerald-600 text-emerald-600 bg-emerald-50' : 'border-muted text-muted-foreground'}`}>
-                            {cat}
-                          </div>
-                        ))}
+                  {section.type === 'categoryGrid' && (
+                    <div className="py-20 px-8 bg-gray-50">
+                      <div className="flex justify-between items-end mb-10">
+                        <h2 className="text-3xl font-black uppercase tracking-tight">{section.settings.title}</h2>
+                        <a href="#" className="text-xs font-bold border-b-2 border-black pb-1 uppercase tracking-widest">VIEW ALL</a>
                       </div>
-                    </div>
-                  )}
-
-                  {section.type === 'allProducts' && (
-                    <div className="py-16 px-6 md:px-12 bg-background">
-                      <h2 className="text-2xl font-bold mb-8">{section.settings.title || 'All Products'}</h2>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => (
-                          <div key={i} className="space-y-3">
-                            <div className="aspect-square bg-muted rounded-xl"></div>
-                            <div className="h-4 bg-muted rounded w-3/4"></div>
-                            <div className="h-4 bg-muted rounded w-1/4"></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'textWithImage' && (
-                    <div className="py-16 px-6 md:px-12 bg-muted/10 flex flex-col md:flex-row items-center gap-12">
-                      {section.settings.imagePosition === 'left' && <div className="flex-1 aspect-[4/3] bg-muted rounded-xl w-full"></div>}
-                      <div className="flex-1 space-y-4">
-                        <h2 className="text-3xl font-bold">{section.settings.title}</h2>
-                        <p className="text-muted-foreground leading-relaxed">{section.settings.content}</p>
-                        <Button variant="outline">Learn More</Button>
-                      </div>
-                      {section.settings.imagePosition === 'right' && <div className="flex-1 aspect-[4/3] bg-muted rounded-xl w-full"></div>}
-                    </div>
-                  )}
-
-                  {section.type === 'testimonials' && (
-                    <div className="py-16 px-6 md:px-12 bg-background text-center">
-                      <h2 className="text-2xl font-bold mb-12">{section.settings.title}</h2>
-                      <div className="grid md:grid-cols-3 gap-8">
-                        {[1, 2, 3].map(i => (
-                          <Card key={i} className="p-6 text-center space-y-4 shadow-sm border-border/50">
-                            <div className="flex justify-center gap-1">{'⭐⭐⭐⭐⭐'}</div>
-                            <p className="text-sm text-muted-foreground italic">"Amazing quality and fast shipping! Will definitely buy again."</p>
-                            <p className="font-semibold text-sm">- Customer {i}</p>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'slideshow' && (
-                    <div className="w-full bg-slate-800 text-white flex items-center justify-center min-h-[400px]">
-                      <div className="text-center">
-                        <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                        <h2 className="text-3xl font-bold">{section.settings.title || 'Slideshow'}</h2>
-                        <p className="opacity-80">[{section.settings.slideCount} slides]</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'promoBanner' && (
-                    <div style={{ backgroundColor: section.settings.backgroundColor || '#000', color: section.settings.textColor || '#fff' }} className="py-3 px-4 text-center text-sm font-medium w-full">
-                      {section.settings.text}
-                    </div>
-                  )}
-
-                  {section.type === 'countdownTimer' && (
-                    <div className="py-12 px-4 bg-red-50 text-center">
-                      <h3 className="text-xl font-bold text-red-600 mb-4">{section.settings.title}</h3>
-                      <div className="flex justify-center gap-4 text-2xl font-mono font-bold text-red-900">
-                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">12</span><span className="text-xs text-red-500 mt-1 uppercase">Hours</span></div>
-                        <span>:</span>
-                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">45</span><span className="text-xs text-red-500 mt-1 uppercase">Mins</span></div>
-                        <span>:</span>
-                        <div className="flex flex-col items-center"><span className="bg-white px-4 py-2 rounded-lg shadow-sm">30</span><span className="text-xs text-red-500 mt-1 uppercase">Secs</span></div>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'trustBadges' && (
-                    <div className="py-12 bg-white border-y border-gray-100 text-center">
-                      <h3 className="text-lg font-bold text-gray-900 mb-8">{section.settings.title}</h3>
-                      <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
-                        {(section.settings.badges || 'Secure Checkout, Free Shipping, 24/7 Support').split(',').map((badge: string, i: number) => (
-                          <div key={i} className="flex items-center gap-2 font-medium">
-                            <Sparkles size={20} className="text-emerald-500" />
-                            <span>{badge.trim()}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'faq' && (
-                    <div className="py-16 px-6 max-w-3xl mx-auto">
-                      <h2 className="text-2xl font-bold text-center mb-8">{section.settings.title}</h2>
-                      <div className="space-y-4">
-                        {[1, 2, 3].map(i => (
-                          <div key={i} className="border rounded-xl p-4 flex justify-between font-medium">
-                            <span>FAQ Question {i}?</span>
-                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'newsletter' && (
-                    <div className="py-20 px-4 bg-slate-900 text-white text-center">
-                      <h2 className="text-3xl font-bold mb-4">{section.settings.title}</h2>
-                      <p className="opacity-80 mb-6">{section.settings.subtitle}</p>
-                      <div className="flex max-w-md mx-auto">
-                        <input type="email" placeholder="Email" disabled className="flex-1 px-4 py-2 rounded-l-md text-black" />
-                        <button className="bg-emerald-600 px-6 py-2 rounded-r-md font-bold">Subscribe</button>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'video' && (
-                    <div className="py-16 px-6 text-center">
-                      <h2 className="text-2xl font-bold mb-8">{section.settings.title}</h2>
-                      <div className="aspect-video bg-slate-200 rounded-xl flex items-center justify-center">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg text-2xl pl-1">▶</div>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'blogPosts' && (
-                    <div className="py-16 px-6">
-                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[1, 2, 3].map(i => (
-                          <div key={i} className="space-y-3">
-                            <div className="aspect-[4/3] bg-muted rounded-xl"></div>
-                            <h4 className="font-bold">Blog Post Title {i}</h4>
-                            <div className="h-3 bg-muted w-full rounded"></div>
-                            <div className="h-3 bg-muted w-2/3 rounded"></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'contactForm' && (
-                    <div className="py-16 px-6 max-w-xl mx-auto text-center">
-                      <h2 className="text-2xl font-bold mb-6">{section.settings.title}</h2>
-                      <div className="space-y-4">
-                        <div className="h-10 bg-muted rounded-md w-full"></div>
-                        <div className="h-10 bg-muted rounded-md w-full"></div>
-                        <div className="h-24 bg-muted rounded-md w-full"></div>
-                        <div className="h-10 bg-emerald-600 rounded-md w-full opacity-50"></div>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'lookbook' && (
-                    <div className="py-16 px-6 text-center">
-                      <h2 className="text-2xl font-bold mb-8">{section.settings.title}</h2>
-                      <div className="aspect-video bg-muted rounded-xl relative flex items-center justify-center">
-                        <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
-                        <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white rounded-full shadow-lg"></div>
-                        <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-white rounded-full shadow-lg"></div>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'promoTiles' && (
-                    <div className="py-12 px-6">
-                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="aspect-[4/3] bg-slate-800 rounded-xl"></div>
-                        <div className="aspect-[4/3] bg-slate-900 rounded-xl"></div>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'logoList' && (
-                    <div className="py-12 border-y bg-white text-center">
-                      <p className="text-xs font-bold uppercase text-gray-400 mb-6">{section.settings.title}</p>
-                      <div className="flex flex-wrap justify-center gap-8 opacity-40">
-                        {['LOGO 1', 'LOGO 2', 'LOGO 3', 'LOGO 4'].map(l => <h4 key={l} className="text-xl font-black">{l}</h4>)}
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'richText' && (
-                    <div className="py-20 px-6 max-w-2xl mx-auto text-center">
-                      <h2 className="text-2xl font-bold mb-6">{section.settings.title}</h2>
-                      <p className="text-muted-foreground">{section.settings.content}</p>
-                    </div>
-                  )}
-
-                  {section.type === 'map' && (
-                    <div className="w-full aspect-[21/9] bg-slate-200 flex items-center justify-center">
-                      <div className="bg-white p-4 rounded-lg shadow text-center">
-                        <h3 className="font-bold">{section.settings.title}</h3>
-                        <p className="text-sm text-muted-foreground">{section.settings.address}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {section.type === 'imageGallery' && (
-                    <div className="py-16 px-6">
-                      <h2 className="text-2xl font-bold mb-8 text-center">{section.settings.title}</h2>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <div key={i} className="aspect-square bg-muted rounded-xl"></div>)}
+                        {[1, 2, 3, 4].map(i => (
+                          <div key={i} className="aspect-[4/5] bg-gray-200 relative group overflow-hidden cursor-pointer">
+                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors z-10"></div>
+                            <h3 className="absolute bottom-6 left-6 text-white font-black text-xl z-20 uppercase tracking-widest">CATEGORY {i}</h3>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
 
-                  {section.type === 'customCode' && (
-                    <div className="w-full relative">
-                      <div className="absolute inset-0 bg-blue-500/10 border-2 border-dashed border-blue-500 z-10 pointer-events-none flex items-center justify-center">
-                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Custom HTML Component</span>
+                  {section.type === 'featuredCollection' && (
+                    <div className="py-20 px-8 bg-white">
+                      <div className="flex justify-between items-end mb-10">
+                        <h2 className="text-3xl font-black uppercase tracking-tight">{section.settings.title}</h2>
                       </div>
-                      <div dangerouslySetInnerHTML={{ __html: section.settings.code || '<div style="padding: 40px; text-align: center;">Mock Output</div>' }} />
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[1, 2, 3, 4].map(i => (
+                          <div key={i} className="group cursor-pointer">
+                            <div className="aspect-[3/4] bg-gray-100 mb-4 relative overflow-hidden">
+                              <div className="absolute top-3 left-3 bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest z-10">NEW</div>
+                            </div>
+                            <h4 className="font-bold text-sm uppercase tracking-wider mb-1 group-hover:underline">Product Title {i}</h4>
+                            <p className="text-sm font-medium text-gray-500">₹2,499 <span className="line-through text-gray-300 ml-2">₹3,999</span></p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'shoppableVideo' && (
+                    <div className="py-24 px-8 bg-[#111] text-white">
+                      <h2 className="text-3xl font-black uppercase tracking-tight text-center mb-12">{section.settings.title}</h2>
+                      <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+                        <div className="flex-1 aspect-[9/16] md:aspect-auto bg-gray-800 rounded-2xl relative overflow-hidden flex items-center justify-center">
+                          <div className="w-20 h-20 bg-white/10 backdrop-blur rounded-full flex items-center justify-center pl-2">▶</div>
+                        </div>
+                        <div className="w-full md:w-80 flex flex-col gap-4">
+                          {[1, 2].map(i => (
+                            <div key={i} className="bg-white/5 p-4 rounded-xl flex gap-4 items-center">
+                              <div className="w-16 h-20 bg-white/10 rounded"></div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-sm uppercase">Featured Item</h4>
+                                <p className="text-sm text-gray-400">₹1,999</p>
+                                <Button size="sm" className="w-full mt-2 bg-white text-black hover:bg-gray-200 text-xs">ADD TO CART</Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'bundleBuilder' && (
+                    <div className="py-20 px-8 bg-[#f4f6f8] text-center">
+                      <Badge className="bg-[#ccff00] text-black mb-4 uppercase font-bold tracking-widest border-none px-3 py-1">{section.settings.discount}</Badge>
+                      <h2 className="text-4xl font-black uppercase tracking-tight mb-4">{section.settings.title}</h2>
+                      <p className="text-gray-500 max-w-lg mx-auto mb-10">Select 3 items and unlock an exclusive automatic discount at checkout.</p>
+                      
+                      <div className="flex justify-center items-center gap-4 max-w-3xl mx-auto">
+                        <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200">+</div>
+                        <span className="font-black text-2xl text-gray-300">+</span>
+                        <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200">+</div>
+                        <span className="font-black text-2xl text-gray-300">+</span>
+                        <div className="w-32 h-40 bg-white border-2 border-dashed border-gray-300 flex items-center justify-center font-black text-4xl text-gray-200">+</div>
+                      </div>
+                      
+                      <Button className="mt-10 h-14 px-12 bg-black hover:bg-gray-800 text-white font-bold tracking-widest uppercase rounded-none">Start Building</Button>
+                    </div>
+                  )}
+
+                  {section.type === 'promotionalBanners' && (
+                    <div className="py-12 px-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="aspect-[21/9] bg-[#cc4444] text-white flex flex-col justify-center items-start p-10 cursor-pointer hover:opacity-95 transition-opacity">
+                          <h3 className="text-3xl font-black uppercase tracking-tight mb-2">Buy 1 Get 1</h3>
+                          <p className="mb-4 font-medium opacity-90">On all accessories</p>
+                          <span className="border-b-2 border-white pb-1 font-bold text-xs uppercase tracking-widest">Shop Now</span>
+                        </div>
+                        <div className="aspect-[21/9] bg-black text-white flex flex-col justify-center items-start p-10 cursor-pointer hover:opacity-95 transition-opacity">
+                          <h3 className="text-3xl font-black uppercase tracking-tight mb-2">New Drops</h3>
+                          <p className="mb-4 font-medium opacity-90">Limited edition sneakers</p>
+                          <span className="border-b-2 border-[#ccff00] text-[#ccff00] pb-1 font-bold text-xs uppercase tracking-widest">View Collection</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'reviewsSection' && (
+                    <div className="py-24 px-8 bg-white border-y border-gray-100">
+                      <h2 className="text-3xl font-black uppercase tracking-tight text-center mb-16">{section.settings.title}</h2>
+                      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="bg-gray-50 p-8">
+                            <div className="flex gap-1 text-black mb-6">{'★★★★★'}</div>
+                            <p className="text-lg font-medium leading-relaxed mb-6">"The quality is absolutely insane. I've been wearing this every single day since it arrived."</p>
+                            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">— Verified Buyer</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.type === 'footer' && (
+                    <div className="bg-[#111] text-white py-20 px-8">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+                        <div>
+                          <h4 className="font-black uppercase tracking-widest mb-6">About</h4>
+                          <div className="space-y-3 text-sm text-gray-400">
+                            <p>Our Story</p>
+                            <p>Careers</p>
+                            <p>Press</p>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-black uppercase tracking-widest mb-6">Support</h4>
+                          <div className="space-y-3 text-sm text-gray-400">
+                            <p>FAQ</p>
+                            <p>Shipping</p>
+                            <p>Returns</p>
+                          </div>
+                        </div>
+                        <div className="col-span-2">
+                          <h4 className="font-black uppercase tracking-widest mb-6">Join the Club</h4>
+                          <p className="text-sm text-gray-400 mb-4">Subscribe for exclusive drops and 10% off your first order.</p>
+                          <div className="flex">
+                            <input type="email" placeholder="Email Address" className="bg-white/10 px-4 py-3 w-full text-sm outline-none focus:bg-white/20 transition-colors" />
+                            <Button className="bg-white text-black px-6 py-3 h-auto rounded-none font-bold uppercase text-xs tracking-widest">Subscribe</Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-8 border-t border-white/10 flex justify-between items-center text-xs text-gray-500 font-medium">
+                        <p>{section.settings.text}</p>
+                        <div className="flex gap-4">
+                          <span>Instagram</span>
+                          <span>TikTok</span>
+                          <span>Twitter</span>
+                        </div>
+                      </div>
                     </div>
                   )}
 
