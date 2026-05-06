@@ -1,0 +1,6 @@
+Handle,Title,Description,Category,Price,Compare At Price,SKU,Barcode,Quantity,Image URL,Status
+premium-cotton-tshirt,Premium Cotton T-Shirt,High quality 100% cotton t-shirt for everyday wear.,Apparel,1499,1999,TSHIRT-001,8901234567890,50,https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500,Active
+premium-cotton-tshirt,Premium Cotton T-Shirt,High quality 100% cotton t-shirt for everyday wear.,Apparel,1499,1999,TSHIRT-002,8901234567891,30,,Active
+leather-wallet,Classic Leather Wallet,Genuine leather bifold wallet with multiple card slots.,Accessories,2499,3499,WALLET-100,8901234567892,100,https://images.unsplash.com/photo-1627123424574-724758594e93?w=500,Active
+wireless-earbuds,Pro Wireless Earbuds,Noise cancelling true wireless earbuds with 24h battery.,Electronics,4999,6999,EARBUDS-X1,8901234567893,25,https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500,Active
+running-shoes,Elite Running Shoes,Lightweight breathable sneakers for professional runners.,Footwear,3999,5999,SHOES-RUN,8901234567894,0,https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500,Draft
