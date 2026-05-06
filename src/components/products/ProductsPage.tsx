@@ -929,15 +929,24 @@ export default function ProductsPage() {
         </div>
         <div className="flex items-center gap-2">
           <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleImport} />
-          <Button
-            variant="outline"
-            className="h-9 sm:h-10"
-            disabled={isImporting}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileUp className="w-4 h-4" />}
-            <span className="hidden sm:inline ml-2">{isImporting ? 'Importing...' : 'Import'}</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-9 sm:h-10" disabled={isImporting}>
+                {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileUp className="w-4 h-4" />}
+                <span className="hidden sm:inline ml-2">{isImporting ? 'Importing...' : 'Import'}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                <FileUp className="w-4 h-4 mr-2" />
+                Upload CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.open('/product-import-template.csv', '_blank')}>
+                <Download className="w-4 h-4 mr-2" />
+                Download Template
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             variant="outline"
             className="h-9 sm:h-10"
