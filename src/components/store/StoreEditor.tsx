@@ -202,6 +202,7 @@ export default function StoreEditor() {
       } catch (e) {
         console.error('Failed to parse sectionsConfig', e)
       }
+    }
     // Default sections if none found
     setSections([
       { id: '1', type: 'announcementBar', label: 'Announcement Bar', settings: { text: '🔥 NEW SEASON DROP — USE CODE FRESH30 FOR 30% OFF', backgroundColor: '#000000', textColor: '#ffffff' } },
