@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ShoppingCart, Search, Menu, X, Star, ChevronRight, Instagram, Facebook, Twitter } from 'lucide-react'
+import { ShoppingCart, Search, Menu, X, Star, ChevronRight, Instagram, Facebook, Twitter, Sparkles, Shield, Truck, RotateCcw, Play, Mail, MapPin, Phone, Check, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductCard from './ProductCard'
@@ -499,6 +499,325 @@ export default function StorefrontPage({ store }: { store: Store }) {
                 )}
               </section>
             );
+
+          // ─── PREMIUM THEME SECTIONS ───────────────────────────────────────
+
+          case 'hero':
+            return (
+              <section key={id} className="relative overflow-hidden flex items-center justify-center min-h-[500px] md:min-h-[600px]"
+                style={{ background: `linear-gradient(135deg, ${primary}22 0%, ${primary}08 100%)` }}>
+                <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+                  <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-gray-900">{settings.title || store.name}</h1>
+                  <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">{settings.subtitle || store.description || 'Discover our amazing collection'}</p>
+                  <a href="#products" className="inline-block px-10 py-4 rounded-full text-white font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all" style={{ background: primary }}>
+                    {settings.buttonText || 'Shop Now'}
+                  </a>
+                </div>
+              </section>
+            );
+
+          case 'categories':
+            return (
+              <section key={id} className="py-16 px-4 bg-gray-50">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 text-center mb-10">{settings.title || 'Shop by Category'}</h2>
+                  <div className={`grid grid-cols-2 md:grid-cols-${Math.min(settings.columns || 4, 6)} gap-4`}>
+                    {store.categories.length > 0
+                      ? store.categories.map(c => (
+                        <button key={c.id} onClick={() => setSelectedCategory(selectedCategory === c.name ? null : c.name)}
+                          className="group p-6 bg-white rounded-2xl border-2 transition-all text-center shadow-sm hover:shadow-md"
+                          style={{ borderColor: selectedCategory === c.name ? primary : 'transparent' }}>
+                          <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl" style={{ background: `${primary}15` }}>🛍️</div>
+                          <p className="font-semibold text-gray-900 group-hover:text-gray-700">{c.name}</p>
+                        </button>
+                      ))
+                      : ['Clothing', 'Accessories', 'Electronics', 'Home'].map((n, i) => (
+                        <div key={i} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
+                          <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-gray-100 flex items-center justify-center text-2xl">🛍️</div>
+                          <p className="font-semibold text-gray-900">{n}</p>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'featuredProducts':
+            return (
+              <section key={id} className="py-16 px-4">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex items-center justify-between mb-10">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900">{settings.title || 'Featured Products'}</h2>
+                    <a href="#products" className="text-sm font-semibold hover:underline" style={{ color: primary }}>View All →</a>
+                  </div>
+                  {featuredProducts.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {featuredProducts.slice(0, settings.count || 4).map(p => <ProductCard key={p.id} product={p} currency={store.currency} primary={primary} onAdd={() => addToCart(p)} images={images(p)} />)}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="rounded-2xl bg-gray-100 aspect-[3/4] animate-pulse" />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+            );
+
+          case 'promoBanner':
+            return (
+              <div key={id} className="py-3 px-4 text-center font-bold text-sm tracking-wide"
+                style={{ backgroundColor: settings.backgroundColor || '#000', color: settings.textColor || '#fff' }}>
+                {settings.text || 'Free shipping on all orders!'}
+              </div>
+            );
+
+          case 'trustBadges':
+            return (
+              <section key={id} className="py-14 px-4 bg-white border-y border-gray-100">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">{settings.title || 'Why Choose Us'}</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {(settings.badges || 'Free Shipping,Secure Checkout,Easy Returns,24/7 Support').split(',').map((b: string, i: number) => {
+                      const icons = [<Truck key={0} />, <Shield key={1} />, <RotateCcw key={2} />, <Check key={3} />];
+                      return (
+                        <div key={i} className="flex flex-col items-center text-center gap-3 p-5 rounded-2xl bg-gray-50">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ background: primary }}>
+                            {icons[i % 4]}
+                          </div>
+                          <p className="font-semibold text-gray-800 text-sm">{b.trim()}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'countdownTimer':
+            return (
+              <section key={id} className="py-12 px-4 text-white text-center" style={{ background: primary }}>
+                <h2 className="text-2xl font-black mb-6">{settings.title || 'Limited Time Offer'}</h2>
+                <div className="flex justify-center gap-4">
+                  {[{v:'08',l:'HOURS'},{v:'34',l:'MINUTES'},{v:'12',l:'SECONDS'}].map(({v,l}) => (
+                    <div key={l} className="bg-white/20 backdrop-blur rounded-xl px-6 py-4 min-w-[80px]">
+                      <p className="text-4xl font-black">{v}</p>
+                      <p className="text-xs font-bold opacity-80 tracking-widest mt-1">{l}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            );
+
+          case 'slideshow':
+            return (
+              <section key={id} className="relative overflow-hidden min-h-[450px] bg-gray-900 flex items-center justify-center text-white text-center">
+                <div className="px-8 py-20">
+                  <p className="text-xs uppercase tracking-widest mb-4 opacity-60">New Collection</p>
+                  <h2 className="text-4xl md:text-6xl font-black mb-6">{store.name}</h2>
+                  <p className="text-lg opacity-80 mb-8">{store.description || 'Discover something new'}</p>
+                  <a href="#products" className="inline-block px-10 py-3 rounded-full font-bold text-gray-900 bg-white hover:bg-gray-100 transition-colors">Shop Now</a>
+                </div>
+                <div className="absolute bottom-4 flex gap-2 left-1/2 -translate-x-1/2">
+                  {[0,1,2].slice(0, settings.slideCount || 3).map(i => (
+                    <div key={i} className={`w-2 h-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/40'}`} />
+                  ))}
+                </div>
+              </section>
+            );
+
+          case 'richText':
+            return (
+              <section key={id} className="py-20 px-4">
+                <div className="max-w-3xl mx-auto text-center">
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">{settings.title || 'Our Story'}</h2>
+                  <p className="text-lg text-gray-600 leading-relaxed">{settings.content || 'We believe in quality, craftsmanship, and delivering an exceptional experience to every customer.'}</p>
+                </div>
+              </section>
+            );
+
+          case 'video':
+            return (
+              <section key={id} className="py-20 px-4 bg-gray-900 text-white text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-10">{settings.title || 'Watch Our Story'}</h2>
+                <div className="max-w-3xl mx-auto aspect-video bg-gray-800 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors relative overflow-hidden">
+                  <div className="w-20 h-20 bg-white/15 backdrop-blur rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                    <Play className="w-8 h-8 text-white fill-white ml-1" />
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'faq':
+            return (
+              <section key={id} className="py-20 px-4 bg-gray-50">
+                <div className="max-w-3xl mx-auto">
+                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 text-center mb-12">{settings.title || 'FAQ'}</h2>
+                  <div className="space-y-4">
+                    {['What is your return policy?','How long does shipping take?','Do you offer international shipping?','How can I track my order?'].map((q, i) => (
+                      <details key={i} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm group cursor-pointer">
+                        <summary className="font-semibold text-gray-900 flex items-center justify-between list-none">
+                          {q}
+                          <span className="text-gray-400 group-open:rotate-180 transition-transform text-lg">↓</span>
+                        </summary>
+                        <p className="mt-3 text-gray-600 leading-relaxed">We offer a 30-day hassle-free return policy on all orders. Contact our support team to initiate a return.</p>
+                      </details>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'blogPosts':
+            return (
+              <section key={id} className="py-20 px-4">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 text-center mb-12">{settings.title || 'Latest News'}</h2>
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {['Style Guide 2026','Top 10 Must-Haves','How to Care for Your Products'].map((title, i) => (
+                      <div key={i} className="rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+                        <div className="aspect-[16/9] bg-gray-100" />
+                        <div className="p-5">
+                          <p className="text-xs text-gray-400 mb-2 uppercase tracking-wide">May 2026</p>
+                          <h3 className="font-bold text-gray-900 mb-2">{title}</h3>
+                          <a href="#" className="text-sm font-semibold hover:underline" style={{ color: primary }}>Read More →</a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'imageGallery':
+            return (
+              <section key={id} className="py-16 px-4">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-2xl font-black text-gray-900 text-center mb-10">{settings.title || 'Gallery'}</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[1,2,3,4,5,6,7,8].map(i => (
+                      <div key={i} className={`bg-gray-100 rounded-xl overflow-hidden ${i === 1 ? 'md:col-span-2 md:row-span-2' : ''} aspect-square`} />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'map':
+            return (
+              <section key={id} className="py-20 px-4 bg-gray-50">
+                <div className="max-w-4xl mx-auto text-center">
+                  <h2 className="text-2xl font-black text-gray-900 mb-4">{settings.title || 'Find Us'}</h2>
+                  <div className="h-64 bg-gray-200 rounded-2xl flex items-center justify-center">
+                    <div className="text-center text-gray-500">
+                      <MapPin className="w-10 h-10 mx-auto mb-2 opacity-40" />
+                      <p className="font-medium">Map Embed</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'contactForm':
+            return (
+              <section key={id} className="py-20 px-4">
+                <div className="max-w-2xl mx-auto">
+                  <h2 className="text-2xl font-black text-gray-900 text-center mb-10">{settings.title || 'Contact Us'}</h2>
+                  <form className="space-y-4" onSubmit={e => e.preventDefault()}>
+                    <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2" style={{'--tw-ring-color': primary} as any} placeholder="Your Name" />
+                    <input type="email" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2" placeholder="Email Address" />
+                    <textarea rows={4} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none resize-none" placeholder="Your message..." />
+                    <button type="submit" className="w-full py-3 rounded-xl font-bold text-white transition-opacity hover:opacity-90" style={{ background: primary }}>Send Message</button>
+                  </form>
+                </div>
+              </section>
+            );
+
+          case 'textWithImage':
+            return (
+              <section key={id} className="py-20 px-4">
+                <div className={`max-w-6xl mx-auto flex flex-col ${settings.imagePosition === 'right' ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 items-center`}>
+                  <div className="flex-1 aspect-square bg-gray-100 rounded-3xl" />
+                  <div className="flex-1">
+                    <h2 className="text-3xl font-black text-gray-900 mb-4">{settings.title || 'About Us'}</h2>
+                    <p className="text-gray-600 leading-relaxed mb-6">{settings.content || 'We are passionate about delivering exceptional products and experiences to our customers.'}</p>
+                    <a href="#products" className="inline-block px-8 py-3 rounded-full font-bold text-white hover:opacity-90 transition-opacity" style={{ background: primary }}>Learn More</a>
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'lookbook':
+            return (
+              <section key={id} className="py-20 px-4 bg-gray-900 text-white">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-3xl font-black text-center mb-12">{settings.title || 'Lookbook'}</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {[1,2,3,4,5,6].map(i => (
+                      <div key={i} className={`bg-gray-800 rounded-xl overflow-hidden ${i === 1 ? 'col-span-2 row-span-2' : ''} aspect-square group cursor-pointer hover:opacity-90 transition-opacity`}>
+                        <div className="w-full h-full flex items-center justify-center opacity-20">
+                          <Sparkles className="w-8 h-8" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'promoTiles':
+            return (
+              <section key={id} className="py-16 px-4">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="text-2xl font-black text-gray-900 text-center mb-10">{settings.title || 'Shop by Style'}</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {['New In','Best Sellers','Sale','Limited Edition'].map((label, i) => (
+                      <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden relative group cursor-pointer hover:shadow-xl transition-shadow"
+                        style={{ background: `linear-gradient(135deg, ${primary}${['99','77','55','33'][i]} 0%, ${primary}11 100%)` }}>
+                        <div className="absolute inset-0 flex items-end p-5">
+                          <div>
+                            <p className="text-white font-black text-lg">{label}</p>
+                            <p className="text-white/70 text-xs mt-1">Shop Now →</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'logoList':
+            return (
+              <section key={id} className="py-12 px-4 border-y border-gray-100">
+                <div className="max-w-7xl mx-auto">
+                  <p className="text-xs uppercase tracking-widest text-gray-400 text-center mb-8">{settings.title || 'As Featured In'}</p>
+                  <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-40">
+                    {['Forbes','TechCrunch','Vogue','GQ','Wired'].map(b => (
+                      <p key={b} className="font-black text-lg text-gray-800 tracking-tighter">{b}</p>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+
+          case 'newsletter':
+            return (
+              <section key={id} className="py-20 px-4 text-white text-center" style={{ background: primary }}>
+                <h2 className="text-3xl font-black mb-3">{settings.title || 'Join the Club'}</h2>
+                <p className="mb-8 opacity-90">{settings.subtitle || 'Get exclusive deals and early access to new drops.'}</p>
+                <form className="flex flex-col sm:flex-row max-w-md mx-auto gap-3" onSubmit={e => e.preventDefault()}>
+                  <input type="email" placeholder="Enter your email" className="flex-1 px-5 py-3 rounded-full text-gray-900 text-sm outline-none" />
+                  <button type="submit" className="px-8 py-3 rounded-full bg-white font-bold text-sm hover:bg-gray-100 transition-colors" style={{ color: primary }}>Subscribe</button>
+                </form>
+              </section>
+            );
+
+          case 'promoPopups':
+            // Rendered as a dismissible banner at top for storefront (popups need JS timers)
+            return null;
 
           default:
             return null;
