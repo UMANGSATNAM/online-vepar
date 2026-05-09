@@ -197,32 +197,32 @@ export default function StorefrontPage({ store }: { store: Store }) {
                     ● {settings.productTag || 'BESTSELLER'}
                   </div>
                   <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-[#ccff00] mb-2">
-                    DRESS<br/>BOLD.
+                    {settings.headline1 || 'DRESS BOLD.'}
                   </h1>
                   <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-white mb-8">
-                    LIVE LOUD
+                    {settings.headline2 || 'LIVE LOUD'}
                   </h1>
                   <p className="text-gray-400 text-sm md:text-base max-w-md mb-10 leading-relaxed">
-                    Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.
+                    {settings.subtitle || 'Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.'}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 mb-16">
                     <button className="bg-[#ccff00] hover:bg-[#bbee00] text-black font-bold h-14 px-8 text-sm tracking-widest uppercase transition-colors">
-                      SHOP NEW ARRIVALS →
+                      {settings.button1Text || 'SHOP NEW ARRIVALS →'}
                     </button>
                     <button className="border border-white/20 hover:bg-white/10 text-white font-bold h-14 px-8 text-sm tracking-widest uppercase bg-transparent transition-colors">
-                      WATCH LOOKBOOK
+                      {settings.button2Text || 'WATCH LOOKBOOK'}
                     </button>
                   </div>
                   
                   {/* Stats Footer */}
                   <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 w-full mt-auto">
                     <div>
-                      <p className="text-2xl font-black mb-1">50K+</p>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">HAPPY CUSTOMERS</p>
+                      <p className="text-2xl font-black mb-1">{settings.stat1Value || '50K+'}</p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{settings.stat1Label || 'HAPPY CUSTOMERS'}</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-black mb-1">200+</p>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">STYLES AVAILABLE</p>
+                      <p className="text-2xl font-black mb-1">{settings.stat2Value || '200+'}</p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{settings.stat2Label || 'STYLES AVAILABLE'}</p>
                     </div>
                     <div>
                       <p className="text-2xl font-black mb-1 flex items-center gap-1">{settings.rating || '4.9'} <Sparkles className="w-4 h-4 text-[#ccff00]"/></p>

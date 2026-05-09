@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   Layout, Settings, Save, Move, Plus, Trash2,
@@ -41,13 +41,29 @@ const SECTION_TYPES = [
   { type: 'announcementBar', label: 'Announcement Bar', icon: Type, defaultSettings: { text: '🔥 NEW SEASON DROP — USE CODE FRESH30 FOR 30% OFF', backgroundColor: '#000000', textColor: '#ffffff' } },
   {
     type: 'heroBannerAdvanced', label: 'Hero Banner', icon: Sparkles, defaultSettings: {
-      rating: '4.9',
-      statLabel: 'Average Rating',
+      // Text content
+      headline1: 'DRESS BOLD.',
+      headline2: 'LIVE LOUD',
+      subtitle: 'Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.',
+      // Buttons
+      button1Text: 'SHOP NEW ARRIVALS →',
+      button2Text: 'WATCH LOOKBOOK',
+      // Badge
       productTag: 'BESTSELLER',
+      // Pricing
       currentPrice: '₹3,199',
       originalPrice: '₹4,499',
+      // Sub-image tags
       subTag1: 'COLLAR',
       subTag2: 'PREMIUM',
+      // Stats
+      stat1Value: '50K+',
+      stat1Label: 'HAPPY CUSTOMERS',
+      stat2Value: '200+',
+      stat2Label: 'STYLES AVAILABLE',
+      rating: '4.9',
+      statLabel: 'Average Rating',
+      // Images
       imageUrl: '',
       gridImage1: '',
       gridImage2: ''
@@ -195,6 +211,135 @@ function SortableSectionItem({
   )
 }
 
+// ─── HERO BANNER DEDICATED SETTINGS PANEL ────────────────────────────────────
+function HeroBannerSettings({
+  section, onUpdate, onImageUpload, primaryColor
+}: {
+  section: SectionData
+  onUpdate: (id: string, key: string, value: any) => void
+  onImageUpload: (sectionId: string, key: string) => void
+  primaryColor: string
+}) {
+  const s = section.settings
+  const set = (key: string, value: any) => onUpdate(section.id, key, value)
+
+  const Field = ({ label, field, multiline = false }: { label: string; field: string; multiline?: boolean }) => (
+    <div className="space-y-1">
+      <label className="text-[11px] font-semibold uppercase tracking-wider text-[#6d7175]">{label}</label>
+      {multiline ? (
+        <textarea
+          value={s[field] || ''}
+          onChange={e => set(field, e.target.value)}
+          rows={3}
+          className="w-full text-[13px] border border-[#c9cccf] rounded-md p-2 bg-white shadow-inner resize-none focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
+        />
+      ) : (
+        <input
+          type="text"
+          value={s[field] || ''}
+          onChange={e => set(field, e.target.value)}
+          className="w-full text-[13px] border border-[#c9cccf] rounded-md px-3 h-8 bg-white shadow-inner focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
+        />
+      )}
+    </div>
+  )
+
+  const ImageField = ({ label, field }: { label: string; field: string }) => (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-semibold uppercase tracking-wider text-[#6d7175]">{label}</label>
+      {s[field] ? (
+        <div className="relative rounded-lg overflow-hidden border border-[#dfe3e8] group bg-gray-50" style={{ aspectRatio: '4/3' }}>
+          <img src={s[field]} alt={label} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+            <button
+              className="bg-white text-[#202223] text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-gray-100 flex items-center gap-1"
+              onClick={() => onImageUpload(section.id, field)}
+            >
+              <UploadCloud className="w-3 h-3" /> Replace
+            </button>
+            <button
+              className="bg-red-500 text-white text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-red-600"
+              onClick={() => set(field, '')}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="w-full rounded-lg border-2 border-dashed border-[#c9cccf] bg-[#f9fafb] flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#005bd3] hover:bg-[#f0f6ff] transition-all py-6"
+          onClick={() => onImageUpload(section.id, field)}
+        >
+          <div className="w-9 h-9 rounded-full bg-[#e8f0fe] flex items-center justify-center">
+            <UploadCloud className="w-4 h-4 text-[#005bd3]" />
+          </div>
+          <p className="text-[12px] font-semibold text-[#202223]">Upload image</p>
+          <p className="text-[10px] text-[#6d7175]">JPG, PNG, WebP</p>
+        </div>
+      )}
+      {/* URL fallback */}
+      <input
+        type="text"
+        value={s[field] || ''}
+        onChange={e => set(field, e.target.value)}
+        placeholder="or paste image URL..."
+        className="w-full text-[11px] border border-[#c9cccf] rounded-md px-3 h-7 bg-white shadow-inner focus:border-[#005bd3] outline-none text-[#6d7175] placeholder:text-[#c9cccf]"
+      />
+    </div>
+  )
+
+  const SectionDivider = ({ title }: { title: string }) => (
+    <div className="flex items-center gap-2 pt-2">
+      <div className="flex-1 h-px bg-[#dfe3e8]" />
+      <span className="text-[10px] font-bold uppercase tracking-widest text-[#8c9196]">{title}</span>
+      <div className="flex-1 h-px bg-[#dfe3e8]" />
+    </div>
+  )
+
+  return (
+    <div className="space-y-4">
+      <SectionDivider title="Headlines" />
+      <Field label="Headline Line 1" field="headline1" />
+      <Field label="Headline Line 2" field="headline2" />
+      <Field label="Subtitle Text" field="subtitle" multiline />
+
+      <SectionDivider title="Buttons" />
+      <Field label="Primary Button" field="button1Text" />
+      <Field label="Secondary Button" field="button2Text" />
+
+      <SectionDivider title="Badge & Pricing" />
+      <Field label="Product Badge" field="productTag" />
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Sale Price" field="currentPrice" />
+        <Field label="Original Price" field="originalPrice" />
+      </div>
+
+      <SectionDivider title="Stats" />
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Stat 1 Value" field="stat1Value" />
+        <Field label="Stat 1 Label" field="stat1Label" />
+        <Field label="Stat 2 Value" field="stat2Value" />
+        <Field label="Stat 2 Label" field="stat2Label" />
+        <Field label="Rating" field="rating" />
+        <Field label="Rating Label" field="statLabel" />
+      </div>
+
+      <SectionDivider title="Grid Image Tags" />
+      <div className="grid grid-cols-2 gap-2">
+        <Field label="Left Tag" field="subTag1" />
+        <Field label="Right Tag" field="subTag2" />
+      </div>
+
+      <SectionDivider title="Images" />
+      <ImageField label="Main Hero Image" field="imageUrl" />
+      <ImageField label="Grid Image (Left)" field="gridImage1" />
+      <ImageField label="Grid Image (Right)" field="gridImage2" />
+
+      <div className="pt-4 border-t border-[#dfe3e8]" />
+    </div>
+  )
+}
+
 export default function StoreEditor() {
   const { currentStore, setStore } = useAppStore()
   const { toast } = useToast()
@@ -203,6 +348,9 @@ export default function StoreEditor() {
   const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [isPublished, setIsPublished] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [pendingImageKey, setPendingImageKey] = useState<{ sectionId: string; key: string } | null>(null)
 
   // Load sections from currentStore
   useEffect(() => {
@@ -276,6 +424,26 @@ export default function StoreEditor() {
     }))
   }
 
+  // Image upload: convert file → base64 and inject into section setting
+  const handleImageFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !pendingImageKey) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const base64 = ev.target?.result as string
+      updateSectionSettings(pendingImageKey.sectionId, pendingImageKey.key, base64)
+      setPendingImageKey(null)
+    }
+    reader.readAsDataURL(file)
+    // reset so same file can be re-selected
+    e.target.value = ''
+  }, [pendingImageKey])
+
+  const triggerImageUpload = (sectionId: string, key: string) => {
+    setPendingImageKey({ sectionId, key })
+    setTimeout(() => fileInputRef.current?.click(), 50)
+  }
+
   const handleSave = async () => {
     if (!currentStore) return
     setIsSaving(true)
@@ -283,14 +451,18 @@ export default function StoreEditor() {
       const res = await fetch(`/api/stores/${currentStore.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sectionsConfig: JSON.stringify(sections) })
+        body: JSON.stringify({
+          sectionsConfig: JSON.stringify(sections),
+          isActive: true   // auto-publish on every save
+        })
       })
 
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to save')
 
       setStore(data.store)
-      toast({ title: 'Success', description: 'Store layout saved successfully!' })
+      setIsPublished(true)
+      toast({ title: '✅ Saved & Published!', description: 'Your store is live with the latest changes.' })
     } catch (e: any) {
       toast({ title: 'Error', description: e.message, variant: 'destructive' })
     } finally {
@@ -304,6 +476,14 @@ export default function StoreEditor() {
 
   return (
     <div className="fixed inset-0 z-[100] bg-[#f4f6f8] flex flex-col overflow-hidden text-[#202223]">
+      {/* Hidden file input for image upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageFileChange}
+      />
       {/* TOP HEADER: Theme Editor (Shopify Style) */}
       <div className="h-14 bg-white border-b border-[#dfe3e8] flex items-center justify-between px-4 shrink-0 shadow-sm z-20">
         <div className="flex items-center gap-2">
@@ -330,12 +510,18 @@ export default function StoreEditor() {
         </div>
 
         <div className="flex items-center gap-3">
+          {isPublished && (
+            <div className="flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-[11px] font-semibold px-2.5 py-1 rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              Published
+            </div>
+          )}
           <Button variant="ghost" size="sm" className="h-8 text-gray-600 hover:bg-gray-100">
             <Eye className="w-4 h-4" />
           </Button>
           <Button size="sm" className="bg-[#008060] hover:bg-[#006e52] text-white h-8 px-4 rounded font-medium shadow-sm" onClick={handleSave} disabled={isSaving}>
             <Save className={`w-3.5 h-3.5 mr-2 ${isSaving ? 'animate-pulse' : ''}`} />
-            {isSaving ? 'Saving...' : 'Save'}
+            {isSaving ? 'Saving & Publishing...' : 'Save & Publish'}
           </Button>
         </div>
       </div>
@@ -522,32 +708,32 @@ export default function StoreEditor() {
                             ● {section.settings.productTag || 'BESTSELLER'}
                           </Badge>
                           <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-[#ccff00] mb-2">
-                            DRESS<br />BOLD.
+                            {section.settings.headline1 || 'DRESS BOLD.'}
                           </h1>
                           <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase text-white mb-8">
-                            LIVE LOUD
+                            {section.settings.headline2 || 'LIVE LOUD'}
                           </h1>
                           <p className="text-gray-400 text-sm md:text-base max-w-md mb-10 leading-relaxed">
-                            Street-ready styles, premium fabrics, and drops that never sleep. Built for those who refuse to blend in.
+                            {section.settings.subtitle || 'Street-ready styles, premium fabrics, and drops that never sleep.'}
                           </p>
                           <div className="flex flex-col sm:flex-row gap-4 mb-16">
                             <Button className="bg-[#ccff00] hover:bg-[#bbee00] text-black font-bold h-14 px-8 rounded-none text-sm tracking-widest uppercase">
-                              SHOP NEW ARRIVALS →
+                              {section.settings.button1Text || 'SHOP NEW ARRIVALS →'}
                             </Button>
                             <Button variant="outline" className="border-white/20 hover:bg-white/10 text-white font-bold h-14 px-8 rounded-none text-sm tracking-widest uppercase bg-transparent">
-                              WATCH LOOKBOOK
+                              {section.settings.button2Text || 'WATCH LOOKBOOK'}
                             </Button>
                           </div>
 
                           {/* Stats Footer */}
                           <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 w-full mt-auto">
                             <div>
-                              <p className="text-2xl font-black mb-1">50K+</p>
-                              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">HAPPY CUSTOMERS</p>
+                              <p className="text-2xl font-black mb-1">{section.settings.stat1Value || '50K+'}</p>
+                              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{section.settings.stat1Label || 'HAPPY CUSTOMERS'}</p>
                             </div>
                             <div>
-                              <p className="text-2xl font-black mb-1">200+</p>
-                              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">STYLES AVAILABLE</p>
+                              <p className="text-2xl font-black mb-1">{section.settings.stat2Value || '200+'}</p>
+                              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{section.settings.stat2Label || 'STYLES AVAILABLE'}</p>
                             </div>
                             <div>
                               <p className="text-2xl font-black mb-1 flex items-center gap-1">{section.settings.rating || '4.9'} <Sparkles className="w-4 h-4 text-[#ccff00]" /></p>
@@ -563,7 +749,10 @@ export default function StoreEditor() {
                             {section.settings.imageUrl ? (
                               <img src={section.settings.imageUrl} alt="Hero" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             ) : (
-                              <div className="absolute inset-0 flex items-center justify-center text-white/20">Main Image</div>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20 gap-2">
+                                <UploadCloud className="w-8 h-8" />
+                                <span className="text-xs">Main Image</span>
+                              </div>
                             )}
                             <div className="absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 tracking-widest uppercase">
                               {section.settings.productTag}
@@ -579,7 +768,10 @@ export default function StoreEditor() {
                             {section.settings.gridImage1 ? (
                               <img src={section.settings.gridImage1} alt="Grid 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             ) : (
-                              <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 1</div>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20 gap-2">
+                                <UploadCloud className="w-6 h-6" />
+                                <span className="text-xs">Grid Img 1</span>
+                              </div>
                             )}
                             <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
                               <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{section.settings.subTag1}</span>
@@ -591,7 +783,10 @@ export default function StoreEditor() {
                             {section.settings.gridImage2 ? (
                               <img src={section.settings.gridImage2} alt="Grid 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             ) : (
-                              <div className="absolute inset-0 flex items-center justify-center text-white/20">Grid Img 2</div>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20 gap-2">
+                                <UploadCloud className="w-6 h-6" />
+                                <span className="text-xs">Grid Img 2</span>
+                              </div>
                             )}
                             <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex items-end">
                               <span className="text-[10px] font-bold text-white tracking-widest uppercase border border-white/30 px-2 py-1 backdrop-blur-sm">{section.settings.subTag2}</span>
@@ -1031,103 +1226,135 @@ export default function StoreEditor() {
               </Button>
             </div>
 
-            <div className="p-5 space-y-6 overflow-y-auto bg-[#f4f6f8] flex-1">
-              {Object.keys(activeSection.settings).map(key => (
-                <div key={key} className="space-y-1.5">
-                  <label className="text-[13px] font-medium text-[#202223] capitalize">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </label>
+            <div className="p-5 space-y-5 overflow-y-auto bg-[#f4f6f8] flex-1">
+              {/* Hero Banner: dedicated grouped settings panel */}
+              {activeSection.type === 'heroBannerAdvanced' && (
+                <HeroBannerSettings
+                  section={activeSection}
+                  onUpdate={updateSectionSettings}
+                  onImageUpload={triggerImageUpload}
+                  primaryColor={currentStore?.primaryColor || '#10b981'}
+                />
+              )}
 
-                  {key === 'count' || key === 'slideCount' || key === 'delay' || key === 'delaySeconds' || key === 'columns' ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="range"
-                        min="1"
-                        max="12"
-                        value={activeSection.settings[key]}
-                        onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
-                        className="flex-1 accent-[#008060]"
-                      />
-                      <Input
-                        type="number"
-                        value={activeSection.settings[key]}
-                        onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
-                        className="text-[13px] h-8 w-16 border-[#c9cccf] bg-white text-center"
-                      />
-                    </div>
-                  ) : key === 'imagePosition' ? (
-                    <select
-                      className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
-                      value={activeSection.settings[key]}
-                      onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                    >
-                      <option value="left">Image first</option>
-                      <option value="right">Text first</option>
-                    </select>
-                  ) : key.toLowerCase().includes('image') || key === 'videoUrl' ? (
-                    <div className="space-y-3 p-3 bg-white border border-[#dfe3e8] rounded-lg shadow-sm">
-                      {activeSection.settings[key] && key.toLowerCase().includes('image') ? (
-                        <div className="aspect-video w-full rounded border border-[#dfe3e8] overflow-hidden bg-gray-50 relative group">
-                          <img src={activeSection.settings[key]} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <Button size="sm" variant="secondary" className="h-7 text-xs" onClick={() => updateSectionSettings(activeSection.id, key, '')}>Remove</Button>
+              {/* Generic settings: auto-rendered from section.settings keys */}
+              {activeSection.type !== 'heroBannerAdvanced' && (
+                <div className="space-y-5">
+                  {Object.keys(activeSection.settings).filter(k => !k.startsWith('//')).map(key => (
+                    <div key={key} className="space-y-1.5">
+                      <label className="text-[13px] font-medium text-[#202223] capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}
+                      </label>
+
+                      {key === 'count' || key === 'slideCount' || key === 'delay' || key === 'delaySeconds' || key === 'columns' ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="range"
+                            min="1"
+                            max="12"
+                            value={activeSection.settings[key]}
+                            onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
+                            className="flex-1 accent-[#008060]"
+                          />
+                          <Input
+                            type="number"
+                            value={activeSection.settings[key]}
+                            onChange={(e) => updateSectionSettings(activeSection.id, key, parseInt(e.target.value) || 0)}
+                            className="text-[13px] h-8 w-16 border-[#c9cccf] bg-white text-center"
+                          />
+                        </div>
+                      ) : key === 'imagePosition' ? (
+                        <select
+                          className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
+                          value={activeSection.settings[key]}
+                          onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                        >
+                          <option value="left">Image first</option>
+                          <option value="right">Text first</option>
+                        </select>
+                      ) : key.toLowerCase().includes('image') || key === 'videoUrl' ? (
+                        <div className="space-y-2 p-3 bg-white border border-[#dfe3e8] rounded-lg shadow-sm">
+                          {activeSection.settings[key] && key.toLowerCase().includes('image') ? (
+                            <div className="w-full rounded-lg border border-[#dfe3e8] overflow-hidden bg-gray-50 relative group" style={{ aspectRatio: '16/9' }}>
+                              <img src={activeSection.settings[key]} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+                                <Button size="sm" className="h-7 text-xs bg-white text-gray-800 hover:bg-gray-100"
+                                  onClick={() => triggerImageUpload(activeSection.id, key)}>
+                                  <UploadCloud className="w-3 h-3 mr-1" /> Replace
+                                </Button>
+                                <Button size="sm" variant="destructive" className="h-7 text-xs"
+                                  onClick={() => updateSectionSettings(activeSection.id, key, '')}>
+                                  Remove
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div
+                              className="w-full rounded-lg border-2 border-dashed border-[#c9cccf] bg-[#f9fafb] flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#005bd3] hover:bg-[#f0f6ff] transition-colors py-8"
+                              onClick={() => triggerImageUpload(activeSection.id, key)}
+                            >
+                              <div className="w-10 h-10 rounded-full bg-[#e8f0fe] flex items-center justify-center">
+                                <UploadCloud className="w-5 h-5 text-[#005bd3]" />
+                              </div>
+                              <p className="text-[13px] font-semibold text-[#202223]">Upload image</p>
+                              <p className="text-[11px] text-[#6d7175]">JPG, PNG, WebP — click to browse</p>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1 pt-1">
+                            <div className="flex-1 h-px bg-[#dfe3e8]" />
+                            <span className="text-[10px] text-[#8c9196] px-2">or paste URL</span>
+                            <div className="flex-1 h-px bg-[#dfe3e8]" />
                           </div>
+                          <Input
+                            value={activeSection.settings[key]}
+                            onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                            className="text-[12px] h-8 border-[#c9cccf] bg-white shadow-inner"
+                            placeholder="https://..."
+                          />
+                        </div>
+                      ) : key === 'code' ? (
+                        <textarea
+                          value={activeSection.settings[key]}
+                          onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                          className="w-full text-[12px] font-mono border border-[#c9cccf] rounded-md p-3 bg-[#202223] text-[#47c1bf] min-h-[250px] shadow-inner focus:ring-1 focus:ring-[#005bd3] outline-none"
+                          placeholder="<!-- HTML/CSS Code -->"
+                        />
+                      ) : key === 'content' || key === 'subtitle' || key === 'badges' || key === 'text' ? (
+                        <textarea
+                          value={activeSection.settings[key]}
+                          onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                          className="w-full text-[13px] border border-[#c9cccf] rounded-md p-2 bg-white min-h-[100px] shadow-inner focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
+                        />
+                      ) : key === 'collectionId' || key === 'productId' ? (
+                        <select
+                          className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
+                          value={activeSection.settings[key]}
+                          onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
+                        >
+                          <option value="">Select an option...</option>
+                          <option value="col_1">Summer Collection</option>
+                          <option value="col_2">Winter Wear</option>
+                          <option value="col_3">New Arrivals</option>
+                        </select>
+                      ) : key.toLowerCase().includes('color') ? (
+                        <div className="flex items-center gap-3 p-2 bg-white border border-[#dfe3e8] rounded-md shadow-sm">
+                          <input type="color" value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 p-0" />
+                          <Input value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="h-7 font-mono text-xs border-0 shadow-none bg-transparent focus-visible:ring-0 px-0 flex-1 uppercase" />
                         </div>
                       ) : (
-                        <div className="aspect-video w-full rounded border border-dashed border-[#c9cccf] bg-[#f9fafb] flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50" onClick={() => toast({ title: 'Media Manager', description: 'Opening media manager...' })}>
-                          <UploadCloud className="w-6 h-6 text-[#8c9196]" />
-                          <span className="text-xs text-[#6d7175] font-medium">Select image</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
                         <Input
                           value={activeSection.settings[key]}
                           onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                          className="text-[12px] h-8 flex-1 border-[#c9cccf] bg-white shadow-inner"
-                          placeholder="Or enter URL directly..."
+                          className="text-[13px] h-8 border-[#c9cccf] bg-white shadow-inner focus-visible:ring-[#005bd3]"
                         />
-                      </div>
+                      )}
                     </div>
-                  ) : key === 'code' ? (
-                    <textarea
-                      value={activeSection.settings[key]}
-                      onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                      className="w-full text-[12px] font-mono border border-[#c9cccf] rounded-md p-3 bg-[#202223] text-[#47c1bf] min-h-[250px] shadow-inner focus:ring-1 focus:ring-[#005bd3] outline-none"
-                      placeholder="<!-- HTML/CSS Code -->"
-                    />
-                  ) : key === 'content' || key === 'subtitle' || key === 'badges' || key === 'text' ? (
-                    <textarea
-                      value={activeSection.settings[key]}
-                      onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                      className="w-full text-[13px] border border-[#c9cccf] rounded-md p-2 bg-white min-h-[100px] shadow-inner focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
-                    />
-                  ) : key === 'collectionId' || key === 'productId' ? (
-                    <select
-                      className="w-full text-[13px] border border-[#c9cccf] rounded-md p-1.5 bg-white text-[#202223] h-8 shadow-sm focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3] outline-none"
-                      value={activeSection.settings[key]}
-                      onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                    >
-                      <option value="">Select an option...</option>
-                      <option value="col_1">Summer Collection</option>
-                      <option value="col_2">Winter Wear</option>
-                      <option value="col_3">New Arrivals</option>
-                    </select>
-                  ) : key.toLowerCase().includes('color') ? (
-                    <div className="flex items-center gap-3 p-2 bg-white border border-[#dfe3e8] rounded-md shadow-sm">
-                      <input type="color" value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 p-0" />
-                      <Input value={activeSection.settings[key]} onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)} className="h-7 font-mono text-xs border-0 shadow-none bg-transparent focus-visible:ring-0 px-0 flex-1 uppercase" />
-                    </div>
-                  ) : (
-                    <Input
-                      value={activeSection.settings[key]}
-                      onChange={(e) => updateSectionSettings(activeSection.id, key, e.target.value)}
-                      className="text-[13px] h-8 border-[#c9cccf] bg-white shadow-inner focus-visible:ring-[#005bd3]"
-                    />
-                  )}
+                  ))}
                 </div>
-              ))}
+              )}
 
-              <div className="pt-6 border-t border-[#dfe3e8] mt-6">
+              {/* Remove Section button — always shown */}
+              <div className="pt-4 border-t border-[#dfe3e8] mt-2">
                 <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300" onClick={() => removeSection(activeSection.id)}>
                   <Trash2 className="w-4 h-4 mr-2" /> Remove section
                 </Button>
