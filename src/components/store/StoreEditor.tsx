@@ -762,6 +762,240 @@ export default function StoreEditor() {
                       </div>
                     )}
 
+                    {/* ─── PREMIUM THEME SECTION PREVIEWS ─── */}
+
+                    {section.type === 'hero' && (
+                      <div className="relative overflow-hidden flex items-center justify-center min-h-[300px] bg-gradient-to-br from-gray-50 to-gray-100 px-8 text-center">
+                        <div>
+                          <h1 className="text-4xl font-black text-gray-900 mb-3">{section.settings.title || 'Hero Title'}</h1>
+                          <p className="text-gray-500 mb-6">{section.settings.subtitle || 'Subtitle text here'}</p>
+                          <button className="px-8 py-3 rounded-full text-white font-bold text-sm" style={{ background: currentStore?.primaryColor || '#10b981' }}>{section.settings.buttonText || 'Shop Now'}</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'promoBanner' && (
+                      <div className="py-2.5 px-4 text-center text-xs font-bold tracking-widest uppercase"
+                        style={{ backgroundColor: section.settings.backgroundColor || '#000', color: section.settings.textColor || '#fff' }}>
+                        {section.settings.text || 'Free shipping on all orders!'}
+                      </div>
+                    )}
+
+                    {section.type === 'categories' && (
+                      <div className="py-12 px-8 bg-gray-50">
+                        <h2 className="text-2xl font-black uppercase text-center mb-8">{section.settings.title || 'Shop by Category'}</h2>
+                        <div className="grid grid-cols-4 gap-3">
+                          {['Apparel','Accessories','Shoes','Bags'].map(c => (
+                            <div key={c} className="p-4 bg-white rounded-xl text-center border border-gray-100 shadow-sm">
+                              <div className="w-10 h-10 rounded-lg bg-gray-100 mx-auto mb-2 flex items-center justify-center">🛍️</div>
+                              <p className="text-xs font-semibold text-gray-800">{c}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'featuredProducts' && (
+                      <div className="py-12 px-8">
+                        <h2 className="text-2xl font-black uppercase mb-8">{section.settings.title || 'Featured Products'}</h2>
+                        <div className="grid grid-cols-4 gap-4">
+                          {[1,2,3,4].map(i => (
+                            <div key={i}>
+                              <div className="aspect-[3/4] bg-gray-100 rounded-xl mb-3 relative overflow-hidden">
+                                <div className="absolute top-2 left-2 bg-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-sm">NEW</div>
+                              </div>
+                              <p className="font-semibold text-xs text-gray-800">Product {i}</p>
+                              <p className="text-xs text-gray-500 mt-0.5">₹2,499</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'trustBadges' && (
+                      <div className="py-10 px-8 bg-white border-y border-gray-100">
+                        <h2 className="text-xl font-bold text-center mb-6">{section.settings.title || 'Why Choose Us'}</h2>
+                        <div className="flex justify-center gap-8">
+                          {['Free Shipping','Secure Pay','Easy Returns','24/7 Support'].map((b,i) => (
+                            <div key={i} className="flex flex-col items-center gap-2 text-center">
+                              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm" style={{ background: currentStore?.primaryColor || '#10b981' }}>✓</div>
+                              <p className="text-xs font-semibold text-gray-700">{b}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'countdownTimer' && (
+                      <div className="py-10 px-8 text-white text-center" style={{ background: currentStore?.primaryColor || '#10b981' }}>
+                        <h2 className="text-lg font-black mb-4">{section.settings.title || 'Sale Ends In'}</h2>
+                        <div className="flex justify-center gap-3">
+                          {[{v:'08',l:'HRS'},{v:'34',l:'MIN'},{v:'12',l:'SEC'}].map(({v,l}) => (
+                            <div key={l} className="bg-white/20 rounded-lg px-4 py-3 text-center min-w-[56px]">
+                              <p className="text-2xl font-black">{v}</p>
+                              <p className="text-[9px] font-bold opacity-80 tracking-widest mt-0.5">{l}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'slideshow' && (
+                      <div className="relative min-h-[280px] bg-gray-900 flex items-center justify-center text-white text-center px-8 py-12">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest mb-2 opacity-50">Collection</p>
+                          <h2 className="text-3xl font-black mb-4">{currentStore?.name || 'Store Name'}</h2>
+                          <button className="px-6 py-2 bg-white text-gray-900 rounded-full font-bold text-xs">Shop Now</button>
+                        </div>
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                          {[0,1,2].map(i => <div key={i} className={`w-1.5 h-1.5 rounded-full ${i===0?'bg-white':'bg-white/40'}`} />)}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'richText' && (
+                      <div className="py-16 px-8 text-center">
+                        <h2 className="text-2xl font-black mb-4">{section.settings.title || 'Our Story'}</h2>
+                        <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">{section.settings.content || 'We believe in quality craftsmanship and delivering exceptional products.'}</p>
+                      </div>
+                    )}
+
+                    {section.type === 'video' && (
+                      <div className="py-16 px-8 bg-gray-900 text-white text-center">
+                        <h2 className="text-xl font-black mb-6">{section.settings.title || 'Watch Our Story'}</h2>
+                        <div className="max-w-md mx-auto aspect-video bg-gray-800 rounded-2xl flex items-center justify-center">
+                          <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center text-xl pl-1">▶</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'lookbook' && (
+                      <div className="py-12 px-8 bg-gray-900 text-white">
+                        <h2 className="text-2xl font-black text-center mb-8">{section.settings.title || 'Lookbook'}</h2>
+                        <div className="grid grid-cols-3 gap-3">
+                          {[1,2,3,4,5,6].map(i => (
+                            <div key={i} className={`bg-gray-800 rounded-xl ${i===1?'col-span-2 row-span-2':''} aspect-square flex items-center justify-center opacity-40`}>
+                              <Sparkles className="w-6 h-6" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'promoTiles' && (
+                      <div className="py-12 px-8">
+                        <h2 className="text-xl font-black text-center mb-6">{section.settings.title || 'Shop by Style'}</h2>
+                        <div className="grid grid-cols-4 gap-3">
+                          {['New In','Best Sellers','Sale','Exclusive'].map((l,i) => (
+                            <div key={i} className="aspect-[3/4] rounded-xl flex items-end p-4 cursor-pointer"
+                              style={{ background: `linear-gradient(135deg, ${currentStore?.primaryColor || '#10b981'}${['99','77','55','33'][i]} 0%, ${currentStore?.primaryColor || '#10b981'}11 100%)` }}>
+                              <div>
+                                <p className="text-white font-black text-sm">{l}</p>
+                                <p className="text-white/60 text-[10px] mt-0.5">Shop →</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'logoList' && (
+                      <div className="py-8 px-8 border-y border-gray-100">
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 text-center mb-5">{section.settings.title || 'As Featured In'}</p>
+                        <div className="flex justify-center gap-8 opacity-30">
+                          {['Forbes','Vogue','GQ','TechCrunch','Wired'].map(b => (
+                            <p key={b} className="font-black text-base text-gray-800 tracking-tighter">{b}</p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'newsletter' && (
+                      <div className="py-14 px-8 text-white text-center" style={{ background: currentStore?.primaryColor || '#10b981' }}>
+                        <h2 className="text-2xl font-black mb-2">{section.settings.title || 'Join the Club'}</h2>
+                        <p className="opacity-80 mb-6 text-sm">{section.settings.subtitle || 'Get exclusive deals and early drops.'}</p>
+                        <div className="flex max-w-sm mx-auto gap-2">
+                          <div className="flex-1 h-10 bg-white/20 rounded-full" />
+                          <button className="px-6 h-10 bg-white rounded-full font-bold text-xs" style={{ color: currentStore?.primaryColor || '#10b981' }}>Subscribe</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'faq' && (
+                      <div className="py-12 px-8 bg-gray-50">
+                        <h2 className="text-xl font-black text-center mb-6">{section.settings.title || 'FAQ'}</h2>
+                        <div className="space-y-3 max-w-lg mx-auto">
+                          {['What is your return policy?','How long does shipping take?','Do you ship internationally?'].map((q,i) => (
+                            <div key={i} className="bg-white rounded-xl border border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
+                              <p className="text-sm font-medium text-gray-800">{q}</p>
+                              <span className="text-gray-400 text-lg">↓</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'blogPosts' && (
+                      <div className="py-12 px-8">
+                        <h2 className="text-xl font-black text-center mb-6">{section.settings.title || 'Latest News'}</h2>
+                        <div className="grid grid-cols-3 gap-4">
+                          {['Style Guide','Top Must-Haves','Care Tips'].map((t,i) => (
+                            <div key={i} className="rounded-xl overflow-hidden border border-gray-100">
+                              <div className="aspect-video bg-gray-100" />
+                              <div className="p-3">
+                                <p className="font-bold text-xs text-gray-900">{t}</p>
+                                <p className="text-[10px] mt-1" style={{ color: currentStore?.primaryColor || '#10b981' }}>Read More →</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'imageGallery' && (
+                      <div className="py-12 px-8">
+                        <h2 className="text-xl font-black text-center mb-6">{section.settings.title || 'Gallery'}</h2>
+                        <div className="grid grid-cols-4 gap-2">
+                          {[1,2,3,4,5,6,7,8].map(i => (
+                            <div key={i} className={`bg-gray-100 rounded-lg aspect-square ${i===1?'col-span-2 row-span-2':''}`} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'textWithImage' && (
+                      <div className="py-12 px-8 flex gap-8 items-center">
+                        <div className="flex-1 aspect-square bg-gray-100 rounded-2xl" />
+                        <div className="flex-1">
+                          <h2 className="text-2xl font-black text-gray-900 mb-3">{section.settings.title || 'About Us'}</h2>
+                          <p className="text-gray-500 text-sm leading-relaxed">{section.settings.content || 'Quality craftsmanship for the modern world.'}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'contactForm' && (
+                      <div className="py-12 px-8">
+                        <h2 className="text-xl font-black text-center mb-6">{section.settings.title || 'Contact Us'}</h2>
+                        <div className="max-w-sm mx-auto space-y-3">
+                          {['Name','Email','Message'].map(p => (
+                            <div key={p} className={`w-full border border-gray-200 rounded-xl px-4 ${p==='Message'?'h-20':'h-10'} bg-white flex items-start pt-3`}>
+                              <p className="text-xs text-gray-300">{p}</p>
+                            </div>
+                          ))}
+                          <button className="w-full h-10 rounded-xl text-white font-bold text-sm" style={{ background: currentStore?.primaryColor || '#10b981' }}>Send</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {section.type === 'map' && (
+                      <div className="py-12 px-8 bg-gray-50 text-center">
+                        <h2 className="text-xl font-black mb-4">{section.settings.title || 'Find Us'}</h2>
+                        <div className="h-48 bg-gray-200 rounded-2xl flex items-center justify-center max-w-lg mx-auto">
+                          <p className="text-gray-400 text-sm">📍 Map Embed</p>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Highlight overlay for active state */}
                     {activeSectionId === section.id && (
                       <div className="absolute top-0 right-0 bg-[#005bd3] text-white text-[10px] font-bold px-2 py-0.5 rounded-bl shadow-sm flex items-center gap-1">
