@@ -110,4 +110,41 @@ class ApiService extends ChangeNotifier {
     }
     return [];
   }
+  Future<bool> updateOrderStatus(String orderId, String status) async {
+    if (_storeId == null) return false;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/orders/update'),
+        headers: _headers,
+        body: jsonEncode({
+          'storeId': _storeId,
+          'orderId': orderId,
+          'status': status,
+        }),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateProduct(String productId, double price, int stock, String status) async {
+    if (_storeId == null) return false;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/products/update'),
+        headers: _headers,
+        body: jsonEncode({
+          'storeId': _storeId,
+          'productId': productId,
+          'price': price,
+          'stock': stock,
+          'status': status,
+        }),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
 }

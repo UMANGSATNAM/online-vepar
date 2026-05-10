@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import 'order_detail_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -34,31 +36,41 @@ class _OrdersScreenState extends State<OrdersScreen> {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(order['orderNumber'] ?? '#000', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          Text('₹${order['total']}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10b981), fontSize: 16)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(order['customerName'] ?? 'Guest Customer', style: const TextStyle(color: Colors.grey)),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          _buildBadge(order['status'] ?? 'pending', Colors.blue),
-                          const SizedBox(width: 8),
-                          _buildBadge(order['fulfillmentStatus'] ?? 'unfulfilled', Colors.orange),
-                        ],
-                      ),
-                    ],
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OrderDetailScreen(order: order),
+                    ),
+                  ).then((_) => setState(() {})); // refresh on return
+                },
+                child: Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(order['orderNumber'] ?? '#000', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text('₹${order['total']}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10b981), fontSize: 16)),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(order['customerName'] ?? 'Guest Customer', style: const TextStyle(color: Colors.grey)),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            _buildBadge(order['status'] ?? 'pending', Colors.blue),
+                            const SizedBox(width: 8),
+                            _buildBadge(order['paymentStatus'] ?? 'unpaid', Colors.orange),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

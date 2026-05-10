@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import 'product_detail_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -45,23 +47,33 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(8),
-                  leading: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8),
-                      image: imageUrl != null 
-                          ? DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover)
-                          : null,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+                    ).then((updated) {
+                      if (updated == true) setState(() {});
+                    });
+                  },
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(8),
+                    leading: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(8),
+                        image: imageUrl != null 
+                            ? DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover)
+                            : null,
+                      ),
+                      child: imageUrl == null ? const Icon(Icons.image, color: Colors.grey) : null,
                     ),
-                    child: imageUrl == null ? const Icon(Icons.image, color: Colors.grey) : null,
+                    title: Text(product['name'] ?? 'Unknown', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text('Stock: ${product['stock'] ?? 0}'),
+                    trailing: Text('₹${product['price']}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10b981), fontSize: 16)),
                   ),
-                  title: Text(product['name'] ?? 'Unknown', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('Stock: ${product['stock'] ?? 0}'),
-                  trailing: Text('₹${product['price']}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF10b981), fontSize: 16)),
                 ),
               );
             },
