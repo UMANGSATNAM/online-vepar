@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ShoppingCart, Search, Menu, X, Star, ChevronRight, Instagram, Facebook, Twitter, Sparkles, Shield, Truck, RotateCcw, Play, Mail, MapPin, Phone, Check, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -57,6 +57,18 @@ export default function StorefrontPage({ store }: { store: Store }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [dpdpAccepted, setDpdpAccepted] = useState(true) // Default true to prevent hydration mismatch, set false in effect
+
+  useEffect(() => {
+    if (!localStorage.getItem('dpdp-accepted')) {
+      setDpdpAccepted(false)
+    }
+  }, [])
+
+  const acceptDpdp = () => {
+    localStorage.setItem('dpdp-accepted', 'true')
+    setDpdpAccepted(true)
+  }
 
   const primary = store.primaryColor || '#10b981'
   const images = (p: Product) => {
@@ -176,6 +188,23 @@ export default function StorefrontPage({ store }: { store: Store }) {
         <div className="font-bold text-lg">{formatPrice(cartTotal, store.currency)}</div>
         <button className="px-8 py-3 rounded-full text-white font-bold" style={{ background: primary }}>Checkout Now</button>
       </div>
+
+      {/* ── DPDP COMPLIANCE BANNER ── */}
+      {!dpdpAccepted && (
+        <div className="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-auto md:w-96 bg-gray-900 text-white p-4 md:rounded-xl shadow-2xl z-[100] border border-gray-800">
+          <p className="text-xs text-gray-300 leading-relaxed mb-3">
+            <strong className="text-white">Privacy Notice:</strong> We use cookies and collect data to improve your shopping experience and deliver relevant content, in compliance with the DPDP Act, 2023.
+          </p>
+          <div className="flex gap-2">
+            <button onClick={acceptDpdp} className="flex-1 bg-white text-black py-2 rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-gray-200 transition-colors">
+              Accept
+            </button>
+            <button onClick={acceptDpdp} className="flex-1 bg-transparent border border-gray-700 text-gray-300 py-2 rounded-lg text-xs font-bold hover:bg-gray-800 transition-colors">
+              Decline Optional
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── DYNAMIC SECTIONS RENDERER ── */}
       {sections.map((section) => {

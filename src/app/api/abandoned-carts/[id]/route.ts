@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { logActivity } from '@/lib/activity-logger';
+import { sendAbandonedCartRecoveryEmail } from '@/lib/email';
 
 export async function GET(
   _request: Request,
@@ -75,7 +76,7 @@ export async function PUT(
     try {
       const existing = await db.abandonedCart.findUnique({
         where: { id },
-        include: { store: { select: { ownerId: true, id: true } } },
+        include: { store: { select: { ownerId: true, id: true, name: true } } },
       });
 
       if (!existing) {
@@ -107,6 +108,20 @@ export async function PUT(
         updateData.emailSentAt = new Date();
         updateData.reminderCount = (existing.reminderCount || 0) + 1;
         updateData.lastReminderAt = new Date();
+
+        // Attempt to send the actual email via Resend
+        let itemsList = [];
+        try {
+          itemsList = existing.items ? JSON.parse(existing.items) : [];
+        } catch(e) {}
+        
+        await sendAbandonedCartRecoveryEmail(
+          existing.customerEmail,
+          existing.customerName || '',
+          existing.store.name || 'Your Store',
+          existing.recoveryUrl || '',
+          itemsList
+        );
       }
 
       const cart = await db.abandonedCart.update({
@@ -177,6 +192,24 @@ export async function PUT(
         setClauses.push('reminderCount = ?');
         setValues.push(Number(existing.reminderCount || 0) + 1);
         setClauses.push('lastReminderAt = datetime("now")');
+
+        // Attempt to send the actual email via Resend
+        let itemsList = [];
+        try {
+          itemsList = existing.items ? JSON.parse(String(existing.items)) : [];
+        } catch(e) {}
+        
+        // Fetch store name
+        const storeRows = await db.$queryRawUnsafe('SELECT name FROM Store WHERE id = ?', existing.storeId) as any[];
+        const storeName = storeRows?.[0]?.name || 'Your Store';
+
+        await sendAbandonedCartRecoveryEmail(
+          String(existing.customerEmail),
+          String(existing.customerName || ''),
+          storeName,
+          String(existing.recoveryUrl || ''),
+          itemsList
+        );
       }
 
       setClauses.push("updatedAt = datetime('now')");
