@@ -94,6 +94,8 @@ model Store {
   seoDescription        String?
   
   metafields            Metafield[]
+  metaobjectDefs        MetaobjectDefinition[] @relation("StoreMetaobjectDefs")
+  metaobjectEntries     MetaobjectEntry[]      @relation("StoreMetaobjectEntries")
   locations             Location[]
   expenses              Expense[]
 }
@@ -715,4 +717,53 @@ model Expense {
 
   @@index([storeId])
   @@index([date])
+}
+
+// --- Metaobjects (Shopify's Custom Data Structures) ---
+model MetaobjectDefinition {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation("StoreMetaobjectDefs", fields: [storeId], references: [id], onDelete: Cascade)
+  type        String   // e.g., "author_bio", "care_instructions"
+  name        String   // e.g., "Author Bio"
+  schema      String   // JSON string defining fields (name, type, validations)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  entries     MetaobjectEntry[]
+
+  @@unique([storeId, type])
+  @@index([storeId])
+}
+
+model MetaobjectEntry {
+  id            String   @id @default(cuid())
+  definitionId  String
+  definition    MetaobjectDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  storeId       String
+  store         Store    @relation("StoreMetaobjectEntries", fields: [storeId], references: [id], onDelete: Cascade)
+  handle        String   // URL-safe identifier e.g., "author-john-doe"
+  fields        String   // JSON string of the actual data values
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([storeId, definitionId, handle])
+  @@index([storeId])
+}
+
+// --- Enterprise Compliance: CERT-In Mandatory Audit Logging ---
+model CertInAuditLog {
+  id          String   @id @default(cuid())
+  storeId     String?
+  userId      String?
+  action      String   // e.g., "login_failed", "pii_accessed", "settings_changed"
+  ipAddress   String
+  userAgent   String?
+  details     String?  // JSON string
+  severity    String   @default("info") // info, warning, critical
+  timestamp   DateTime @default(now())
+
+  @@index([storeId])
+  @@index([userId])
+  @@index([timestamp])
 }
