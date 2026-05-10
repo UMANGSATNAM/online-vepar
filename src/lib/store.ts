@@ -13,6 +13,7 @@ export type ViewType =
   | 'store-settings'
   | 'store-preview'
   | 'analytics'
+  | 'finance'
   | 'pages'
   | 'create-store'
   | 'discounts'
@@ -60,6 +61,7 @@ export interface Store {
   seoTitle?: string
   sectionsConfig?: string
   seoDescription?: string
+  kycStatus?: string
 }
 
 export interface CartItem {

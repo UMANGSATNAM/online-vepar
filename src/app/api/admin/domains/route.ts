@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 
 async function requireSuperAdmin() {
   const user = await getCurrentUser()
-  if (!user || false) {
+  if (!user || user.role !== 'superadmin') {
     return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }), user: null }
   }
   return { error: null, user }

@@ -11,31 +11,58 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  avatar    String?
-  role      String   @default("owner") // owner, staff, superadmin
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  stores    Store[]
-  orders    Order[]
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  name             String
+  phone            String?  // New: mobile OTP verification
+  phoneVerified    Boolean  @default(false)
+  emailVerified    Boolean  @default(false)
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?  // TOTP secret
+  backupCodes      String?  // JSON array of backup codes
+  avatar           String?
+  role             String   @default("owner") // owner, staff, superadmin
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  stores           Store[]
+  orders           Order[]
 }
 
 model Store {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
-  logo        String?
-  banner      String?
-  theme       String   @default("modern") // modern, classic, minimal, bold
-  primaryColor String  @default("#10b981") // emerald green for Online Vepar
-  currency    String   @default("INR")
-  domain      String?
-  sectionsConfig String? @default("[]")
-  isActive    Boolean  @default(true)
+  id             String   @id @default(cuid())
+  name           String   // Brand Name
+  legalName      String?  // Legal Entity Name
+  slug           String   @unique
+  description    String?
+  logo           String?
+  banner         String?
+  theme          String   @default("modern") // modern, classic, minimal, bold
+  primaryColor   String   @default("#10b981") // emerald green for Online Vepar
+  currency       String   @default("INR")
+  domain         String?
+  sectionsConfig String?  @default("[]")
+  isActive       Boolean  @default(true)
+  
+  // Business Profile
+  businessType       String? // Sole Proprietor / Partnership / LLP / Pvt Ltd / Public Ltd
+  businessCategory   String?
+  annualTurnoverBand String?
+  skusBand           String?
+  currentlySellingOn String?
+  
+  // KYC & Verification
+  panNumber          String?
+  panVerified        Boolean @default(false)
+  gstin              String?
+  gstinVerified      Boolean @default(false)
+  cin                String?
+  bankAccountNumber  String?
+  bankIfsc           String?
+  bankVerified       Boolean @default(false)
+  cancelledChequeUrl String?
+  addressProofUrl    String?
+  kycStatus          String  @default("pending") // pending, submitted, verified, rejected
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
@@ -65,6 +92,10 @@ model Store {
   googleAnalyticsId     String?
   seoTitle              String?
   seoDescription        String?
+  
+  metafields            Metafield[]
+  locations             Location[]
+  expenses              Expense[]
 }
 
 model Category {
@@ -102,6 +133,7 @@ model Product {
   store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   categoryId  String?
   categoryRef Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  options     String   @default("[]") // JSON array e.g., [{"name": "Color", "values": ["Red"]}]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orderItems     OrderItem[]
@@ -109,6 +141,7 @@ model Product {
   reviews        Review[]
   variants       ProductVariant[]
   collectionProducts CollectionProduct[]
+  metafields     Metafield[]
 }
 
 model Order {
@@ -138,6 +171,7 @@ model Order {
   items         OrderItem[]
   shipments     Shipment[]
   orderNotes    OrderNote[]
+  metafields    Metafield[]
 }
 
 model OrderItem {
@@ -185,6 +219,7 @@ model Customer {
   store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  metafields Metafield[]
 }
 
 model Page {
@@ -251,12 +286,18 @@ model ProductVariant {
   sku          String?
   price        Float?   // null = same as parent product price
   comparePrice Float?
-  stock        Int      @default(0)
-  options      String   @default("{}") // JSON: { "Color": "Red", "Size": "Large" }
+  stock        Int      @default(0) // Legacy total stock
+  options      String   @default("{}") // Legacy JSON options
+  option1      String?  // Shopify 1:1 e.g., "Red"
+  option2      String?  // Shopify 1:1 e.g., "Large"
+  option3      String?
   position     Int      @default(0) // sort order
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  inventoryLevels InventoryLevel[]
+  metafields      Metafield[]
 
   @@index([productId])
   @@index([storeId])
@@ -579,4 +620,99 @@ model PlatformSettings {
   razorpayWebhookSecret String?
   stripeWebhookSecret   String?
   updatedAt           DateTime @updatedAt
+}
+
+// --- Metafields (Shopify 1:1 Data Extension) ---
+model Metafield {
+  id          String   @id @default(cuid())
+  namespace   String   // e.g., "custom", "global", "seo"
+  key         String   // e.g., "material", "care_instructions"
+  value       String   @db.Text
+  type        String   @default("single_line_text_field") // single_line_text_field, number_integer, json, boolean, etc.
+  description String?
+
+  ownerType   String   // "STORE", "PRODUCT", "VARIANT", "CUSTOMER", "ORDER"
+  ownerId     String
+
+  // Relations (only one will be set per row, matching ownerType + ownerId)
+  storeId     String?
+  store       Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  variantId   String?
+  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([namespace, key, ownerId])
+  @@index([ownerType, ownerId])
+}
+
+// --- Multi-Location Inventory (Shopify 1:1) ---
+model Location {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Main Warehouse", "Retail Store 1"
+  address1    String?
+  address2    String?
+  city        String?
+  state       String?
+  zip         String?
+  country     String?
+  isActive    Boolean  @default(true)
+  isFulfillmentService Boolean @default(false)
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  inventoryLevels InventoryLevel[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+}
+
+model InventoryLevel {
+  id          String   @id @default(cuid())
+  available   Int      @default(0) // Available for sale
+  incoming    Int      @default(0)
+  committed   Int      @default(0)
+  
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  
+  variantId   String
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  updatedAt   DateTime @updatedAt
+
+  @@unique([locationId, variantId])
+  @@index([variantId])
+}
+
+// --- Finance & Hisab (Profit & Loss Tracking) ---
+model Expense {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category    String   // "marketing", "shipping", "software", "custom"
+  name        String   // e.g., "Meta Ads", "Google Ads"
+  amount      Float
+  currency    String   @default("INR")
+  date        DateTime @default(now())
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([date])
 }

@@ -29,6 +29,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
+import { useSocket } from '@/hooks/use-socket'
 
 interface SectionData {
   id: string
@@ -351,6 +352,7 @@ export default function StoreEditor() {
   const [isPublished, setIsPublished] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [pendingImageKey, setPendingImageKey] = useState<{ sectionId: string; key: string } | null>(null)
+  const socket = useSocket()
 
   // Load sections from currentStore
   useEffect(() => {
@@ -418,10 +420,14 @@ export default function StoreEditor() {
   }
 
   const updateSectionSettings = (id: string, key: string, value: any) => {
-    setSections(sections.map(s => {
+    const updated = sections.map(s => {
       if (s.id === id) return { ...s, settings: { ...s.settings, [key]: value } }
       return s
-    }))
+    })
+    setSections(updated)
+    if (socket && currentStore) {
+      socket.emit('editor_update', { storeId: currentStore.id, payload: updated })
+    }
   }
 
   // Image upload: convert file → base64 and inject into section setting

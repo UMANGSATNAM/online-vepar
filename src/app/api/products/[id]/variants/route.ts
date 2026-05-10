@@ -69,7 +69,7 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { name, sku, price, comparePrice, stock, options, position, isActive } = body;
+    const { name, sku, price, comparePrice, stock, options, option1, option2, option3, position, isActive } = body;
 
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Variant name is required' }, { status: 400 });
@@ -93,6 +93,9 @@ export async function POST(
         comparePrice: comparePrice ? parseFloat(String(comparePrice)) : null,
         stock: stock !== undefined ? parseInt(String(stock)) : 0,
         options: options ? JSON.stringify(options) : '{}',
+        option1: option1 || null,
+        option2: option2 || null,
+        option3: option3 || null,
         position: nextPosition,
         isActive: isActive !== undefined ? isActive : true,
       },

@@ -32,6 +32,8 @@ export default function RegisterPage() {
   const { setView, setUser, setStore, setStores } = useAppStore()
   const { toast } = useToast()
   const [name, setName] = useState('')
+  const [legalName, setLegalName] = useState('')
+  const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -43,13 +45,17 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (password !== confirm) return toast({ title: 'Passwords do not match', variant: 'destructive' })
-    if (password.length < 6) return toast({ title: 'Password too short', variant: 'destructive' })
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+    if (!strongPasswordRegex.test(password)) {
+      return toast({ title: 'Password too weak', description: 'Must be 12+ chars with upper, lower, number, and symbol.', variant: 'destructive' })
+    }
+    if (!phone) return toast({ title: 'Phone is required', variant: 'destructive' })
     setLoading(true)
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, legalName, phone, email, password }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Registration failed')
@@ -124,11 +130,29 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <motion.div variants={iv} className="space-y-1.5">
-              <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-medium">Brand Name</Label>
+              <div className="relative">
+                <Store className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input id="name" placeholder="Your brand name" value={name} onChange={e => setName(e.target.value)} required
+                  className="pl-9 h-11 rounded-xl border-border/60 focus:border-emerald-500" />
+              </div>
+            </motion.div>
+
+            <motion.div variants={iv} className="space-y-1.5">
+              <Label htmlFor="legalName" className="text-sm font-medium">Legal Name (Optional)</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input id="name" placeholder="Your full name" value={name} onChange={e => setName(e.target.value)} required
+                <Input id="legalName" placeholder="Legal Entity Name" value={legalName} onChange={e => setLegalName(e.target.value)}
                   className="pl-9 h-11 rounded-xl border-border/60 focus:border-emerald-500" />
+              </div>
+            </motion.div>
+
+            <motion.div variants={iv} className="space-y-1.5">
+              <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">+91</span>
+                <Input id="phone" type="tel" placeholder="10-digit mobile number" value={phone} onChange={e => setPhone(e.target.value)} required
+                  className="pl-10 h-11 rounded-xl border-border/60 focus:border-emerald-500" />
               </div>
             </motion.div>
 
@@ -145,8 +169,8 @@ export default function RegisterPage() {
               <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input id="password" type={show ? 'text' : 'password'} placeholder="Min. 6 characters" value={password}
-                  onChange={e => setPassword(e.target.value)} required minLength={6}
+                <Input id="password" type={show ? 'text' : 'password'} placeholder="Min. 12 characters" value={password}
+                  onChange={e => setPassword(e.target.value)} required minLength={12}
                   className="pl-9 pr-10 h-11 rounded-xl border-border/60 focus:border-emerald-500" />
                 <button type="button" onClick={() => setShow(!show)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">

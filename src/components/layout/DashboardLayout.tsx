@@ -22,6 +22,7 @@ import CustomersPage from '@/components/customers/CustomersPage'
 import StoreSettings from '@/components/store/StoreSettings'
 import StorePreview from '@/components/store/StorePreview'
 import AnalyticsPage from '@/components/analytics/AnalyticsPage'
+import FinancePage from '@/components/finance/FinancePage'
 import PagesPage from '@/components/pages/PagesPage'
 import CreateStoreDialog from '@/components/store/CreateStoreDialog'
 import DiscountsPage from '@/components/discounts/DiscountsPage'
@@ -40,6 +41,7 @@ import DomainSettings from '@/components/store/DomainSettings'
 import BillingSettings from '@/components/store/BillingSettings'
 import SeoSettings from '@/components/store/SeoSettings'
 import StoreEditor from '@/components/store/StoreEditor'
+import OnboardingWizard from '@/components/dashboard/OnboardingWizard'
 
 const mainNav: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { view: 'dashboard', label: 'Home', icon: Home },
@@ -47,6 +49,7 @@ const mainNav: { view: ViewType; label: string; icon: React.ComponentType<{ clas
   { view: 'orders', label: 'Orders', icon: ShoppingCart },
   { view: 'customers', label: 'Customers', icon: Users },
   { view: 'analytics', label: 'Analytics', icon: BarChart3 },
+  { view: 'finance', label: 'Hisab', icon: Receipt },
 ]
 
 const secondaryNav: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; group: string }[] = [
@@ -71,7 +74,7 @@ const secondaryNav: { view: ViewType; label: string; icon: React.ComponentType<{
 
 const viewLabels: Record<string, string> = {
   dashboard: 'Dashboard', products: 'Products', orders: 'Orders', customers: 'Customers',
-  analytics: 'Analytics', 'store-settings': 'Store Settings', 'store-preview': 'Store Preview',
+  analytics: 'Analytics', finance: 'Hisab & Finances', 'store-settings': 'Store Settings', 'store-preview': 'Store Preview',
   pages: 'Pages', 'create-store': 'Create Store', discounts: 'Discounts', 'gift-cards': 'Gift Cards',
   inventory: 'Inventory', shipping: 'Shipping', 'tax-rates': 'Tax Rates',
   'abandoned-carts': 'Abandoned Carts', reviews: 'Reviews', activity: 'Activity Log',
@@ -281,6 +284,7 @@ function renderContent(view: string) {
     case 'orders': return <OrdersPage />
     case 'customers': return <CustomersPage />
     case 'analytics': return <AnalyticsPage />
+    case 'finance': return <FinancePage />
     case 'store-settings': return <StoreSettings />
     case 'store-preview': return <StorePreview />
     case 'pages': return <PagesPage />
@@ -459,6 +463,10 @@ export default function DashboardLayout() {
         </nav>
 
         <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
+        
+        <AnimatePresence>
+          {currentStore?.kycStatus === 'pending' && <OnboardingWizard />}
+        </AnimatePresence>
       </div>
     </TooltipProvider>
   )

@@ -5,35 +5,55 @@ import { hashPassword, generateSlug } from '@/lib/auth';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, name, role } = body;
+    const { email, password, name, phone, legalName, role } = body;
 
-    if (!email || !password || !name) {
-      return NextResponse.json({ error: 'Email, password, and name are required' }, { status: 400 });
+    if (!email || !password || !name || !phone) {
+      return NextResponse.json({ error: 'Email, password, phone, and name are required' }, { status: 400 });
     }
 
-    const existingUser = await db.user.findUnique({ where: { email } });
+    // Strong password enforcement (min 12 chars, upper + lower + number + symbol)
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+    if (!strongPasswordRegex.test(password)) {
+      return NextResponse.json({ error: 'Password must be at least 12 characters and include an uppercase letter, lowercase letter, number, and special symbol.' }, { status: 400 });
+    }
+
+    const existingUser = await db.user.findFirst({
+      where: {
+        OR: [{ email }, { phone }]
+      }
+    });
     if (existingUser) {
-      return NextResponse.json({ error: 'User with this email already exists' }, { status: 409 });
+      return NextResponse.json({ error: 'User with this email or phone already exists' }, { status: 409 });
     }
 
     const hashedPassword = hashPassword(password);
     const assignedRole = role === 'superadmin' ? 'superadmin' : 'owner';
 
     const user = await db.user.create({
-      data: { email, password: hashedPassword, name, role: assignedRole },
-      select: { id: true, email: true, name: true, role: true, avatar: true, createdAt: true },
+      data: { 
+        email, 
+        password: hashedPassword, 
+        name, 
+        phone,
+        phoneVerified: false,
+        emailVerified: false,
+        role: assignedRole 
+      },
+      select: { id: true, email: true, name: true, phone: true, role: true, avatar: true, createdAt: true },
     });
 
     const storeSlug = generateSlug(`${name}'s Store ${Math.floor(Math.random() * 10000)}`);
     const store = await db.store.create({
       data: {
         name: `${name}'s Store`,
+        legalName: legalName || null,
         slug: storeSlug,
         description: `Welcome to ${name}'s online store!`,
         theme: 'modern',
         primaryColor: '#10b981',
         currency: 'INR',
         isActive: true,
+        kycStatus: 'pending',
         ownerId: user.id,
       },
     });

@@ -78,6 +78,9 @@ export async function PUT(
     if (body.comparePrice !== undefined) updateData.comparePrice = body.comparePrice ? parseFloat(String(body.comparePrice)) : null;
     if (body.stock !== undefined) updateData.stock = parseInt(String(body.stock));
     if (body.options !== undefined) updateData.options = JSON.stringify(body.options);
+    if (body.option1 !== undefined) updateData.option1 = body.option1 || null;
+    if (body.option2 !== undefined) updateData.option2 = body.option2 || null;
+    if (body.option3 !== undefined) updateData.option3 = body.option3 || null;
     if (body.position !== undefined) updateData.position = parseInt(String(body.position));
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
 

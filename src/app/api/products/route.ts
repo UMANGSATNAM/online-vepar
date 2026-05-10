@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { getCurrentUser, generateSlug } from '@/lib/auth';
+import { getCurrentUser, generateSlug, verifyStoreAccess } from '@/lib/auth';
 import { logActivity } from '@/lib/activity-logger';
 
 export async function GET(request: Request) {
@@ -25,13 +25,11 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'storeId is required' }, { status: 400 });
     }
 
-    // Verify user owns this store
-    const store = await db.store.findFirst({
-      where: { id: storeId, ownerId: user.id },
-    });
+    // Verify user owns this store or is authorized staff
+    const { authorized, store, error } = await verifyStoreAccess(storeId, user.id, 'products');
 
-    if (!store) {
-      return NextResponse.json({ error: 'Store not found' }, { status: 404 });
+    if (!authorized || !store) {
+      return NextResponse.json({ error: error || 'Unauthorized' }, { status: 403 });
     }
 
     const where: Record<string, unknown> = { storeId };
@@ -106,13 +104,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify user owns this store
-    const store = await db.store.findFirst({
-      where: { id: storeId, ownerId: user.id },
-    });
+    // Verify user owns this store or is authorized staff
+    const { authorized, store, error } = await verifyStoreAccess(storeId, user.id, 'products');
 
-    if (!store) {
-      return NextResponse.json({ error: 'Store not found' }, { status: 404 });
+    if (!authorized || !store) {
+      return NextResponse.json({ error: error || 'Unauthorized' }, { status: 403 });
     }
 
     const slug = generateSlug(name);
