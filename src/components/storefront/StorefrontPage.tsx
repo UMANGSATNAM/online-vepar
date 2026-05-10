@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ShoppingCart, Search, Menu, X, Star, ChevronRight, Instagram, Facebook, Twitter, Sparkles, Shield, Truck, RotateCcw, Play, Mail, MapPin, Phone, Check, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import Script from 'next/script'
 import ProductCard from './ProductCard'
 
 interface Product {
@@ -111,7 +112,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
     <div className="min-h-screen bg-white font-sans">
       {/* Inject Pixels */}
       {store.googleAnalyticsId && (
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${store.googleAnalyticsId}`} />
+        <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${store.googleAnalyticsId}`} />
       )}
 
       {/* ── HEADER ── */}

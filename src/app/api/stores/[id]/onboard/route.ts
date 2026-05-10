@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { cookies } from 'next/headers'
+import { getCurrentUser } from '@/lib/auth'
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const cookieStore = cookies()
-    const userId = cookieStore.get('ov_session')?.value
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const user = await getCurrentUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const userId = user.id
 
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
 
     // Ensure store belongs to user

@@ -17,7 +17,7 @@ const steps = [
 ]
 
 export default function OnboardingWizard() {
-  const { currentStore, setStore } = useAppStore()
+  const { currentStore, setStore, currentUser } = useAppStore()
   const { toast } = useToast()
   
   const [currentStep, setCurrentStep] = useState(0)
@@ -48,13 +48,15 @@ export default function OnboardingWizard() {
   }
 
   const handleSubmit = async () => {
-    if (!currentStore) return
+    if (!currentStore || !currentUser) return
     setLoading(true)
     try {
-      // In a real app, you'd have an endpoint to process onboarding. We'll use a hypothetical one.
       const res = await fetch(`/api/stores/${currentStore.id}/onboard`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': currentUser.id
+        },
         body: JSON.stringify(formData)
       })
       if (!res.ok) throw new Error('Failed to save onboarding data')
