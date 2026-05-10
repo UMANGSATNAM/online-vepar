@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { useSocket } from '@/hooks/use-socket'
+import { useToast } from '@/hooks/use-toast'
 import {
   DollarSign,
   ShoppingCart,
@@ -217,9 +219,11 @@ function TableSkeleton() {
 // --- Main Component ---
 export default function DashboardHome() {
   const { currentStore, currentUser, setView } = useAppStore()
+  const { toast } = useToast()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [liveOrderCount, setLiveOrderCount] = useState(0)
 
   const fetchData = async () => {
     if (!currentStore?.id) {
@@ -239,6 +243,20 @@ export default function DashboardHome() {
       setLoading(false)
     }
   }
+
+  // 🔔 Real-time Cha-ching! notifications
+  const handleNewOrder = useCallback((orderData: { orderNumber: string; customerName: string; total: number }) => {
+    setLiveOrderCount(c => c + 1)
+    // Refresh stats
+    fetchData()
+    toast({
+      title: `🛍️ Cha-ching! New Order`,
+      description: `Order ${orderData.orderNumber} from ${orderData.customerName} — ₹${orderData.total.toLocaleString('en-IN')}`,
+      duration: 6000,
+    })
+  }, [toast])
+
+  const { connected } = useSocket(handleNewOrder)
 
   const [mounted, setMounted] = useState(false)
   const [greetingInfo, setGreetingInfo] = useState<{greeting: string, icon: typeof Sun}>({ greeting: 'Welcome', icon: Sun })

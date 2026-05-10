@@ -1,14 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { useAppStore } from '@/lib/store'
 
 let socketInstance: Socket | null = null
 
-export function useSocket() {
-  const [socket, setSocket] = useState<Socket | null>(socketInstance)
+export interface OrderNotification {
+  orderId: string
+  orderNumber: string
+  customerName: string
+  total: number
+  storeId: string
+}
+
+type EventCallback = (data: OrderNotification) => void
+
+export function useSocket(onNewOrder?: EventCallback) {
+  const [connected, setConnected] = useState(false)
   const { currentStore } = useAppStore()
+  const callbackRef = useRef(onNewOrder)
+  callbackRef.current = onNewOrder
 
   useEffect(() => {
     if (!socketInstance) {
@@ -16,27 +28,45 @@ export function useSocket() {
         path: '/socket.io',
         autoConnect: true,
       })
-      setSocket(socketInstance)
     }
 
     const s = socketInstance
 
-    s.on('connect', () => {
-      console.log('🔌 Socket connected')
+    const handleConnect = () => {
+      setConnected(true)
       if (currentStore?.id) {
         s.emit('join_store', { storeId: currentStore.id })
       }
-    })
+    }
 
-    s.on('disconnect', () => {
-      console.log('🔌 Socket disconnected')
-    })
+    const handleDisconnect = () => {
+      setConnected(false)
+    }
+
+    const handleNewOrder = (data: OrderNotification) => {
+      callbackRef.current?.(data)
+    }
+
+    s.on('connect', handleConnect)
+    s.on('disconnect', handleDisconnect)
+    s.on('new_order', handleNewOrder)
+
+    // If already connected, join store immediately
+    if (s.connected && currentStore?.id) {
+      s.emit('join_store', { storeId: currentStore.id })
+      setConnected(true)
+    }
 
     return () => {
-      // Don't disconnect here if we want persistent global connection
-      // s.disconnect()
+      s.off('connect', handleConnect)
+      s.off('disconnect', handleDisconnect)
+      s.off('new_order', handleNewOrder)
     }
   }, [currentStore?.id])
 
-  return socket
+  const emit = useCallback((event: string, data: unknown) => {
+    socketInstance?.emit(event, data)
+  }, [])
+
+  return { connected, emit }
 }

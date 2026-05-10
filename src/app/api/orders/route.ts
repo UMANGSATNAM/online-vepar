@@ -160,6 +160,17 @@ export async function POST(request: Request) {
       details: { customerName, total: order.total, itemCount: order.items.length },
     });
 
+    // 🔔 Real-time "Cha-ching!" notification via Socket.io
+    if (typeof global.emitNewOrder === 'function') {
+      global.emitNewOrder(storeId, {
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        total: order.total,
+        storeId,
+      });
+    }
+
     return NextResponse.json({ order }, { status: 201 });
   } catch (error) {
     console.error('Create order error:', error);

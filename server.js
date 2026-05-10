@@ -33,6 +33,9 @@ app.prepare().then(() => {
     }
   })
 
+  // ✅ Expose io globally so Next.js API routes can emit real-time events
+  global._io = io
+
   // Setup Redis Adapter if available
   if (pubClient && subClient) {
     const { createAdapter } = require('@socket.io/redis-adapter')
@@ -43,22 +46,17 @@ app.prepare().then(() => {
   io.on('connection', (socket) => {
     console.log(`⚡ Socket connected: ${socket.id}`)
 
-    // 1. Authenticate & Join Store Room
     socket.on('join_store', (data) => {
-      // In production: Validate JWT token here
       if (data?.storeId) {
         socket.join(`store_${data.storeId}`)
         console.log(`Socket ${socket.id} joined store_${data.storeId}`)
       }
     })
 
-    // 2. Theme Editor Live Updates (Visual Customizer)
     socket.on('editor_update', (data) => {
-      // Broadcast to all clients viewing the storefront iframe for this store
       socket.to(`storefront_${data.storeId}`).emit('theme_sync', data.payload)
     })
 
-    // 3. Storefront viewers join their respective room
     socket.on('join_storefront', (data) => {
       if (data?.storeId) {
         socket.join(`storefront_${data.storeId}`)
@@ -69,6 +67,12 @@ app.prepare().then(() => {
       console.log(`🔴 Socket disconnected: ${socket.id}`)
     })
   })
+
+  // Helper for API routes to emit new_order event via global._io
+  global.emitNewOrder = (storeId, orderData) => {
+    io.to(`store_${storeId}`).emit('new_order', orderData)
+    console.log(`🛍️ Cha-ching! New order emitted to store_${storeId}`)
+  }
 
   const PORT = process.env.PORT || 3000
   server.listen(PORT, (err) => {

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { Store, Home, Package, ShoppingCart, Users, BarChart3, Settings, Globe, FileText, Search, Menu, LogOut, ChevronDown, X, Command, Sun, Moon, Monitor, Plus, Tag, Warehouse, Truck, Star, Clock, Receipt, ShoppingBag, Layers, CreditCard, LayoutGrid, ChevronRight, PanelLeftClose, PanelLeftOpen, Shield, Bell, Zap } from 'lucide-react'
+import { Store, Home, Package, ShoppingCart, Users, BarChart3, Settings, Globe, FileText, Search, Menu, LogOut, ChevronDown, X, Command, Sun, Moon, Monitor, Plus, Tag, Warehouse, Truck, Star, Clock, Receipt, ShoppingBag, Layers, CreditCard, LayoutGrid, ChevronRight, PanelLeftClose, PanelLeftOpen, Shield, Bell, Zap, Database } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -42,6 +42,7 @@ import BillingSettings from '@/components/store/BillingSettings'
 import SeoSettings from '@/components/store/SeoSettings'
 import StoreEditor from '@/components/store/StoreEditor'
 import OnboardingWizard from '@/components/dashboard/OnboardingWizard'
+import MetafieldsPage from '@/components/metafields/MetafieldsPage'
 
 const mainNav: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { view: 'dashboard', label: 'Home', icon: Home },
@@ -56,6 +57,7 @@ const secondaryNav: { view: ViewType; label: string; icon: React.ComponentType<{
   { view: 'collections', label: 'Collections', icon: Layers, group: 'Catalog' },
   { view: 'discounts', label: 'Discounts', icon: Tag, group: 'Catalog' },
   { view: 'reviews', label: 'Reviews', icon: Star, group: 'Catalog' },
+  { view: 'metafields', label: 'Metafields', icon: Database, group: 'Catalog' },
   { view: 'inventory', label: 'Inventory', icon: Warehouse, group: 'Operations' },
   { view: 'shipping', label: 'Shipping', icon: Truck, group: 'Operations' },
   { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, group: 'Operations' },
@@ -80,6 +82,7 @@ const viewLabels: Record<string, string> = {
   'abandoned-carts': 'Abandoned Carts', reviews: 'Reviews', activity: 'Activity Log',
   collections: 'Collections', staff: 'Staff', 'domain-settings': 'Domains',
   billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Theme Editor',
+  metafields: 'Metafields',
 }
 
 function NavItem({ view, label, icon: Icon, collapsed, active, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; onClick: () => void }) {
@@ -303,6 +306,7 @@ function renderContent(view: string) {
     case 'billing': return <BillingSettings />
     case 'seo-settings': return <SeoSettings />
     case 'store-editor': return <StoreEditor />
+    case 'metafields': return <MetafieldsPage />
     default: return <DashboardHome />
   }
 }

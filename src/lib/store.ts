@@ -32,6 +32,7 @@ export type ViewType =
   | 'billing'
   | 'seo-settings'
   | 'store-editor'
+  | 'metafields'
 
 export interface User {
   id: string

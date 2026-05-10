@@ -630,15 +630,15 @@ model Metafield {
   namespace   String   // e.g., "custom", "global", "seo"
   key         String   // e.g., "material", "care_instructions"
   value       String   @db.Text
-  type        String   @default("single_line_text_field") // single_line_text_field, number_integer, json, boolean, etc.
+  type        String   @default("single_line_text_field")
   description String?
 
-  ownerType   String   // "STORE", "PRODUCT", "VARIANT", "CUSTOMER", "ORDER"
+  ownerResource String  // "store", "product", "variant", "customer", "order"
   ownerId     String
 
-  // Relations (only one will be set per row, matching ownerType + ownerId)
-  storeId     String?
-  store       Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  // Relations
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   productId   String?
   product     Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -655,8 +655,9 @@ model Metafield {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([namespace, key, ownerId])
-  @@index([ownerType, ownerId])
+  @@unique([storeId, namespace, key, ownerResource, ownerId])
+  @@index([ownerResource, ownerId])
+  @@index([storeId])
 }
 
 // --- Multi-Location Inventory (Shopify 1:1) ---
