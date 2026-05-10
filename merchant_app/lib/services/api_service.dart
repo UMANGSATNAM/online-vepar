@@ -147,4 +147,65 @@ class ApiService extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<Map<String, dynamic>> getFinanceData(String period) async {
+    if (_storeId == null) return {};
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/finance?storeId=$_storeId&period=$period'),
+        headers: _headers,
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+    } catch (e) { /* ignore */ }
+    return {};
+  }
+
+  Future<List<dynamic>> getCustomers() async {
+    if (_storeId == null) return [];
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/customers?storeId=$_storeId'),
+        headers: _headers,
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['customers'] ?? [];
+      }
+    } catch (e) { /* ignore */ }
+    return [];
+  }
+
+  Future<bool> addExpense(String name, double amount, String category) async {
+    if (_storeId == null) return false;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/finance/expenses'),
+        headers: _headers,
+        body: jsonEncode({
+          'storeId': _storeId,
+          'name': name,
+          'amount': amount,
+          'category': category,
+        }),
+      );
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> createProduct(Map<String, dynamic> productData) async {
+    if (_storeId == null) return false;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/products'),
+        headers: _headers,
+        body: jsonEncode({...productData, 'storeId': _storeId}),
+      );
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      return false;
+    }
+  }
 }
