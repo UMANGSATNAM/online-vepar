@@ -28,7 +28,7 @@ export default async function StoreProductPage({ params }: { params: Promise<{ s
   
   const store = await db.store.findUnique({
     where: { slug, isActive: true },
-    select: { id: true, name: true, currency: true, primaryColor: true, logo: true }
+    select: { id: true, name: true, currency: true, primaryColor: true, logo: true, theme: true, slug: true }
   })
   if (!store) return notFound()
 

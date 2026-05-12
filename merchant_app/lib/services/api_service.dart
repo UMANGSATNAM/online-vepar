@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService extends ChangeNotifier {
-  static const String baseUrl = 'http://10.0.2.2:3000/api'; // Android emulator local API
+  static const String baseUrl = 'https://online-vepar-production.up.railway.app/api'; // Production API
   
   String? _userId;
   String? _storeId;

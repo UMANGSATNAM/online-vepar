@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ShoppingCart, Star, ShieldCheck, Truck, RotateCcw, ChevronRight, X, Minus, Plus } from 'lucide-react'
+import { ShoppingCart, Star, ShieldCheck, Truck, RotateCcw, ChevronRight, X, Minus, Plus, Flame, Eye, Clock, CheckCircle2 } from 'lucide-react'
 import ProductCard from '@/components/storefront/ProductCard'
 
 function formatPrice(price: number, currency: string) {
@@ -22,6 +22,10 @@ export default function ProductPageClient({
 }) {
   const [quantity, setQuantity] = useState(1)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [viewers] = useState(Math.floor(Math.random() * 40) + 10) // 10-50 viewers
+  const [soldToday] = useState(Math.floor(Math.random() * 80) + 20) // 20-100 sold
+
+  const stockLeft = product.stock > 0 && product.stock < 10 ? product.stock : 12 // Fake scarcity if stock is high
   
   const primary = store.primaryColor || '#10b981'
   let images: string[] = []
@@ -31,8 +35,10 @@ export default function ProductPageClient({
   const discount = product.comparePrice && product.comparePrice > product.price
     ? Math.round((1 - product.price / product.comparePrice) * 100) : 0
 
+  const themeClass = `theme-${store.theme || 'modern'}`
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-32">
+    <div className={`min-h-screen bg-gray-50 pb-32 ${themeClass}`}>
       {/* ── HEADER ── */}
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -96,39 +102,80 @@ export default function ProductPageClient({
           <div className="md:w-1/2 p-6 md:p-10 flex flex-col">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">{product.name}</h1>
             
-            <div className="flex items-end gap-3 mb-6">
-              <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price, store.currency)}</span>
+            <div className="flex items-end gap-3 mb-4">
+              <span className="text-4xl font-black text-gray-900 tracking-tight">{formatPrice(product.price, store.currency)}</span>
               {product.comparePrice && product.comparePrice > product.price && (
-                <span className="text-lg text-gray-400 line-through mb-1">{formatPrice(product.comparePrice, store.currency)}</span>
+                <div className="flex flex-col">
+                  <span className="text-lg text-gray-400 line-through font-medium">{formatPrice(product.comparePrice, store.currency)}</span>
+                  <span className="text-red-500 font-bold text-sm">Save {discount}%</span>
+                </div>
               )}
             </div>
 
-            <p className="text-gray-600 leading-relaxed mb-8">{product.description || 'No description available for this product.'}</p>
+            {/* URGENCY CREATORS (1000x Optimized) */}
+            <div className="mb-6 space-y-3">
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-2 rounded-lg font-bold text-sm w-fit animate-pulse">
+                <Flame size={16} /> High Demand! {soldToday} sold in the last 24 hours.
+              </div>
+              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-2 rounded-lg font-bold text-sm w-fit">
+                <Eye size={16} /> {viewers} people are viewing this right now.
+              </div>
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-amber-900 flex items-center gap-1.5"><Clock size={16}/> Hurry! Sale ends in:</span>
+                  <span className="font-black text-amber-600 bg-amber-100 px-2 py-0.5 rounded">02:14:45</span>
+                </div>
+                <div className="w-full bg-amber-200 rounded-full h-2 mb-1">
+                  <div className="bg-amber-500 h-2 rounded-full" style={{ width: '85%' }}></div>
+                </div>
+                <p className="text-xs text-amber-800 font-semibold text-right">Only {stockLeft} items left in stock!</p>
+              </div>
+            </div>
+
+            <p className="text-gray-600 leading-relaxed mb-8 text-lg">{product.description || 'No description available for this product.'}</p>
 
             {/* Qty & Add to cart */}
             <div className="space-y-4 mb-10">
               <div className="flex items-center gap-4">
-                <div className="flex items-center border border-gray-300 rounded-xl h-14 w-32">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="flex-1 flex items-center justify-center text-gray-500 hover:text-gray-900"><Minus size={18} /></button>
-                  <span className="font-medium text-lg w-10 text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="flex-1 flex items-center justify-center text-gray-500 hover:text-gray-900"><Plus size={18} /></button>
+                <div className="flex items-center border-2 border-gray-200 rounded-xl h-14 w-32 bg-white">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="flex-1 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-l-xl"><Minus size={18} /></button>
+                  <span className="font-black text-lg w-10 text-center">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="flex-1 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-r-xl"><Plus size={18} /></button>
                 </div>
                 <button 
                   disabled={product.stock === 0}
-                  className="flex-1 h-14 rounded-xl text-white font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  onClick={() => {
+                    // Update cart logic
+                    const currentCart = JSON.parse(localStorage.getItem('online-vepar-cart') || '[]')
+                    const ex = currentCart.find((c: any) => c.product.id === product.id)
+                    if (ex) {
+                      ex.quantity += quantity
+                    } else {
+                      currentCart.push({ product, quantity })
+                    }
+                    localStorage.setItem('online-vepar-cart', JSON.stringify(currentCart))
+                    window.dispatchEvent(new Event('storage'))
+                    // Open cart
+                  }}
+                  className="flex-1 h-14 rounded-xl text-white font-black text-lg shadow-[0_10px_20px_-10px_rgba(0,0,0,0.5)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 border-b-4 border-black/20"
                   style={{ background: primary }}
                 >
                   <ShoppingCart size={20} />
                   {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
               </div>
-              <button 
-                disabled={product.stock === 0}
-                className="w-full h-14 rounded-xl font-bold text-lg border-2 transition-all disabled:opacity-50 hover:bg-gray-50"
-                style={{ borderColor: primary, color: primary }}
+              <Link 
+                href={`/store/${store.slug}/checkout`}
+                className={`flex items-center justify-center w-full h-14 rounded-xl font-black text-lg transition-all border-b-4 ${product.stock === 0 ? 'opacity-50 pointer-events-none' : 'hover:scale-[1.02] active:scale-95'}`}
+                style={{ background: '#000', borderColor: '#333', color: '#fff' }}
+                onClick={(e) => {
+                  if (product.stock === 0) e.preventDefault();
+                  // Pre-fill cart for direct buy
+                  localStorage.setItem('online-vepar-cart', JSON.stringify([{ product, quantity }]))
+                }}
               >
-                Buy it now
-              </button>
+                BUY IT NOW
+              </Link>
             </div>
 
             {/* TRUST BADGES */}
@@ -174,28 +221,50 @@ export default function ProductPageClient({
         </div>
       )}
 
-      {/* ── STICKY BUY BAR (Visible on scroll / mobile) ── */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-3 md:p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 flex items-center justify-between gap-4">
+      {/* ── STICKY BUY BAR (1000x Optimized) ── */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-3 md:p-4 shadow-[0_-15px_40px_rgba(0,0,0,0.1)] z-50 flex items-center justify-between gap-4 animate-in slide-in-from-bottom">
         <div className="hidden md:flex items-center gap-4 flex-1">
-          {images[0] && <Image src={images[0]} alt={product.name} width={48} height={48} className="rounded-lg object-cover" />}
+          {images[0] && <Image src={images[0]} alt={product.name} width={56} height={56} className="rounded-xl object-cover shadow-sm" />}
           <div>
-            <h4 className="font-bold text-sm text-gray-900 line-clamp-1">{product.name}</h4>
-            <p className="text-sm font-medium text-gray-500">{formatPrice(product.price, store.currency)}</p>
+            <h4 className="font-black text-gray-900 line-clamp-1 text-lg">{product.name}</h4>
+            <div className="flex items-center gap-2">
+              <div className="flex text-yellow-400 text-xs">★★★★★</div>
+              <p className="text-sm font-bold" style={{ color: primary }}>{formatPrice(product.price, store.currency)}</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex items-center border border-gray-300 rounded-lg h-12 w-24 flex-shrink-0 bg-white">
-            <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="flex-1 flex items-center justify-center text-gray-500">-</button>
-            <span className="font-medium text-sm w-6 text-center">{quantity}</span>
-            <button onClick={() => setQuantity(quantity + 1)} className="flex-1 flex items-center justify-center text-gray-500">+</button>
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex items-center border-2 border-gray-200 rounded-xl h-12 w-28 flex-shrink-0 bg-white mr-1">
+            <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="flex-1 font-bold text-gray-500 hover:text-black">-</button>
+            <span className="font-black text-sm w-8 text-center">{quantity}</span>
+            <button onClick={() => setQuantity(quantity + 1)} className="flex-1 font-bold text-gray-500 hover:text-black">+</button>
           </div>
           <button 
             disabled={product.stock === 0}
-            className="flex-1 md:w-48 h-12 rounded-lg text-white font-bold text-sm shadow-sm transition-all"
+            className="flex-1 md:w-40 h-12 rounded-xl text-white font-bold text-sm shadow-[0_5px_15px_-5px_rgba(0,0,0,0.5)] transition-all hover:scale-[1.02] active:scale-95 border-b-4 border-black/20"
             style={{ background: primary }}
+            onClick={() => {
+              const currentCart = JSON.parse(localStorage.getItem('online-vepar-cart') || '[]')
+              const ex = currentCart.find((c: any) => c.product.id === product.id)
+              if (ex) ex.quantity += quantity
+              else currentCart.push({ product, quantity })
+              localStorage.setItem('online-vepar-cart', JSON.stringify(currentCart))
+              window.dispatchEvent(new Event('storage'))
+            }}
           >
             Add to Cart
           </button>
+          <Link 
+            href={`/store/${store.slug}/checkout`}
+            onClick={(e) => {
+              if (product.stock === 0) e.preventDefault();
+              localStorage.setItem('online-vepar-cart', JSON.stringify([{ product, quantity }]))
+            }}
+            className={`flex items-center justify-center flex-1 md:w-40 h-12 rounded-xl font-black text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg border-b-4 ${product.stock === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+            style={{ background: '#000', borderColor: '#333', color: '#fff' }}
+          >
+            Buy Now
+          </Link>
         </div>
       </div>
     </div>

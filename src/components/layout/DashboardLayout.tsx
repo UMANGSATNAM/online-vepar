@@ -44,56 +44,69 @@ import StoreEditor from '@/components/store/StoreEditor'
 import OnboardingWizard from '@/components/dashboard/OnboardingWizard'
 import MetafieldsPage from '@/components/metafields/MetafieldsPage'
 
-const mainNav: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; parent?: string }[] = [
   { view: 'dashboard', label: 'Home', icon: Home },
-  { view: 'products', label: 'Products', icon: Package },
+  
   { view: 'orders', label: 'Orders', icon: ShoppingCart },
-  { view: 'customers', label: 'Customers', icon: Users },
-  { view: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { view: 'finance', label: 'Hisab', icon: Receipt },
-]
+  { view: 'draft-orders', label: 'Draft Orders', icon: FileText, parent: 'Orders' },
+  { view: 'abandoned-checkouts', label: 'Abandoned Checkouts', icon: ShoppingBag, parent: 'Orders' },
+  { view: 'returns', label: 'Returns', icon: Truck, parent: 'Orders' },
 
-const secondaryNav: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; group: string }[] = [
-  { view: 'collections', label: 'Collections', icon: Layers, group: 'Catalog' },
-  { view: 'discounts', label: 'Discounts', icon: Tag, group: 'Catalog' },
-  { view: 'reviews', label: 'Reviews', icon: Star, group: 'Catalog' },
-  { view: 'metafields', label: 'Metafields', icon: Database, group: 'Catalog' },
-  { view: 'inventory', label: 'Inventory', icon: Warehouse, group: 'Operations' },
-  { view: 'shipping', label: 'Shipping', icon: Truck, group: 'Operations' },
-  { view: 'tax-rates', label: 'Tax Rates', icon: Receipt, group: 'Operations' },
-  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, group: 'Operations' },
-  { view: 'abandoned-carts', label: 'Abandoned Carts', icon: ShoppingBag, group: 'Operations' },
-  { view: 'activity', label: 'Activity Log', icon: Clock, group: 'Operations' },
-  { view: 'staff', label: 'Staff', icon: Users, group: 'Settings' },
-  { view: 'store-settings', label: 'General', icon: Settings, group: 'Settings' },
-  { view: 'domain-settings', label: 'Domains', icon: Globe, group: 'Settings' },
-  { view: 'billing', label: 'Billing', icon: CreditCard, group: 'Settings' },
-  { view: 'seo-settings', label: 'SEO & Marketing', icon: Search, group: 'Settings' },
-  { view: 'store-preview', label: 'Preview Store', icon: Globe, group: 'Settings' },
-  { view: 'pages', label: 'Pages', icon: FileText, group: 'Settings' },
-  { view: 'store-editor', label: 'Theme Editor', icon: LayoutGrid, group: 'Settings' },
+  { view: 'products', label: 'Products', icon: Package },
+  { view: 'collections', label: 'Collections', icon: Layers, parent: 'Products' },
+  { view: 'inventory', label: 'Inventory', icon: Warehouse, parent: 'Products' },
+  { view: 'transfers', label: 'Transfers', icon: Truck, parent: 'Products' },
+  { view: 'purchase-orders', label: 'Purchase Orders', icon: Receipt, parent: 'Products' },
+  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, parent: 'Products' },
+
+  { view: 'customers', label: 'Customers', icon: Users },
+  { view: 'segments', label: 'Segments', icon: Users, parent: 'Customers' },
+
+  { view: 'marketing', label: 'Marketing', icon: Star },
+  { view: 'automations', label: 'Automations', icon: Zap, parent: 'Marketing' },
+  { view: 'activity', label: 'Activity', icon: Clock, parent: 'Marketing' },
+
+  { view: 'discounts', label: 'Discounts', icon: Tag },
+
+  { view: 'content', label: 'Content', icon: FileText },
+  { view: 'pages', label: 'Pages', icon: FileText, parent: 'Content' },
+  { view: 'blog-posts', label: 'Blog Posts', icon: FileText, parent: 'Content' },
+  { view: 'menus', label: 'Navigation', icon: LayoutGrid, parent: 'Content' },
+  { view: 'files', label: 'Files', icon: Database, parent: 'Content' },
+  { view: 'metaobjects', label: 'Metaobjects', icon: Database, parent: 'Content' },
+
+  { view: 'analytics', label: 'Analytics', icon: BarChart3 },
+  { view: 'reports', label: 'Reports', icon: BarChart3, parent: 'Analytics' },
+  { view: 'live-view', label: 'Live View', icon: Globe, parent: 'Analytics' },
+
+  { view: 'online-store', label: 'Online Store', icon: Globe },
+  { view: 'themes', label: 'Themes', icon: LayoutGrid, parent: 'Online Store' },
+  { view: 'domains', label: 'Domains', icon: Globe, parent: 'Online Store' },
+  { view: 'preferences', label: 'Preferences', icon: Settings, parent: 'Online Store' },
+
+  { view: 'apps', label: 'Apps', icon: Package },
 ]
 
 const viewLabels: Record<string, string> = {
-  dashboard: 'Dashboard', products: 'Products', orders: 'Orders', customers: 'Customers',
-  analytics: 'Analytics', finance: 'Hisab & Finances', 'store-settings': 'Store Settings', 'store-preview': 'Store Preview',
+  dashboard: 'Home', products: 'Products', orders: 'Orders', customers: 'Customers',
+  analytics: 'Analytics', finance: 'Finance', 'store-settings': 'Settings', 'store-preview': 'Store Preview',
   pages: 'Pages', 'create-store': 'Create Store', discounts: 'Discounts', 'gift-cards': 'Gift Cards',
   inventory: 'Inventory', shipping: 'Shipping', 'tax-rates': 'Tax Rates',
-  'abandoned-carts': 'Abandoned Carts', reviews: 'Reviews', activity: 'Activity Log',
-  collections: 'Collections', staff: 'Staff', 'domain-settings': 'Domains',
+  'abandoned-checkouts': 'Abandoned Checkouts', reviews: 'Reviews', activity: 'Activity Log',
+  collections: 'Collections', staff: 'Staff', 'domains': 'Domains',
   billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Theme Editor',
-  metafields: 'Metafields',
+  metaobjects: 'Metaobjects', marketing: 'Marketing', content: 'Content', 'online-store': 'Online Store', apps: 'Apps'
 }
 
-function NavItem({ view, label, icon: Icon, collapsed, active, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; onClick: () => void }) {
+function NavItem({ view, label, icon: Icon, collapsed, active, isSubitem, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; isSubitem?: boolean; onClick: () => void }) {
   const btn = (
-    <button onClick={onClick} className={`relative w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 group ${
+    <button onClick={onClick} className={`relative w-full flex items-center gap-3 py-1.5 rounded-lg text-sm transition-all duration-150 group ${
       active
-        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-        : 'text-muted-foreground hover:text-foreground hover:bg-accent/60'
-    } ${collapsed ? 'justify-center px-2' : ''}`}>
+        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold'
+        : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'
+    } ${collapsed ? 'justify-center px-2' : isSubitem ? 'px-3 pl-9 text-[13px]' : 'px-3'}`}>
       {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-emerald-600 rounded-r-full" />}
-      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-150 ${active ? 'text-emerald-600 dark:text-emerald-400' : 'group-hover:scale-110'}`} />
+      {!isSubitem && <Icon className={`w-4 h-4 shrink-0 transition-transform duration-150 ${active ? 'text-emerald-600 dark:text-emerald-400' : 'group-hover:scale-110'}`} />}
       {!collapsed && <span className="truncate">{label}</span>}
     </button>
   )
@@ -208,29 +221,20 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
 
       {/* Nav */}
       <ScrollArea className="flex-1 min-h-0 py-2">
-        <nav className={`space-y-0.5 ${collapsed ? 'px-2' : 'px-3'}`}>
-          {!collapsed && <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 px-2 py-1.5 mt-1">Main</p>}
-          {mainNav.map(item => (
-            <NavItem key={item.view} {...item} collapsed={collapsed} active={currentView === item.view} onClick={() => nav(item.view)} />
-          ))}
-
-          {!collapsed && ['Catalog', 'Operations', 'Settings'].map(group => (
-            <div key={group} className="mt-4">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 px-2 py-1.5">{group}</p>
-              {secondaryNav.filter(i => i.group === group).map(item => (
-                <NavItem key={item.view} {...item} active={currentView === item.view} onClick={() => nav(item.view)} />
+        <nav className={`space-y-1 ${collapsed ? 'px-2' : 'px-3'}`}>
+          {navItems.filter(item => !item.parent).map(item => (
+            <div key={item.view} className="space-y-0.5">
+              <NavItem {...item} collapsed={collapsed} active={currentView === item.view} onClick={() => nav(item.view as ViewType)} />
+              
+              {/* Render sub-items if not collapsed */}
+              {!collapsed && navItems.filter(sub => sub.parent === item.label).map(subItem => (
+                <NavItem key={subItem.view} {...subItem} isSubitem collapsed={collapsed} active={currentView === subItem.view} onClick={() => nav(subItem.view as ViewType)} />
               ))}
             </div>
           ))}
-
-          {collapsed && (
-            <>
-              <div className="my-2 border-t border-border/40" />
-              {secondaryNav.map(item => (
-                <NavItem key={item.view} {...item} collapsed active={currentView === item.view} onClick={() => nav(item.view)} />
-              ))}
-            </>
-          )}
+          
+          <div className="my-4 border-t border-border/40" />
+          <NavItem view="store-settings" label="Settings" icon={Settings} collapsed={collapsed} active={currentView === 'store-settings'} onClick={() => nav('store-settings')} />
         </nav>
       </ScrollArea>
 
@@ -295,18 +299,18 @@ function renderContent(view: string) {
     case 'inventory': return <InventoryPage />
     case 'shipping': return <ShippingPage />
     case 'tax-rates': return <TaxRatesPage />
-    case 'abandoned-carts': return <AbandonedCartsPage />
+    case 'abandoned-checkouts': return <AbandonedCartsPage />
     case 'reviews': return <ReviewsPage />
     case 'activity': return <ActivityLogPage />
     case 'collections': return <CollectionsPage />
     case 'gift-cards': return <GiftCardsPage />
     case 'staff': return <StaffPage />
     case 'create-store': return <CreateStoreDialog />
-    case 'domain-settings': return <DomainSettings />
+    case 'domains': return <DomainSettings />
     case 'billing': return <BillingSettings />
     case 'seo-settings': return <SeoSettings />
     case 'store-editor': return <StoreEditor />
-    case 'metafields': return <MetafieldsPage />
+    case 'metaobjects': return <MetafieldsPage />
     default: return <DashboardHome />
   }
 }

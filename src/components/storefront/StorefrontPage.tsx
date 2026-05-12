@@ -110,18 +110,68 @@ export default function StorefrontPage({ store }: { store: Store }) {
     console.error('Failed to parse sections', e)
   }
 
-  // If no custom layout is saved, fallback to a default layout
+  // If no custom layout is saved, fallback to a theme-specific layout
   if (!sections || sections.length === 0) {
-    sections = [
-      { id: '1', type: 'hero', settings: { title: store.seoTitle || `Welcome to ${store.name}`, subtitle: store.description || 'Discover our amazing collection of products', buttonText: 'Shop Now' } },
-      { id: '2', type: 'categories', settings: { title: 'Shop by Category' } },
-      { id: '3', type: 'featuredProducts', settings: { title: '⭐ Featured Products', count: 4 } },
-      { id: '4', type: 'allProducts', settings: { title: 'All Products' } }
-    ]
+    const theme = store.theme || 'modern'
+    
+    switch(theme) {
+      case 'streetwear':
+        sections = [
+          { id: 'a1', type: 'announcementBar', settings: { text: 'FREE SHIPPING WORLDWIDE OVER ₹5000', backgroundColor: '#ccff00', textColor: '#000' } },
+          { id: 'h1', type: 'heroBannerAdvanced', settings: { headline1: 'DRESS BOLD.', headline2: 'LIVE LOUD', subtitle: store.description, productTag: 'BESTSELLER', currentPrice: '₹2,499' } },
+          { id: 'f1', type: 'featuresBand', settings: { text1: '100% COTTON', text2: 'OVERSIZED FIT', text3: 'LTD EDITION' } },
+          { id: 'v1', type: 'shoppableVideo', settings: { title: 'THE SUMMER DROP' } },
+          { id: 'p1', type: 'promotionalBanners', settings: {} },
+          { id: 'fp', type: 'featuredCollection', settings: { title: 'NEW ARRIVALS', count: 4 } }
+        ];
+        break;
+      
+      case 'luxury':
+        sections = [
+          { id: 's1', type: 'slideshow', settings: { slideCount: 3 } },
+          { id: 'r1', type: 'richText', settings: { title: 'A Legacy of Excellence', content: store.description } },
+          { id: 'c1', type: 'categoryGrid', settings: { title: 'Curated Collections' } },
+          { id: 'l1', type: 'lookbook', settings: { title: 'The Editor\'s Choice' } },
+          { id: 'fp', type: 'featuredProducts', settings: { title: 'Signature Pieces', count: 4 } }
+        ];
+        break;
+
+      case 'minimal':
+      case 'industrial':
+        sections = [
+          { id: 'h1', type: 'textWithImage', settings: { title: store.name, content: store.description, imagePosition: 'right' } },
+          { id: 'fp', type: 'featuredProducts', settings: { title: 'Essentials', count: 8 } },
+          { id: 'g1', type: 'imageGallery', settings: { title: 'Journal' } }
+        ];
+        break;
+
+      case 'playful':
+        sections = [
+          { id: 'p1', type: 'promoBanner', settings: { text: '🎉 Buy 2 Get 1 FREE on all Accessories! 🎉', backgroundColor: '#FF6B6B', textColor: '#FFF' } },
+          { id: 'h1', type: 'hero', settings: { title: store.seoTitle || `Welcome to ${store.name}`, subtitle: store.description, buttonText: 'Let\'s Shop!' } },
+          { id: 'b1', type: 'bundleBuilder', settings: { title: 'Build Your Pack', discount: 'Save 20%' } },
+          { id: 'fp', type: 'featuredProducts', settings: { title: 'Trending Now', count: 4 } },
+          { id: 't1', type: 'testimonials', settings: { title: 'What Our Besties Say' } }
+        ];
+        break;
+
+      case 'modern':
+      default:
+        sections = [
+          { id: '1', type: 'hero', settings: { title: store.seoTitle || `Welcome to ${store.name}`, subtitle: store.description || 'Discover our amazing collection of products', buttonText: 'Shop Now' } },
+          { id: '2', type: 'categories', settings: { title: 'Shop by Category' } },
+          { id: '3', type: 'featuredProducts', settings: { title: '⭐ Featured Products', count: 4 } },
+          { id: 'tb', type: 'trustBadges', settings: {} },
+          { id: '4', type: 'allProducts', settings: { title: 'All Products' } }
+        ]
+    }
   }
 
+  // Theme-specific CSS classes for the root container
+  const themeClass = `theme-${store.theme || 'modern'}`
+
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className={`min-h-screen bg-white font-sans ${themeClass}`}>
       {/* Inject Pixels */}
       {store.googleAnalyticsId && (
         <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${store.googleAnalyticsId}`} />
@@ -939,9 +989,9 @@ export default function StorefrontPage({ store }: { store: Store }) {
                   <span>Total</span>
                   <span>{formatPrice(cartTotal, store.currency)}</span>
                 </div>
-                <button className="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg hover:opacity-90 transition-all" style={{ background: primary }}>
+                <Link href={`/store/${store.slug}/checkout`} className="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg hover:opacity-90 transition-all flex items-center justify-center" style={{ background: primary }}>
                   Proceed to Checkout
-                </button>
+                </Link>
               </div>
             )}
           </div>

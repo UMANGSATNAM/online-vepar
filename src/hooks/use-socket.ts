@@ -54,6 +54,7 @@ export function useSocket(onNewOrder?: EventCallback) {
     // If already connected, join store immediately
     if (s.connected && currentStore?.id) {
       s.emit('join_store', { storeId: currentStore.id })
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConnected(true)
     }
 

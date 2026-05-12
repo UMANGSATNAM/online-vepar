@@ -95,6 +95,7 @@ export async function POST(request: Request) {
       name, description, price, comparePrice, cost, images,
       category, tags, sku, barcode, stock, trackInventory,
       weight, weightUnit, status, featured, storeId, categoryId,
+      hsnCode, gstRate, codEnabled, originCountry, collectionIds,
     } = body;
 
     if (!name || price === undefined || !storeId) {
@@ -134,6 +135,16 @@ export async function POST(request: Request) {
         featured: featured || false,
         storeId,
         categoryId,
+        hsnCode: hsnCode || null,
+        gstRate: gstRate ? parseFloat(String(gstRate)) : null,
+        codEnabled: codEnabled !== undefined ? codEnabled : true,
+        originCountry: originCountry || 'IN',
+        collectionProducts: collectionIds?.length ? {
+          create: collectionIds.map((cId: string, idx: number) => ({
+            collectionId: cId,
+            position: idx
+          }))
+        } : undefined
       },
       include: {
         categoryRef: {

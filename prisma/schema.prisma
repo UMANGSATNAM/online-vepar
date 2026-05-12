@@ -135,6 +135,10 @@ model Product {
   store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   categoryId  String?
   categoryRef Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  hsnCode     String?
+  gstRate     Float?
+  codEnabled  Boolean  @default(true)
+  originCountry String @default("IN")
   options     String   @default("[]") // JSON array e.g., [{"name": "Color", "values": ["Red"]}]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -164,6 +168,8 @@ model Order {
   shippingAddress String?
   billingAddress  String?
   notes         String?
+  isCod         Boolean  @default(false)
+  rtoStatus     String?  // pending, returned, delivered
   storeId       String
   store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   userId        String?

@@ -1,4 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -421,3 +425,92 @@ input:focus, textarea:focus {
 
 /* ─── Page transition ─── */
 .page-enter { animation: fade-up 0.3s ease-out both; }
+
+/* ───────────────────────────────────────────────────────── */
+/*                     5 PREMIUM THEMES                      */
+/* ───────────────────────────────────────────────────────── */
+
+/* 1. MODERN (Default) */
+.theme-modern {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* 2. LUXURY */
+.theme-luxury {
+  font-family: 'Playfair Display', serif;
+  background-color: #faf9f6; /* Off-white luxury */
+}
+.theme-luxury h1, .theme-luxury h2, .theme-luxury h3, .theme-luxury h4 {
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.theme-luxury button {
+  border-radius: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif; /* Keep buttons readable */
+}
+.theme-luxury .rounded-2xl, .theme-luxury .rounded-xl, .theme-luxury .rounded-lg, .theme-luxury .rounded-full {
+  border-radius: 0 !important;
+}
+
+/* 3. STREETWEAR */
+.theme-streetwear {
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+}
+.theme-streetwear h1, .theme-streetwear h2, .theme-streetwear h3 {
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.theme-streetwear button {
+  border-radius: 0;
+  border: 2px solid #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.1s;
+}
+.theme-streetwear button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+.theme-streetwear .rounded-2xl, .theme-streetwear .rounded-xl, .theme-streetwear .rounded-lg, .theme-streetwear .rounded-full {
+  border-radius: 0 !important;
+}
+
+/* 4. PLAYFUL */
+.theme-playful {
+  font-family: 'Quicksand', sans-serif;
+  background-color: #fffaf0;
+}
+.theme-playful h1, .theme-playful h2, .theme-playful h3 {
+  font-weight: 900;
+}
+.theme-playful button {
+  border-radius: 9999px !important;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+.theme-playful .rounded-2xl { border-radius: 2rem !important; }
+.theme-playful .rounded-xl { border-radius: 1.5rem !important; }
+
+/* 5. INDUSTRIAL */
+.theme-industrial {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: #f4f4f5;
+  color: #18181b;
+}
+.theme-industrial h1, .theme-industrial h2, .theme-industrial h3 {
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+}
+.theme-industrial section {
+  border-bottom: 2px solid #e4e4e7;
+}
+.theme-industrial button {
+  border-radius: 0 !important;
+  border: 1px solid #000;
+  text-transform: uppercase;
+}

@@ -72,6 +72,7 @@ export async function PUT(
       name, description, price, comparePrice, cost, images,
       category, tags, sku, barcode, stock, trackInventory,
       weight, weightUnit, status, featured, categoryId,
+      hsnCode, gstRate, codEnabled, originCountry, collectionIds,
     } = body;
 
     const updateData: Record<string, unknown> = {};
@@ -93,6 +94,20 @@ export async function PUT(
     if (status !== undefined) updateData.status = status;
     if (featured !== undefined) updateData.featured = featured;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
+    if (hsnCode !== undefined) updateData.hsnCode = hsnCode;
+    if (gstRate !== undefined) updateData.gstRate = gstRate ? parseFloat(String(gstRate)) : null;
+    if (codEnabled !== undefined) updateData.codEnabled = codEnabled;
+    if (originCountry !== undefined) updateData.originCountry = originCountry;
+
+    if (collectionIds !== undefined) {
+      updateData.collectionProducts = {
+        deleteMany: {},
+        create: collectionIds.map((cId: string, idx: number) => ({
+          collectionId: cId,
+          position: idx
+        }))
+      };
+    }
 
     const product = await db.product.update({
       where: { id },

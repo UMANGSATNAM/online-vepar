@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import '../services/socket_service.dart';
 import 'orders_screen.dart';
 import 'products_screen.dart';
 import 'customers_screen.dart';
 import 'finance_screen.dart';
 import 'settings_screen.dart';
-
+import 'menu_screen.dart';
+import 'analytics_screen.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -23,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ProductsScreen(),
     CustomersScreen(),
     FinanceScreen(),
-    SettingsScreen(),
+    MenuScreen(),
   ];
 
   @override
@@ -40,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           NavigationDestination(icon: Icon(Icons.inventory_2_outlined), selectedIcon: Icon(Icons.inventory_2), label: 'Products'),
           NavigationDestination(icon: Icon(Icons.people_outline), selectedIcon: Icon(Icons.people), label: 'Customers'),
           NavigationDestination(icon: Icon(Icons.account_balance_wallet_outlined), selectedIcon: Icon(Icons.account_balance_wallet), label: 'Hisab'),
-          NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
+          NavigationDestination(icon: Icon(Icons.menu_outlined), selectedIcon: Icon(Icons.menu), label: 'Menu'),
         ],
       ),
     );
@@ -65,6 +67,50 @@ class _HomeTabState extends State<_HomeTab> {
     _load();
   }
 
+  void _setupSocket() {
+    final api = context.read<ApiService>();
+    final socketService = context.read<SocketService>();
+    final storeId = api.currentStoreId;
+    
+    if (storeId != null && !socketService.isConnected) {
+      socketService.connect(storeId);
+      socketService.onNewOrderReceived = (data) {
+        if (!mounted) return;
+        
+        final customerName = data['customerName'] ?? 'Guest';
+        final total = data['total']?.toString() ?? '0';
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.shopping_bag, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('🛍️ Cha-ching! New Order', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('From $customerName — ₹$total'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF10b981),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+        
+        // Refresh the dashboard stats when a new order comes in
+        _load();
+      };
+    }
+  }
+
   Future<void> _load() async {
     setState(() => _isLoading = true);
     final api = context.read<ApiService>();
@@ -75,6 +121,9 @@ class _HomeTabState extends State<_HomeTab> {
       _recentOrders = orders;
       _isLoading = false;
     });
+    
+    // Setup socket after we have loaded and confirmed the storeId
+    _setupSocket();
   }
 
   @override
@@ -204,13 +253,21 @@ class _HomeTabState extends State<_HomeTab> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _actionChip(context, '➕ New Product', Icons.add_box, () {
+              _actionChip(context, '➕ Add Product', Icons.add_box_outlined, () {
                 Navigator.pushNamed(context, '/add-product');
               }),
               const SizedBox(width: 10),
-              _actionChip(context, '📦 View Orders', Icons.receipt_long, () {}),
+              _actionChip(context, '📦 View Orders', Icons.receipt_long_outlined, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen()));
+              }),
               const SizedBox(width: 10),
-              _actionChip(context, '💰 Check Hisab', Icons.account_balance_wallet, () {}),
+              _actionChip(context, '📊 View Analytics', Icons.bar_chart, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const AnalyticsScreen()));
+              }),
+              const SizedBox(width: 10),
+              _actionChip(context, '⚙️ Manage Store', Icons.settings_outlined, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              }),
             ],
           ),
         ),

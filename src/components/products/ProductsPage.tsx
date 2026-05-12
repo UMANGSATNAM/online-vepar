@@ -11,6 +11,9 @@ import {
 } from 'lucide-react'
 import Papa from 'papaparse'
 import { useRef } from 'react'
+import dynamic from 'next/dynamic'
+const RichTextEditor = dynamic(() => import('@/components/ui/rich-text-editor').then(mod => mod.RichTextEditor), { ssr: false })
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -139,6 +142,10 @@ interface ProductFormData {
   status: string
   featured: boolean
   categoryId: string
+  hsnCode: string
+  gstRate: string
+  codEnabled: boolean
+  originCountry: string
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -199,6 +206,10 @@ const emptyFormData: ProductFormData = {
   status: 'draft',
   featured: false,
   categoryId: '',
+  hsnCode: '',
+  gstRate: '',
+  codEnabled: true,
+  originCountry: 'IN',
 }
 
 // ─── Skeleton Loaders ─────────────────────────────────────────────
@@ -659,58 +670,44 @@ export default function ProductsPage() {
     }
   }
 
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !currentStore) return
+    
     setIsImporting(true)
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        try {
-          const products = results.data.map((row: any) => ({
-            name: row.name || row.Name || row.Title,
-            price: parseFloat(row.price || row.Price) || 0,
-            comparePrice: parseFloat(row.comparePrice || row['Compare Price']) || null,
-            stock: parseInt(row.stock || row.Stock || row.Quantity) || 0,
-            sku: row.sku || row.SKU || '',
-            barcode: row.barcode || row.Barcode || '',
-            description: row.description || row.Description || '',
-            category: row.category || row.Category || '',
-            weight: parseFloat(row.weight || row.Weight) || null,
-            status: row.status || row.Status || 'active',
-            storeId: currentStore.id
-          })).filter((p: any) => p.name)
-
-          if (products.length === 0) throw new Error('No valid products found in CSV')
-
-          // Using a sequential or batched insert approach
-          for (let i = 0; i < products.length; i += 10) {
-            const batch = products.slice(i, i + 10)
-            await Promise.all(batch.map(async (prod: any) => {
-              await fetch('/api/products', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(prod)
-              })
-            }))
-          }
-
-          toast({ title: 'Import Successful', description: `Imported ${products.length} products.` })
-          fetchProducts()
-        } catch (err: any) {
-          toast({ title: 'Import Failed', description: err.message, variant: 'destructive' })
-        } finally {
-          setIsImporting(false)
-          if (fileInputRef.current) fileInputRef.current.value = ''
-        }
-      },
-      error: () => {
-        toast({ title: 'Import Failed', description: 'Failed to parse CSV file.', variant: 'destructive' })
-        setIsImporting(false)
-        if (fileInputRef.current) fileInputRef.current.value = ''
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const res = await fetch(`/api/products/import?storeId=${currentStore.id}`, {
+        method: 'POST',
+        body: formData,
+      })
+      
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Import failed')
       }
-    })
+      
+      const data = await res.json()
+      
+      toast({ 
+        title: 'Import Successful', 
+        description: `Imported ${data.results.imported} products. ${data.results.failed > 0 ? `${data.results.failed} failed.` : ''}` 
+      })
+      
+      fetchProducts()
+    } catch (err: any) {
+      toast({ 
+        title: 'Import Failed', 
+        description: err.message, 
+        variant: 'destructive' 
+      })
+    } finally {
+      setIsImporting(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
   }
 
   // ─── Form Handlers ───────────────────────────────────────────
@@ -746,6 +743,10 @@ export default function ProductsPage() {
       status: product.status,
       featured: product.featured,
       categoryId: product.categoryId || '',
+      hsnCode: (product as any).hsnCode || '',
+      gstRate: (product as any).gstRate != null ? String((product as any).gstRate) : '',
+      codEnabled: (product as any).codEnabled !== false,
+      originCountry: (product as any).originCountry || 'IN',
     })
     setImageInput('')
     setTagInput('')
@@ -838,6 +839,10 @@ export default function ProductsPage() {
         featured: formData.featured,
         storeId: currentStore.id,
         categoryId: formData.categoryId || null,
+        hsnCode: formData.hsnCode || null,
+        gstRate: formData.gstRate ? parseFloat(formData.gstRate) : null,
+        codEnabled: formData.codEnabled,
+        originCountry: formData.originCountry || 'IN',
       }
 
       let res: Response
@@ -1583,12 +1588,11 @@ export default function ProductsPage() {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  <Textarea
-                    id="product-desc"
-                    placeholder="Add a description for your product..."
-                    rows={6}
+                  <RichTextEditor
                     value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(val) => setFormData(prev => ({ ...prev, description: val }))}
+                    placeholder="Add a rich description for your product..."
+                    minHeight="300px"
                   />
                 </div>
               </div>
@@ -1987,6 +1991,67 @@ export default function ProductsPage() {
                       <SelectItem value="oz">oz</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </Card>
+
+            {/* Compliance & Region */}
+            <Card className="p-6 border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/30 dark:bg-emerald-900/10">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-emerald-600" />
+                Compliance & Region (India)
+              </h3>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium">HSN Code</Label>
+                    <Input
+                      placeholder="e.g. 6109"
+                      value={formData.hsnCode}
+                      onChange={(e) => setFormData(prev => ({ ...prev, hsnCode: e.target.value }))}
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium">GST Rate (%)</Label>
+                    <Input
+                      type="number"
+                      placeholder="e.g. 18"
+                      value={formData.gstRate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, gstRate: e.target.value }))}
+                      className="bg-background"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium">Country of Origin</Label>
+                  <Select
+                    value={formData.originCountry}
+                    onValueChange={(val) => setFormData(prev => ({ ...prev, originCountry: val }))}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IN">India</SelectItem>
+                      <SelectItem value="CN">China</SelectItem>
+                      <SelectItem value="US">United States</SelectItem>
+                      <SelectItem value="UK">United Kingdom</SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="pt-2 border-t border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm font-medium">Cash on Delivery</Label>
+                      <p className="text-[10px] text-muted-foreground">Allow COD for this item</p>
+                    </div>
+                    <Switch
+                      checked={formData.codEnabled}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, codEnabled: checked }))}
+                    />
+                  </div>
                 </div>
               </div>
             </Card>
