@@ -383,10 +383,10 @@ export default function StoreEditor() {
         { id: '7', type: 'reviewsSection', label: 'Reviews Section', settings: { title: 'What They Say' } },
         { id: '8', type: 'footer', label: 'Footer', settings: { text: '© 2026 Peril Jewellery' } }
       ])
-    }
     if (currentStore?.theme) {
       setStoreTheme(currentStore.theme)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStore?.sectionsConfig, currentStore?.name, currentStore?.theme])
 
   const sensors = useSensors(
