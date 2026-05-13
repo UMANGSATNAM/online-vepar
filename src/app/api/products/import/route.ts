@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify store ownership
-    const store = await db.store.findFirst({ where: { id: storeId, userId: user.id } })
+    const store = await db.store.findFirst({ where: { id: storeId, ownerId: user.id } })
     if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 })
 
     const text = await file.text()
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     for (const name of categoryNames) {
       let cat = await db.category.findFirst({ where: { storeId, name } })
       if (!cat) {
-        cat = await db.category.create({ data: { storeId, name, description: '' } })
+        cat = await db.category.create({ data: { storeId, name, slug: slugify(name) } })
       }
       categoryMap[name] = cat.id
     }

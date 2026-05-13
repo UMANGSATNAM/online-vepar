@@ -7,11 +7,15 @@ import {
   Eye, Filter, ChevronLeft, ChevronRight, X, ImageIcon, Upload, GripVertical,
   Tag, ArrowUpDown, CheckCircle2, Archive, CircleDot, Star, ArrowLeft,
   IndianRupee, Calculator, Barcode, Scale, FolderPlus, Download, Layers,
-  GripVertical as DragHandle, Minus, Copy, Sparkles, Loader2, FileUp
+  GripVertical as DragHandle, Minus, Copy, Sparkles, Loader2, FileUp, Globe
 } from 'lucide-react'
 import Papa from 'papaparse'
 import { useRef } from 'react'
 import dynamic from 'next/dynamic'
+import { ProductGrid } from './ProductGrid'
+import { ProductTable } from './ProductTable'
+import { CategoryModal } from './CategoryModal'
+import { VariantModal } from './VariantModal'
 const RichTextEditor = dynamic(() => import('@/components/ui/rich-text-editor').then(mod => mod.RichTextEditor), { ssr: false })
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -1184,256 +1188,28 @@ export default function ProductsPage() {
   // ─── Render: Grid View ───────────────────────────────────────
 
   const renderGridView = () => (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-      {products.map((product, idx) => {
-        const images = parseJSONField(product.images)
-        return (
-          <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
-          >
-            <Card className="group overflow-hidden card-premium animate-card-entrance border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800">
-              {/* Image */}
-              <div className="relative aspect-[4/3] bg-muted overflow-hidden">
-                {images.length > 0 ? (
-                  <img
-                    src={images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-10 h-10 text-muted-foreground/40" />
-                  </div>
-                )}
-                {/* Checkbox overlay */}
-                <div className="absolute top-2 left-2">
-                  <Checkbox
-                    checked={selectedIds.has(product.id)}
-                    onCheckedChange={() => toggleSelect(product.id)}
-                    className="bg-white/80 dark:bg-black/50 border-gray-300"
-                  />
-                </div>
-                {/* Featured badge */}
-                {product.featured && (
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-yellow-500 text-white border-0 text-[10px] px-1.5">
-                      <Star className="w-3 h-3 mr-0.5" /> Featured
-                    </Badge>
-                  </div>
-                )}
-              </div>
-
-              <CardContent className="p-4 space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                  <h3
-                    className="font-medium text-sm line-clamp-2 cursor-pointer hover:text-emerald-600 transition-colors"
-                    onClick={() => openDetail(product.id)}
-                  >
-                    {product.name}
-                  </h3>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 shrink-0">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => openDetail(product.id)}>
-                        <Eye className="w-4 h-4 mr-2" /> View
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => openEditForm(product)}>
-                        <Pencil className="w-4 h-4 mr-2" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <DropdownMenuItem
-                            className="text-red-600 focus:text-red-600"
-                            onSelect={(e) => e.preventDefault()}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                          </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete product?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This will permanently delete &quot;{product.name}&quot;. This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {product.sku && (
-                  <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
-                )}
-
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.comparePrice && product.comparePrice > product.price && (
-                    <span className="text-xs text-muted-foreground line-through">
-                      {formatPrice(product.comparePrice)}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  {getStockBadge(product.stock, product.trackInventory)}
-                  {getStatusBadge(product.status)}
-                </div>
-
-                {product.categoryRef && (
-                  <Badge variant="outline" className="text-[10px]">
-                    {product.categoryRef.name}
-                  </Badge>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        )
-      })}
-    </div>
+    <ProductGrid
+      products={products}
+      selectedIds={selectedIds}
+      toggleSelect={toggleSelect}
+      openDetail={openDetail}
+      openEditForm={openEditForm}
+      handleDeleteProduct={handleDeleteProduct}
+    />
   )
 
   // ─── Render: Table View ──────────────────────────────────────
 
   const renderTableView = () => (
-    <Card>
-      <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-10">
-              <Checkbox
-                checked={selectedIds.size === products.length && products.length > 0}
-                onCheckedChange={toggleSelectAll}
-              />
-            </TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Inventory</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead className="w-10">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => {
-            const images = parseJSONField(product.images)
-            return (
-              <TableRow key={product.id} className={`group table-row-hover animate-row-appear ${products.indexOf(product) % 2 === 1 ? 'table-row-alt' : ''}`}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedIds.has(product.id)}
-                    onCheckedChange={() => toggleSelect(product.id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md overflow-hidden bg-muted shrink-0">
-                      {images.length > 0 ? (
-                        <img src={images[0]} alt={product.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ImageIcon className="w-4 h-4 text-muted-foreground/50" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p
-                        className="font-medium text-sm truncate cursor-pointer hover:text-emerald-600 transition-colors"
-                        onClick={() => openDetail(product.id)}
-                      >
-                        {product.name}
-                      </p>
-                      {product.sku && (
-                        <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
-                      )}
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>{getStatusBadge(product.status)}</TableCell>
-                <TableCell>{getStockBadge(product.stock, product.trackInventory)}</TableCell>
-                <TableCell>
-                  {product.categoryRef ? (
-                    <Badge variant="outline" className="text-xs">{product.categoryRef.name}</Badge>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">—</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.comparePrice && product.comparePrice > product.price && (
-                    <span className="text-xs text-muted-foreground line-through ml-1">
-                      {formatPrice(product.comparePrice)}
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => openDetail(product.id)}>
-                        <Eye className="w-4 h-4 mr-2" /> View
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => openEditForm(product)}>
-                        <Pencil className="w-4 h-4 mr-2" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <DropdownMenuItem
-                            className="text-red-600 focus:text-red-600"
-                            onSelect={(e) => e.preventDefault()}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                          </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete product?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This will permanently delete &quot;{product.name}&quot;. This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteProduct(product.id)}>
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-      </div>
-    </Card>
+    <ProductTable
+      products={products}
+      selectedIds={selectedIds}
+      toggleSelectAll={toggleSelectAll}
+      toggleSelect={toggleSelect}
+      openDetail={openDetail}
+      openEditForm={openEditForm}
+      handleDeleteProduct={handleDeleteProduct}
+    />
   )
 
   // ─── Render: Empty State ─────────────────────────────────────
@@ -1863,54 +1639,15 @@ export default function ProductsPage() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="icon" className="shrink-0">
-                          <FolderPlus className="w-4 h-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add Category</DialogTitle>
-                          <DialogDescription>Create a new product category</DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-2">
-                          <div className="space-y-2">
-                            <Label htmlFor="cat-name">Category Name</Label>
-                            <Input
-                              id="cat-name"
-                              placeholder="e.g., Electronics"
-                              value={newCategoryName}
-                              onChange={(e) => setNewCategoryName(e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="cat-image">Image URL (optional)</Label>
-                            <Input
-                              id="cat-image"
-                              placeholder="https://..."
-                              value={newCategoryImage}
-                              onChange={(e) => setNewCategoryImage(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button
-                            variant="outline"
-                            onClick={() => setCategoryDialogOpen(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleCreateCategory}
-                            disabled={isCreatingCategory || !newCategoryName.trim()}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
-                          >
-                            {isCreatingCategory ? 'Creating...' : 'Create Category'}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+                    <Button variant="outline" size="icon" className="shrink-0" onClick={() => setCategoryDialogOpen(true)}>
+                      <FolderPlus className="w-4 h-4" />
+                    </Button>
+                    <CategoryModal
+                      open={categoryDialogOpen}
+                      onOpenChange={setCategoryDialogOpen}
+                      storeId={currentStore?.id || ''}
+                      onSuccess={fetchCategories}
+                    />
                   </div>
                 </div>
 
@@ -2529,169 +2266,16 @@ export default function ProductsPage() {
         {viewMode === 'detail' && <div key="detail">{renderDetailView()}</div>}
       </AnimatePresence>
 
-      {/* Variant Create/Edit Dialog */}
-      <Dialog open={variantDialogOpen} onOpenChange={setVariantDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Layers className="w-5 h-5 text-emerald-600" />
-              {editingVariantId ? 'Edit Variant' : 'Add Variant'}
-            </DialogTitle>
-            <DialogDescription>
-              {editingVariantId ? 'Update variant details for this product' : 'Create a new variant like a size, color, or material option'}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-5 py-2 max-h-[70vh] overflow-y-auto">
-            {/* Variant Name */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">
-                Variant Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                placeholder="e.g., Red / Large, Size M"
-                value={variantFormData.name}
-                onChange={(e) => setVariantFormData(prev => ({ ...prev, name: e.target.value }))}
-              />
-              <p className="text-xs text-muted-foreground">A descriptive name for this variant</p>
-            </div>
-
-            {/* Options */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium flex items-center gap-1">
-                <Tag className="w-3 h-3 text-emerald-600" /> Options
-              </Label>
-              <div className="space-y-2">
-                {variantFormData.options.map((opt, idx) => (
-                  <div key={idx} className="option-field-card flex items-center gap-2">
-                    <Input
-                      placeholder="Option name (e.g., Color)"
-                      value={opt.key}
-                      onChange={(e) => handleUpdateOptionField(idx, 'key', e.target.value)}
-                      className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
-                    />
-                    <Input
-                      placeholder="Value (e.g., Red)"
-                      value={opt.value}
-                      onChange={(e) => handleUpdateOptionField(idx, 'value', e.target.value)}
-                      className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0 h-7 w-7 p-0 text-muted-foreground hover:text-red-500"
-                      onClick={() => handleRemoveOptionField(idx)}
-                      disabled={variantFormData.options.length <= 1}
-                      title="Remove option"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAddOptionField}
-                className="w-full border-dashed border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
-                title="Add another option"
-              >
-                <Plus className="w-3.5 h-3.5 mr-1" />
-                Add Option
-              </Button>
-            </div>
-
-            {/* SKU */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">SKU</Label>
-              <Input
-                placeholder="e.g., SAR-001-RED-L"
-                value={variantFormData.sku}
-                onChange={(e) => setVariantFormData(prev => ({ ...prev, sku: e.target.value }))}
-              />
-            </div>
-
-            {/* Price fields */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Price Override</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="Same as product"
-                    className="pl-7"
-                    value={variantFormData.price}
-                    onChange={(e) => setVariantFormData(prev => ({ ...prev, price: e.target.value }))}
-                  />
-                </div>
-                <p className="text-[10px] text-muted-foreground">Leave empty to use product price</p>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Compare-at Price</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="Optional"
-                    className="pl-7"
-                    value={variantFormData.comparePrice}
-                    onChange={(e) => setVariantFormData(prev => ({ ...prev, comparePrice: e.target.value }))}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Stock with real-time total preview */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Stock Quantity</Label>
-              <div className="flex items-center gap-3">
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={variantFormData.stock}
-                  onChange={(e) => setVariantFormData(prev => ({ ...prev, stock: e.target.value }))}
-                  className="w-32"
-                />
-                <div className="text-xs text-muted-foreground">
-                  Total across all variants: <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {variants.reduce((sum, v) => sum + v.stock, 0) + (parseInt(variantFormData.stock) || 0) - (editingVariantId ? (variants.find(v => v.id === editingVariantId)?.stock || 0) : 0)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Active toggle */}
-            <div className="flex items-center gap-2 pt-1">
-              <Switch
-                id="variant-active"
-                checked={variantFormData.isActive}
-                onCheckedChange={(checked) => setVariantFormData(prev => ({ ...prev, isActive: checked }))}
-              />
-              <Label htmlFor="variant-active" className="text-sm cursor-pointer">Active</Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setVariantDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveVariant}
-              disabled={isSavingVariant}
-              className="btn-gradient text-white"
-            >
-              {isSavingVariant ? 'Saving...' : (editingVariantId ? 'Update Variant' : 'Create Variant')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <VariantModal
+        open={variantDialogOpen}
+        onOpenChange={setVariantDialogOpen}
+        editingVariantId={editingVariantId}
+        variantFormData={variantFormData}
+        setVariantFormData={setVariantFormData}
+        variants={variants}
+        handleSaveVariant={handleSaveVariant}
+        isSavingVariant={isSavingVariant}
+      />
     </div>
   )
 }

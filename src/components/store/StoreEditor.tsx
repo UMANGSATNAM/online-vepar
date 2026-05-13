@@ -349,9 +349,9 @@ export default function StoreEditor() {
   const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
-  const [isPublished, setIsPublished] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [pendingImageKey, setPendingImageKey] = useState<{ sectionId: string; key: string } | null>(null)
+  const [storeTheme, setStoreTheme] = useState<string>('modern')
   const socket = useSocket()
 
   // Load sections from currentStore
@@ -383,7 +383,11 @@ export default function StoreEditor() {
         { id: '7', type: 'reviewsSection', label: 'Reviews Section', settings: { title: 'What They Say' } },
         { id: '8', type: 'footer', label: 'Footer', settings: { text: '© 2026 Peril Jewellery' } }
       ])
-    }, [currentStore?.sectionsConfig, currentStore?.name])
+    }
+    if (currentStore?.theme) {
+      setStoreTheme(currentStore.theme)
+    }
+  }, [currentStore?.sectionsConfig, currentStore?.name, currentStore?.theme])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -459,6 +463,7 @@ export default function StoreEditor() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sectionsConfig: JSON.stringify(sections),
+          theme: storeTheme,
           isActive: true   // auto-publish on every save
         })
       })
@@ -588,6 +593,7 @@ export default function StoreEditor() {
                       onClick={() => {
                         if (confirm(`Apply the ${theme.name} premium theme? This will replace your current sections.`)) {
                           setSections(theme.sections)
+                          setStoreTheme(theme.theme)
                           toast({ title: 'Theme Applied', description: `Loaded ${theme.name} layout.` })
                           setActiveTab('sections')
                         }
@@ -673,7 +679,7 @@ export default function StoreEditor() {
           <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
             <motion.div
               layout
-              className="bg-white shadow-[0_0_0_1px_rgba(63,63,68,0.05),0_1px_3px_0_rgba(63,63,68,0.15)] rounded-md transition-all duration-300 overflow-hidden"
+              className={`bg-white shadow-[0_0_0_1px_rgba(63,63,68,0.05),0_1px_3px_0_rgba(63,63,68,0.15)] rounded-md transition-all duration-300 overflow-hidden theme-${storeTheme}`}
               style={{
                 width: viewport === 'desktop' ? '100%' : viewport === 'tablet' ? '768px' : '375px',
                 minHeight: '800px',

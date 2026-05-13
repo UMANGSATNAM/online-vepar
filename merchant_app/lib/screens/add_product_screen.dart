@@ -17,7 +17,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _comparePriceController = TextEditingController();
   final _skuController = TextEditingController();
   final _stockController = TextEditingController();
+  final _hsnCodeController = TextEditingController();
+  final _gstRateController = TextEditingController();
   String _status = 'active';
+  String _originCountry = 'IN';
+  bool _isCodEnabled = true;
   bool _isLoading = false;
 
   @override
@@ -28,6 +32,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _comparePriceController.dispose();
     _skuController.dispose();
     _stockController.dispose();
+    _hsnCodeController.dispose();
+    _gstRateController.dispose();
     super.dispose();
   }
 
@@ -43,6 +49,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
       'sku': _skuController.text,
       'stock': int.tryParse(_stockController.text) ?? 0,
       'status': _status,
+      'hsnCode': _hsnCodeController.text,
+      'gstRate': double.tryParse(_gstRateController.text) ?? 0,
+      'originCountry': _originCountry,
+      'isCodEnabled': _isCodEnabled,
     });
 
     setState(() => _isLoading = false);
@@ -114,6 +124,44 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   DropdownMenuItem(value: 'draft', child: Text('Draft – Hidden from store')),
                 ],
                 onChanged: (val) => setState(() => _status = val ?? 'active'),
+              ),
+            ]),
+            const SizedBox(height: 16),
+            _buildSection('Compliance (India)', [
+              Row(
+                children: [
+                  Expanded(child: _field(_hsnCodeController, 'HSN Code')),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _field(_gstRateController, 'GST %',
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: _originCountry,
+                decoration: const InputDecoration(
+                  labelText: 'Country of Origin',
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'IN', child: Text('India')),
+                  DropdownMenuItem(value: 'CN', child: Text('China')),
+                  DropdownMenuItem(value: 'US', child: Text('United States')),
+                  DropdownMenuItem(value: 'UK', child: Text('United Kingdom')),
+                  DropdownMenuItem(value: 'OTHER', child: Text('Other')),
+                ],
+                onChanged: (val) => setState(() => _originCountry = val ?? 'IN'),
+              ),
+              const SizedBox(height: 12),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Cash on Delivery', style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text('Allow COD for this item'),
+                value: _isCodEnabled,
+                activeColor: const Color(0xFF10b981),
+                onChanged: (val) => setState(() => _isCodEnabled = val),
               ),
             ]),
             const SizedBox(height: 32),
