@@ -1,68 +1,92 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { verifyPassword } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/app/api/rate-limit/route'
+import { db } from '@/lib/db'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // ─── Rate Limit: 5 login attempts per 15 minutes ─────────────────────────
+  const limit = await rateLimit(request, { limit: 5, windowMs: 15 * 60 * 1000 })
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: 'Too many login attempts. Try again in 15 minutes.' },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': limit.reset.toString(),
+          'Retry-After': '900',
+        },
+      }
+    )
+  }
+
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    const { email, password } = await request.json()
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email and password required' }, { status: 400 })
     }
+
+    // Sanitize email
+    const sanitizedEmail = email.trim().toLowerCase()
 
     const user = await db.user.findUnique({
-      where: { email },
-    });
+      where: { email: sanitizedEmail },
+      include: {
+        stores: {
+          select: {
+            id: true, name: true, slug: true, logo: true, primaryColor: true,
+            description: true, currency: true, isActive: true, theme: true,
+          },
+        },
+      },
+    })
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
+      // Use consistent error to prevent user enumeration
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
     }
 
-    if (!verifyPassword(password, user.password)) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
+    if (!user.password) {
+      return NextResponse.json({ error: 'Account requires social login. Use Google sign-in.' }, { status: 401 })
     }
 
-    const userResponse = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      avatar: user.avatar,
-      createdAt: user.createdAt,
-    };
+    const passwordMatch = await bcrypt.compare(password, user.password)
+    if (!passwordMatch) {
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
+    }
 
-    // Fetch user's stores
-    const stores = await db.store.findMany({
-      where: { ownerId: user.id },
-      orderBy: { createdAt: 'desc' },
-    });
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET || 'dev-secret-change-in-production',
+      { expiresIn: '7d' }
+    )
 
-    const response = NextResponse.json(
-      { user: userResponse, stores, message: 'Login successful' },
-      { status: 200 }
-    );
+    const response = NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar,
+        createdAt: user.createdAt,
+      },
+      stores: user.stores,
+    })
 
-    response.cookies.set('ov_session', user.id, {
+    response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 7 * 24 * 60 * 60, // 7 days
       path: '/',
-    });
+    })
 
-    return response;
+    return response
   } catch (error: any) {
-    console.error('[LOGIN ERROR]', error?.message, error?.stack);
-    return NextResponse.json({ error: `Internal server error: ${error.message}` }, { status: 500 });
+    console.error('Login error:', error)
+    return NextResponse.json({ error: 'Login failed. Please try again.' }, { status: 500 })
   }
 }

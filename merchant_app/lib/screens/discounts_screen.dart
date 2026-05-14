@@ -22,7 +22,7 @@ class DiscountsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFF10b981).withOpacity(0.1),
+                color: const Color(0xFF10b981).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.local_offer_outlined, size: 64, color: Color(0xFF10b981)),

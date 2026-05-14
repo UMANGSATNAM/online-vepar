@@ -30,13 +30,13 @@ class MenuScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10)],
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: const Color(0xFF10b981).withOpacity(0.1),
+                  backgroundColor: const Color(0xFF10b981).withValues(alpha: 0.1),
                   child: Text(
                     user?['name']?.substring(0, 1).toUpperCase() ?? 'M',
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF10b981)),
@@ -112,7 +112,7 @@ class MenuScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10)],
       ),
       child: Column(
         children: children,

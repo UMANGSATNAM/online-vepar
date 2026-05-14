@@ -114,7 +114,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   keyboardType: TextInputType.number),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(
                   labelText: 'Status',
                   border: OutlineInputBorder(),
@@ -140,7 +140,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _originCountry,
+                initialValue: _originCountry,
                 decoration: const InputDecoration(
                   labelText: 'Country of Origin',
                   border: OutlineInputBorder(),
@@ -160,7 +160,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 title: const Text('Cash on Delivery', style: TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: const Text('Allow COD for this item'),
                 value: _isCodEnabled,
-                activeColor: const Color(0xFF10b981),
+                activeThumbColor: const Color(0xFF10b981),
                 onChanged: (val) => setState(() => _isCodEnabled = val),
               ),
             ]),

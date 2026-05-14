@@ -97,7 +97,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: (isProfit ? Colors.green : Colors.red).withOpacity(0.3),
+            color: (isProfit ? Colors.green : Colors.red).withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 5),
           )
@@ -155,9 +155,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +219,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                       barWidth: 3,
                       belowBarData: BarAreaData(
                         show: true,
-                        color: const Color(0xFF10b981).withOpacity(0.1),
+                        color: const Color(0xFF10b981).withValues(alpha: 0.1),
                       ),
                       dotData: const FlDotData(show: false),
                     ),
@@ -321,7 +321,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
             const SizedBox(height: 12),
             StatefulBuilder(builder: (context, setInnerState) {
               return DropdownButtonFormField<String>(
-                value: category,
+                initialValue: category,
                 decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
                 items: const [
                   DropdownMenuItem(value: 'marketing', child: Text('📢 Marketing / Ads')),
@@ -343,15 +343,16 @@ class _FinanceScreenState extends State<FinanceScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: () async {
-                  final success = await context.read<ApiService>().addExpense(
+                  final api = context.read<ApiService>();
+                  final nav = Navigator.of(ctx);
+                  final success = await api.addExpense(
                     nameController.text,
                     double.tryParse(amountController.text) ?? 0,
                     category,
                   );
-                  if (mounted) {
-                    Navigator.pop(ctx);
-                    if (success) _loadFinance();
-                  }
+                  if (!mounted) return;
+                  nav.pop();
+                  if (success) _loadFinance();
                 },
                 child: const Text('Save Expense', style: TextStyle(fontWeight: FontWeight.bold)),
               ),

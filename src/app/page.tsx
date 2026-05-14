@@ -63,16 +63,36 @@ export default function Home() {
     case 'inventory':
     case 'shipping':
     case 'tax-rates':
-    case 'abandoned-carts':
+    case 'abandoned-checkouts':
     case 'reviews':
     case 'activity':
     case 'collections':
     case 'gift-cards':
     case 'staff':
     case 'store-editor':
-    case 'domain-settings':
+    case 'domains':
     case 'billing':
     case 'seo-settings':
+    case 'finance':
+    case 'online-store':
+    case 'themes':
+    case 'metaobjects':
+    case 'marketing':
+    case 'reports':
+    case 'draft-orders':
+    case 'returns':
+    case 'transfers':
+    case 'purchase-orders':
+    case 'segments':
+    case 'automations':
+    case 'content':
+    case 'blog-posts':
+    case 'menus':
+    case 'files':
+    case 'live-view':
+    case 'apps':
+    case 'preferences':
+    case 'superadmin':
       return <DashboardLayout />
     default:
       return <LandingPage />

@@ -24,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: const Color(0xFF10b981).withOpacity(0.2),
+                  backgroundColor: const Color(0xFF10b981).withValues(alpha: 0.2),
                   child: Text(
                     user?['name']?.substring(0, 1).toUpperCase() ?? 'U',
                     style: const TextStyle(

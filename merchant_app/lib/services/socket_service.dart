@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'api_service.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class SocketService extends ChangeNotifier {
-  IO.Socket? _socket;
+  io.Socket? _socket;
   bool _isConnected = false;
 
   bool get isConnected => _isConnected;
@@ -14,7 +13,7 @@ class SocketService extends ChangeNotifier {
     // Use the same base URL as the ApiService, assuming server.js is running on the same host
     const String baseUrl = 'https://online-vepar-production.up.railway.app'; // Production WS URL
     
-    _socket = IO.io(baseUrl, IO.OptionBuilder()
+    _socket = io.io(baseUrl, io.OptionBuilder()
       .setTransports(['websocket'])
       .disableAutoConnect()
       .build()

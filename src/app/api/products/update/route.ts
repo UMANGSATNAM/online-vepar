@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         id: storeId,
         OR: [
           { ownerId: userId },
-          { staffs: { some: { userId: userId } } }
+          { staffs: { some: { user: { id: userId } } } }
         ]
       }
     });

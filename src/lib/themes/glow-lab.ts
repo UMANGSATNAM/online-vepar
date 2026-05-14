@@ -1,0 +1,105 @@
+import type { NicheTheme } from './types'
+
+export const GLOW_LAB: NicheTheme = {
+  id: 'glow-lab',
+  name: 'GLOW LAB',
+  niche: 'Beauty / Skincare',
+  tagline: 'Science you can feel. Beauty you can see.',
+  styleFamily: 'Editorial',
+  previewImage: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80',
+  previewImages: [
+    'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80',
+    'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=80',
+    'https://images.unsplash.com/photo-1570194065650-d99fb4ee0509?w=800&q=80',
+  ],
+  accentHex: '#D4896A',
+  sectionCount: 80,
+  colorSystem: {
+    primary: '#D4896A',
+    primaryFg: '#FFFFFF',
+    secondary: '#3D2B1F',
+    secondaryFg: '#FDF8F5',
+    accent: '#E8A88E',
+    background: '#FDF8F5',
+    surface: '#FFFFFF',
+    surfaceRaised: '#F5EDE6',
+    border: '#E8D5C8',
+    borderStrong: '#C9A890',
+    text: '#3D2B1F',
+    textMuted: '#7D6559',
+    textInverse: '#FFFFFF',
+    success: '#2D6A4F',
+    warning: '#D97706',
+    error: '#B91C1C',
+  },
+  typography: {
+    displayFont: "'Playfair Display', Georgia, serif",
+    bodyFont: "'Inter', system-ui, sans-serif",
+    monoFont: "'JetBrains Mono', monospace",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap',
+    displayWeights: [400, 600],
+    bodyWeights: [400, 500, 600],
+    scaleRatio: 1.333,
+  },
+  motionSystem: {
+    defaultEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    springEasing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    sharpEasing: 'cubic-bezier(0.12, 0, 0.39, 0)',
+    fastDuration: '150ms',
+    baseDuration: '350ms',
+    slowDuration: '600ms',
+  },
+  pages: {
+    home: {
+      sections: [
+        { id: 'gl-announce', type: 'announcementBar', label: 'Announcement', settings: { text: '✨ Free shipping on orders above ₹799 · Dermatologist tested · No parabens', backgroundColor: '#3D2B1F', textColor: '#FDF8F5' } },
+        { id: 'gl-hero', type: 'heroEditorialSplit', label: 'Hero', settings: { eyebrow: 'New: Vitamin C Brighten Serum', headline: 'Your skin,\nbut luminous.', subhead: 'Formulated with clinically proven actives for South Asian skin. No filler ingredients.', primaryCtaLabel: 'Shop New Arrivals', primaryCtaUrl: '/collections/new', secondaryCtaLabel: 'Take the Skin Quiz', secondaryCtaUrl: '/pages/skin-quiz', imageUrl: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=1200&q=90', layout: 'media-right', backgroundColor: '#FDF8F5' } },
+        { id: 'gl-skin-quiz', type: 'skinQuizTeaser', label: 'Skin Quiz', settings: { headline: 'Find your routine', subhead: '5 questions. A routine built for your exact skin type.', ctaLabel: 'Take the free quiz', backgroundColor: '#F5EDE6' } },
+        { id: 'gl-bestsellers', type: 'featuredCollection', label: 'Bestsellers', settings: { eyebrow: 'What actually works', title: 'Bestsellers', collectionSlug: 'bestsellers', count: 4, ctaLabel: 'Shop all' } },
+        { id: 'gl-ingredients', type: 'ingredientEncyclopedia', label: 'Ingredients', settings: { headline: 'Every ingredient has a job', subhead: 'We list everything. Percentages included.', ingredients: [{ name: 'Vitamin C 15%', benefit: 'Brightens, fights hyperpigmentation', safeFor: ['oily', 'combination', 'normal'] }, { name: 'Retinol 0.5%', benefit: 'Smooths texture, reduces fine lines', safeFor: ['all'] }, { name: 'Ceramide Complex', benefit: 'Restores skin barrier, locks moisture', safeFor: ['all'] }, { name: 'Salicylic Acid 2%', benefit: 'Clears pores, reduces acne', safeFor: ['oily', 'combination'] }] } },
+        { id: 'gl-routine-builder', type: 'routineBuilder', label: 'Routine Builder', settings: { headline: 'Build your AM / PM routine', steps: ['Cleanser', 'Toner', 'Serum', 'Moisturiser', 'SPF'] } },
+        { id: 'gl-testimonials', type: 'testimonialsWithPhotos', label: 'Results', settings: { title: 'Real skin, real results', reviews: [{ name: 'Shreya T.', location: 'Mumbai', rating: 5, text: 'My hyperpigmentation from post-acne marks has visibly faded in 6 weeks. The Vitamin C serum is doing actual work.', beforeAfterImages: true }, { name: 'Pooja R.', location: 'Chennai', rating: 5, text: 'Switched from a pharmacy brand. Texture is completely different after 4 weeks of the ceramide moisturiser.' }] } },
+        { id: 'gl-footer', type: 'footerFull', label: 'Footer', settings: { storeName: 'GLOW LAB', tagline: 'Clinically proven skincare for every skin tone.', columns: [{ title: 'Shop', links: [{ label: 'Serums', url: '/collections/serums' }, { label: 'Moisturisers', url: '/collections/moisturisers' }, { label: 'Sunscreen', url: '/collections/sunscreen' }, { label: 'Kits', url: '/collections/kits' }] }, { title: 'Learn', links: [{ label: 'Ingredient Index', url: '/pages/ingredients' }, { label: 'Skin Guide', url: '/pages/skin-guide' }, { label: 'Routine Builder', url: '/pages/routine' }] }] } },
+      ],
+    },
+    product: {
+      sections: [
+        { id: 'glp-gallery', type: 'productGallery', label: 'Gallery', settings: { layout: 'filmstrip', showIngredientCallout: true } },
+        { id: 'glp-buybox', type: 'stickyBuyBox', label: 'Buy Box', settings: { showPincode: true, showCod: true, showSubscribeOption: true } },
+        { id: 'glp-actives', type: 'activesCallout', label: 'Key Actives', settings: { showPercentages: true, showStudyLinks: true } },
+        { id: 'glp-howto', type: 'howToUse', label: 'How to Use', settings: { style: 'am-pm' } },
+        { id: 'glp-ingredients-full', type: 'ingredientList', label: 'Full Ingredients', settings: { showFullINCIList: true } },
+        { id: 'glp-reviews', type: 'reviewsGrid', label: 'Reviews', settings: { showVerifiedBadge: true, showSkinType: true, showPhotos: true } },
+      ],
+    },
+    collection: {
+      sections: [
+        { id: 'glc-header', type: 'collectionHeader', label: 'Header', settings: { showDescription: true } },
+        { id: 'glc-filters', type: 'collectionFilters', label: 'Filters', settings: { showSkinType: true, showConcern: true, showActive: true } },
+        { id: 'glc-grid', type: 'collectionGrid', label: 'Products', settings: { columns: 3, showKeyActive: true } },
+      ],
+    },
+    cart: {
+      sections: [{ id: 'glcart', type: 'cartDrawer', label: 'Cart', settings: { showRoutineCompletion: true, freeShippingThreshold: 799 } }],
+    },
+    about: {
+      sections: [
+        { id: 'gla-hero', type: 'heroEditorialSplit', label: 'Hero', settings: { headline: 'Built for your skin. Backed by science.', imageUrl: 'https://images.unsplash.com/photo-1570194065650-d99fb4ee0509?w=1400&q=90' } },
+      ],
+    },
+  },
+  seedProducts: [
+    { name: 'Vitamin C 15% Brightening Serum', slug: 'vitamin-c-brightening-serum', description: 'Stabilised 15% L-ascorbic acid with ferulic acid and vitamin E. Targets hyperpigmentation and uneven tone in 4 weeks.', price: 799, comparePrice: 1099, images: ['https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=90'], tags: ['serum', 'vitamin-c', 'brightening', 'bestseller'], category: 'Serums', hsnCode: '3304', gstRate: 18 },
+    { name: 'Ceramide Barrier Moisturiser', slug: 'ceramide-barrier-moisturiser', description: 'Triple ceramide complex with hyaluronic acid. Restores skin barrier, 72-hour moisture. Non-comedogenic.', price: 649, images: ['https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=90'], tags: ['moisturiser', 'ceramide', 'dry-skin'], category: 'Moisturisers', hsnCode: '3304', gstRate: 18 },
+    { name: 'BHA 2% Salicylic Toner', slug: 'bha-salicylic-toner', description: '2% salicylic acid in a weightless toner. Unclogs pores, fades post-acne marks, and controls oil.', price: 549, images: ['https://images.unsplash.com/photo-1570194065650-d99fb4ee0509?w=800&q=90'], tags: ['toner', 'bha', 'acne', 'oily-skin'], category: 'Toners', hsnCode: '3304', gstRate: 18 },
+    { name: 'AM Glow Starter Kit', slug: 'am-glow-starter-kit', description: 'Complete AM routine: gentle cleanser + Vitamin C serum + SPF 50 moisturiser. 30-day supply.', price: 1499, comparePrice: 2047, images: ['https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=90'], tags: ['kit', 'bundle', 'am-routine', 'starter'], category: 'Kits', hsnCode: '3304', gstRate: 18 },
+  ],
+  seedCollections: [
+    { name: 'Serums', slug: 'serums', description: 'Targeted actives for every concern.', image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=90' },
+    { name: 'Moisturisers', slug: 'moisturisers', description: 'Barrier-first hydration.', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=90' },
+    { name: 'Sunscreen', slug: 'sunscreen', description: 'SPF that you\'ll actually use.', image: 'https://images.unsplash.com/photo-1570194065650-d99fb4ee0509?w=800&q=90' },
+    { name: 'Kits', slug: 'kits', description: 'Complete routines, bundled.', image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=90' },
+    { name: 'Bestsellers', slug: 'bestsellers', description: 'What actually works.', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=90' },
+    { name: 'New Arrivals', slug: 'new', description: 'Latest formulations.', image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=90' },
+  ],
+}

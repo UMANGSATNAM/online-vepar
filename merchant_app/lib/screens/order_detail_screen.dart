@@ -75,7 +75,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             _isLoading 
               ? const Center(child: CircularProgressIndicator())
               : DropdownButtonFormField<String>(
-                  value: _status,
+                  initialValue: _status,
                   decoration: const InputDecoration(border: OutlineInputBorder()),
                   items: const [
                     DropdownMenuItem(value: 'pending', child: Text('Pending')),

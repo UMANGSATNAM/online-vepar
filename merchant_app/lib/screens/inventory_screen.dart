@@ -170,10 +170,29 @@ class _InventoryScreenState extends State<InventoryScreen> {
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10b981), foregroundColor: Colors.white),
-            onPressed: () {
-              // TODO: Call actual API to update stock
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stock updated successfully (Mock)')));
-              Navigator.pop(ctx);
+            onPressed: () async {
+              final newStock = int.tryParse(controller.text) ?? 0;
+              final api = context.read<ApiService>();
+              final nav = Navigator.of(ctx);
+              final scaffoldMsg = ScaffoldMessenger.of(context);
+              
+              final price = (product['price'] ?? 0).toDouble();
+              final status = product['status'] ?? 'active';
+              final productId = product['_id'] ?? product['id'];
+              
+              if (productId == null) return;
+              
+              final success = await api.updateProduct(productId, price, newStock, status);
+              
+              if (!mounted) return;
+              nav.pop();
+              
+              if (success) {
+                scaffoldMsg.showSnackBar(const SnackBar(content: Text('Stock updated successfully')));
+                _load();
+              } else {
+                scaffoldMsg.showSnackBar(const SnackBar(content: Text('Failed to update stock')));
+              }
             },
             child: const Text('Save'),
           ),

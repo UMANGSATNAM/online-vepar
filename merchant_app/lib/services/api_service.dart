@@ -110,6 +110,17 @@ class ApiService extends ChangeNotifier {
     }
     return [];
   }
+
+  Future<List<dynamic>> getCollections() async {
+    if (_storeId == null) return [];
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/collections?storeId=$_storeId'), headers: _headers);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['collections'] ?? [];
+      }
+    } catch (e) { /* ignore */ }
+    return [];
+  }
   Future<bool> updateOrderStatus(String orderId, String status) async {
     if (_storeId == null) return false;
     try {

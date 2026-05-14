@@ -101,7 +101,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
                               ),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundColor: const Color(0xFF10b981).withOpacity(0.1),
+                                  backgroundColor: const Color(0xFF10b981).withValues(alpha: 0.1),
                                   child: Text(
                                     initials,
                                     style: const TextStyle(color: Color(0xFF10b981), fontWeight: FontWeight.bold),

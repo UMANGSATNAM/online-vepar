@@ -1,0 +1,106 @@
+import type { NicheTheme } from './types'
+
+export const VITALS: NicheTheme = {
+  id: 'vitals',
+  name: 'VITALS',
+  niche: 'Health / Nutrition',
+  tagline: 'Supplement the science.',
+  styleFamily: 'Minimal',
+  previewImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80',
+  previewImages: [
+    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80',
+    'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80',
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+  ],
+  accentHex: '#0EA5E9',
+  sectionCount: 80,
+  colorSystem: {
+    primary: '#0EA5E9',
+    primaryFg: '#FFFFFF',
+    secondary: '#0C2340',
+    secondaryFg: '#FFFFFF',
+    accent: '#38BDF8',
+    background: '#F8FAFC',
+    surface: '#FFFFFF',
+    surfaceRaised: '#F0F9FF',
+    border: '#E0F2FE',
+    borderStrong: '#BAE6FD',
+    text: '#0C2340',
+    textMuted: '#475569',
+    textInverse: '#FFFFFF',
+    success: '#059669',
+    warning: '#D97706',
+    error: '#DC2626',
+  },
+  typography: {
+    displayFont: "'Inter', system-ui, sans-serif",
+    bodyFont: "'Inter', system-ui, sans-serif",
+    monoFont: "'JetBrains Mono', 'Courier New', monospace",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+    displayWeights: [600, 700],
+    bodyWeights: [400, 500],
+    scaleRatio: 1.25,
+  },
+  motionSystem: {
+    defaultEasing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    springEasing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    sharpEasing: 'cubic-bezier(0.12, 0, 0.39, 0)',
+    fastDuration: '120ms',
+    baseDuration: '250ms',
+    slowDuration: '450ms',
+  },
+  pages: {
+    home: {
+      sections: [
+        { id: 'vt-announce', type: 'announcementBar', label: 'Announcement', settings: { text: '🧬 FSSAI certified · Third-party tested · Free shipping above ₹999', backgroundColor: '#0C2340', textColor: '#38BDF8' } },
+        { id: 'vt-hero', type: 'heroCleanSplit', label: 'Hero', settings: { eyebrow: 'Evidence-based nutrition', headline: 'Supplements that\nactually work.', subhead: 'Formulated from peer-reviewed research. Every ingredient at therapeutic dose. FSSAI certified.', primaryCtaLabel: 'Shop Supplements', primaryCtaUrl: '/collections/supplements', secondaryCtaLabel: 'See the Research', secondaryCtaUrl: '/pages/research', imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&q=90', layout: 'media-right', backgroundColor: '#F8FAFC' } },
+        { id: 'vt-pubmed', type: 'pubmedCitations', label: 'Research Citations', settings: { headline: 'Backed by published research', citations: [{ title: 'Ashwagandha reduces stress and anxiety', journal: 'Medicine', year: 2019, pmid: '31517876' }, { title: 'Magnesium improves sleep quality', journal: 'Journal of Research in Medical Sciences', year: 2012, pmid: '23853635' }, { title: 'Omega-3 reduces inflammation markers', journal: 'Nutrients', year: 2020, pmid: '32825245' }] } },
+        { id: 'vt-bestsellers', type: 'featuredCollection', label: 'Bestsellers', settings: { eyebrow: 'Most researched', title: 'Top Supplements', collectionSlug: 'bestsellers', count: 4, ctaLabel: 'Shop all' } },
+        { id: 'vt-dosage-calc', type: 'dosageCalculator', label: 'Dosage Calculator', settings: { headline: 'Find your dose', subhead: 'Enter your weight and goals. Get your personalised stack.', ctaLabel: 'Calculate my stack' } },
+        { id: 'vt-certifications', type: 'certificationsWall', label: 'Certifications', settings: { headline: 'Third-party tested. Every batch.', certs: ['FSSAI', 'WHO-GMP', 'ISO 22000', 'NSF Certified', 'NABL Lab Tested'] } },
+        { id: 'vt-subscription', type: 'subscriptionTable', label: 'Subscribe & Save', settings: { headline: 'Never miss a dose', plans: [{ name: 'Monthly', discount: '10%', label: 'Flexible' }, { name: 'Quarterly', discount: '20%', label: 'Popular' }, { name: 'Annual', discount: '30%', label: 'Best Value' }] } },
+        { id: 'vt-testimonials', type: 'testimonialsWithStats', label: 'Results', settings: { title: 'Real results from real people', stat1: '94%', stat1Label: 'Noticed results in 30 days', stat2: '4.8/5', stat2Label: 'Average rating (12,400+ reviews)', reviews: [{ name: 'Arjun K.', location: 'Hyderabad', rating: 5, text: 'The Ashwagandha 600mg KSM-66 has genuinely reduced my cortisol spikes. I can feel the difference in 3 weeks.' }, { name: 'Dr. Shreya M.', location: 'Delhi', rating: 5, text: 'As a physician I\'m very particular. VITALS lists actual doses, actual studies. No label padding.' }] } },
+        { id: 'vt-footer', type: 'footerFull', label: 'Footer', settings: { storeName: 'VITALS', tagline: 'Evidence-based nutrition. FSSAI certified.', columns: [{ title: 'Products', links: [{ label: 'Immunity', url: '/collections/immunity' }, { label: 'Sleep', url: '/collections/sleep' }, { label: 'Performance', url: '/collections/performance' }, { label: 'Stacks', url: '/collections/stacks' }] }, { title: 'Science', links: [{ label: 'Research Library', url: '/pages/research' }, { label: 'Ingredient Index', url: '/pages/ingredients' }, { label: 'Dosage Guide', url: '/pages/dosage' }] }] } },
+      ],
+    },
+    product: {
+      sections: [
+        { id: 'vtp-gallery', type: 'productGallery', label: 'Gallery', settings: { layout: 'clean', showSupplementFacts: true } },
+        { id: 'vtp-buybox', type: 'stickyBuyBox', label: 'Buy Box', settings: { showSubscribeOption: true, showPincode: true, showCod: true } },
+        { id: 'vtp-supplement-facts', type: 'supplementFacts', label: 'Supplement Facts', settings: { showNutritionLabel: true, showIngredients: true } },
+        { id: 'vtp-research', type: 'researchCards', label: 'Research', settings: { showPubmedLinks: true } },
+        { id: 'vtp-dosage', type: 'dosageGuide', label: 'Dosage Guide', settings: { showTimingChart: true } },
+        { id: 'vtp-reviews', type: 'reviewsGrid', label: 'Reviews', settings: { showVerifiedBadge: true } },
+      ],
+    },
+    collection: {
+      sections: [
+        { id: 'vtc-header', type: 'collectionHeader', label: 'Header', settings: { style: 'clinical' } },
+        { id: 'vtc-filters', type: 'collectionFilters', label: 'Filters', settings: { showGoal: true, showCert: true } },
+        { id: 'vtc-grid', type: 'collectionGrid', label: 'Products', settings: { columns: 4, showKeyIngredient: true } },
+      ],
+    },
+    cart: {
+      sections: [{ id: 'vtcart', type: 'cartDrawer', label: 'Cart', settings: { showSubscribeUpgrade: true, freeShippingThreshold: 999 } }],
+    },
+    about: {
+      sections: [
+        { id: 'vta-hero', type: 'heroCleanSplit', label: 'Hero', settings: { headline: 'No proprietary blends. No pixie-dusting.', imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1400&q=90' } },
+      ],
+    },
+  },
+  seedProducts: [
+    { name: 'Ashwagandha KSM-66 600mg', slug: 'ashwagandha-ksm66', description: 'Clinical dose 600mg KSM-66 root extract. Reduces cortisol by 27.9% in 60 days (Chandrasekhar et al., 2012). FSSAI certified.', price: 699, comparePrice: 999, images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=90'], tags: ['ashwagandha', 'stress', 'adaptogen', 'bestseller'], category: 'Adaptogens', hsnCode: '2106', gstRate: 12 },
+    { name: 'Magnesium Glycinate 400mg', slug: 'magnesium-glycinate', description: 'Chelated magnesium glycinate for superior absorption. Improves sleep quality, reduces muscle cramps, supports nervous system.', price: 599, images: ['https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=90'], tags: ['magnesium', 'sleep', 'recovery'], category: 'Minerals', hsnCode: '2106', gstRate: 12 },
+    { name: 'Omega-3 Fish Oil 2000mg', slug: 'omega-3-fish-oil', description: '2000mg EPA+DHA from Icelandic wild-caught fish. Molecularly distilled. No fishy aftertaste. 90 capsules.', price: 849, images: ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=90'], tags: ['omega-3', 'heart', 'inflammation'], category: 'Essentials', hsnCode: '2106', gstRate: 12 },
+    { name: 'Immunity Stack — 30 Days', slug: 'immunity-stack', description: 'Vitamin D3 + Vitamin C + Zinc + Elderberry. Everything your immune system needs. 1 month supply.', price: 1299, comparePrice: 1796, images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=90'], tags: ['immunity', 'stack', 'bundle', 'vitamin-d'], category: 'Stacks', hsnCode: '2106', gstRate: 12 },
+  ],
+  seedCollections: [
+    { name: 'Immunity', slug: 'immunity', description: 'Vitamin C, D3, Zinc and more.', image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=90' },
+    { name: 'Sleep', slug: 'sleep', description: 'Magnesium, Melatonin, Ashwagandha.', image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=90' },
+    { name: 'Performance', slug: 'performance', description: 'Creatine, Omega-3, B-Complex.', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=90' },
+    { name: 'Stacks', slug: 'stacks', description: 'Curated combinations.', image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=90' },
+    { name: 'Bestsellers', slug: 'bestsellers', description: 'Most purchased supplements.', image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=90' },
+    { name: 'New Arrivals', slug: 'new', description: 'Newest formulations.', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=90' },
+  ],
+}

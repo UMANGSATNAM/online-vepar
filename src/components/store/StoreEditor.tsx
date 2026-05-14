@@ -349,6 +349,7 @@ export default function StoreEditor() {
   const [sections, setSections] = useState<SectionData[]>([])
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [isPublished, setIsPublished] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [pendingImageKey, setPendingImageKey] = useState<{ sectionId: string; key: string } | null>(null)
   const [storeTheme, setStoreTheme] = useState<string>('modern')

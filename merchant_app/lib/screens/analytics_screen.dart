@@ -95,8 +95,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
-        boxShadow: [BoxShadow(color: color.withOpacity(0.07), blurRadius: 10, offset: const Offset(0, 4))],
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.07), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +137,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +164,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     barWidth: 3,
                     belowBarData: BarAreaData(
                       show: true,
-                      color: const Color(0xFF10b981).withOpacity(0.1),
+                      color: const Color(0xFF10b981).withValues(alpha: 0.1),
                     ),
                     dotData: const FlDotData(show: false),
                   ),
@@ -184,7 +184,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +200,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ...products.take(5).map((p) => ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFF10b981).withOpacity(0.1),
+                backgroundColor: const Color(0xFF10b981).withValues(alpha: 0.1),
                 child: const Icon(Icons.inventory_2_outlined, color: Color(0xFF10b981), size: 18),
               ),
               title: Text(p['name'] ?? 'Product', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
