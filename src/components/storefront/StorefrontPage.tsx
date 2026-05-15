@@ -171,14 +171,14 @@ export default function StorefrontPage({ store }: { store: Store }) {
   const themeClass = `theme-${store.theme || 'modern'}`
 
   return (
-    <div className={`min-h-screen bg-white font-sans ${themeClass}`}>
+    <div className={`min-h-screen bg-[#FAFAFA] dark:bg-[#09090B] font-sans selection:bg-[#0052FF]/30 ${themeClass}`}>
       {/* Inject Pixels */}
       {store.googleAnalyticsId && (
         <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${store.googleAnalyticsId}`} />
       )}
 
       {/* ── HEADER ── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/10 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
@@ -186,12 +186,12 @@ export default function StorefrontPage({ store }: { store: Store }) {
               ? <Image src={store.logo} alt={store.name} width={40} height={40} className="rounded-lg object-cover" />
               : <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg" style={{ background: primary }}>{store.name[0]}</div>
             }
-            <span className="font-bold text-xl text-gray-900">{store.name}</span>
+            <span className="font-bold text-xl text-slate-900 dark:text-slate-100">{store.name}</span>
           </a>
 
           {/* Nav */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#products" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">All Products</a>
+            <a href="#products" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">All Products</a>
             {store.categories.slice(0, 4).map(c => (
               <button key={c.id} onClick={() => setSelectedCategory(selectedCategory === c.name ? null : c.name)}
                 className="text-sm font-medium transition-colors" style={{ color: selectedCategory === c.name ? primary : undefined }}>
@@ -202,12 +202,12 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 bg-gray-50 rounded-full px-3 py-2">
-              <Search size={14} className="text-gray-400" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search products..." className="bg-transparent text-sm outline-none w-32" />
+            <div className="hidden md:flex items-center gap-2 bg-slate-100/60 dark:bg-zinc-800/60 rounded-full px-3 py-2">
+              <Search size={14} className="text-slate-400" />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search products..." className="bg-transparent text-sm outline-none w-32 dark:text-slate-200" />
             </div>
-            <button onClick={() => setCartOpen(true)} className="relative p-2 rounded-full transition-colors hover:bg-gray-100">
-              <ShoppingCart size={20} className="text-gray-700" />
+            <button onClick={() => setCartOpen(true)} className="relative p-2 rounded-full transition-colors hover:bg-slate-100 dark:hover:bg-zinc-800">
+              <ShoppingCart size={20} className="text-slate-700 dark:text-slate-300" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center" style={{ background: primary }}>{cartCount}</span>
               )}
@@ -220,7 +220,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-3">
+          <div className="md:hidden border-t border-slate-200/60 dark:border-white/10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl px-4 py-4 space-y-3">
             <div className="flex items-center gap-2 bg-gray-50 rounded-full px-3 py-2">
               <Search size={14} className="text-gray-400" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." className="bg-transparent text-sm outline-none flex-1" />
@@ -234,7 +234,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
       </header>
 
       {/* ── STICKY ADD TO CART FLOATER (Mobile Only or Always) ── */}
-      <div className={`fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 flex justify-between items-center transition-transform ${cartCount > 0 ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-t border-slate-200/60 dark:border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-40 flex justify-between items-center transition-transform ${cartCount > 0 ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="font-bold text-lg">{formatPrice(cartTotal, store.currency)} <span className="text-sm font-normal text-gray-500">({cartCount} items)</span></div>
         <button onClick={() => setCartOpen(true)} className="px-8 py-3 rounded-full text-white font-bold" style={{ background: primary }}>View Cart</button>
       </div>
@@ -243,10 +243,10 @@ export default function StorefrontPage({ store }: { store: Store }) {
       {cartOpen && (
         <div className="fixed inset-0 z-[100] flex justify-end">
           <div className="absolute inset-0 bg-black/50" onClick={() => setCartOpen(false)} />
-          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right">
-            <div className="p-6 border-b flex justify-between items-center bg-gray-50">
-              <h2 className="text-2xl font-black uppercase tracking-tight">Your Cart</h2>
-              <button onClick={() => setCartOpen(false)} className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"><X size={20} /></button>
+          <div className="relative w-full max-w-md bg-white/95 dark:bg-[#09090B]/95 backdrop-blur-3xl h-full flex flex-col shadow-2xl animate-in slide-in-from-right border-l border-slate-200/60 dark:border-white/10">
+            <div className="p-6 border-b border-slate-200/60 dark:border-white/10 flex justify-between items-center bg-slate-50/50 dark:bg-zinc-900/50">
+              <h2 className="text-2xl font-black uppercase tracking-tight dark:text-white">Your Cart</h2>
+              <button onClick={() => setCartOpen(false)} className="p-2 bg-slate-200/50 dark:bg-zinc-800 rounded-full hover:bg-slate-300/50 dark:hover:bg-zinc-700 transition-colors"><X size={20} className="dark:text-white" /></button>
             </div>
             
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -280,7 +280,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
             </div>
 
             {cart.length > 0 && (
-              <div className="p-6 border-t bg-gray-50 space-y-4">
+              <div className="p-6 border-t border-slate-200/60 dark:border-white/10 bg-slate-50/50 dark:bg-zinc-900/50 space-y-4">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Subtotal</span>
                   <span>{formatPrice(cartTotal, store.currency)}</span>
@@ -600,15 +600,15 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
           case 'testimonials':
             return (
-              <section key={id} className="bg-gray-50 py-20">
+              <section key={id} className="py-20">
                 <div className="max-w-7xl mx-auto px-4 text-center">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-12">{settings.title}</h2>
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-12">{settings.title}</h2>
                   <div className="grid md:grid-cols-3 gap-8">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center space-y-4">
+                      <div key={i} className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 dark:border-white/10 text-center space-y-4">
                         <div className="flex justify-center gap-1 text-yellow-400">{'⭐⭐⭐⭐⭐'}</div>
-                        <p className="text-gray-600 italic leading-relaxed">"{settings.subtitle || 'Amazing quality and fast shipping! Will definitely buy again.'}"</p>
-                        <p className="font-semibold text-gray-900">- Customer {i}</p>
+                        <p className="text-slate-600 dark:text-slate-400 italic leading-relaxed">"{settings.subtitle || 'Amazing quality and fast shipping! Will definitely buy again.'}"</p>
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">- Customer {i}</p>
                       </div>
                     ))}
                   </div>
@@ -620,13 +620,13 @@ export default function StorefrontPage({ store }: { store: Store }) {
             return (
               <section key={id} id="products" className="max-w-7xl mx-auto px-4 pb-20 pt-12">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                     {selectedCategory ? selectedCategory : settings.title || 'All Products'}
-                    <span className="ml-2 text-sm font-normal text-gray-500">({allProducts.length} items)</span>
+                    <span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">({allProducts.length} items)</span>
                   </h2>
                 </div>
                 {allProducts.length === 0 ? (
-                  <div className="text-center py-20 text-gray-500">
+                  <div className="text-center py-20 text-slate-500 dark:text-slate-400">
                     <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
                     <p className="text-lg">No products found</p>
                   </div>
@@ -645,9 +645,9 @@ export default function StorefrontPage({ store }: { store: Store }) {
               <section key={id} className="relative overflow-hidden flex items-center justify-center min-h-[500px] md:min-h-[600px]"
                 style={{ background: `linear-gradient(135deg, ${primary}22 0%, ${primary}08 100%)` }}>
                 <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-                  <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-gray-900">{settings.title || store.name}</h1>
-                  <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">{settings.subtitle || store.description || 'Discover our amazing collection'}</p>
-                  <a href="#products" className="inline-block px-10 py-4 rounded-full text-white font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all" style={{ background: primary }}>
+                  <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 text-slate-900 dark:text-slate-100">{settings.title || store.name}</h1>
+                  <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">{settings.subtitle || store.description || 'Discover our amazing collection'}</p>
+                  <a href="#products" className="inline-block px-10 py-4 rounded-full text-white font-bold text-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:scale-105 transition-all" style={{ background: primary }}>
                     {settings.buttonText || 'Shop Now'}
                   </a>
                 </div>
@@ -656,23 +656,23 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
           case 'categories':
             return (
-              <section key={id} className="py-16 px-4 bg-gray-50">
+              <section key={id} className="py-16 px-4">
                 <div className="max-w-7xl mx-auto">
-                  <h2 className="text-2xl md:text-3xl font-black text-gray-900 text-center mb-10">{settings.title || 'Shop by Category'}</h2>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100 text-center mb-10">{settings.title || 'Shop by Category'}</h2>
                   <div className={`grid grid-cols-2 md:grid-cols-${Math.min(settings.columns || 4, 6)} gap-4`}>
                     {store.categories.length > 0
                       ? store.categories.map(c => (
                         <button key={c.id} onClick={() => setSelectedCategory(selectedCategory === c.name ? null : c.name)}
-                          className="group p-6 bg-white rounded-2xl border-2 transition-all text-center shadow-sm hover:shadow-md"
+                          className="group p-6 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-3xl border-2 transition-all text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
                           style={{ borderColor: selectedCategory === c.name ? primary : 'transparent' }}>
                           <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl" style={{ background: `${primary}15` }}>🛍️</div>
-                          <p className="font-semibold text-gray-900 group-hover:text-gray-700">{c.name}</p>
+                          <p className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-300">{c.name}</p>
                         </button>
                       ))
                       : ['Clothing', 'Accessories', 'Electronics', 'Home'].map((n, i) => (
-                        <div key={i} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
-                          <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-gray-100 flex items-center justify-center text-2xl">🛍️</div>
-                          <p className="font-semibold text-gray-900">{n}</p>
+                        <div key={i} className="p-6 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-3xl border border-slate-200/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center">
+                          <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-2xl">🛍️</div>
+                          <p className="font-semibold text-slate-900 dark:text-slate-100">{n}</p>
                         </div>
                       ))
                     }
@@ -686,7 +686,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
               <section key={id} className="py-16 px-4">
                 <div className="max-w-7xl mx-auto">
                   <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900">{settings.title || 'Featured Products'}</h2>
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100">{settings.title || 'Featured Products'}</h2>
                     <a href="#products" className="text-sm font-semibold hover:underline" style={{ color: primary }}>View All →</a>
                   </div>
                   {featuredProducts.length > 0 ? (
@@ -696,7 +696,7 @@ export default function StorefrontPage({ store }: { store: Store }) {
                   ) : (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                       {[1,2,3,4].map(i => (
-                        <div key={i} className="rounded-2xl bg-gray-100 aspect-[3/4] animate-pulse" />
+                        <div key={i} className="rounded-3xl bg-slate-100 dark:bg-zinc-800 aspect-[3/4] animate-pulse" />
                       ))}
                     </div>
                   )}
@@ -714,18 +714,18 @@ export default function StorefrontPage({ store }: { store: Store }) {
 
           case 'trustBadges':
             return (
-              <section key={id} className="py-14 px-4 bg-white border-y border-gray-100">
+              <section key={id} className="py-14 px-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border-y border-slate-200/60 dark:border-white/10">
                 <div className="max-w-7xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">{settings.title || 'Why Choose Us'}</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 text-center mb-10">{settings.title || 'Why Choose Us'}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {(settings.badges || 'Free Shipping,Secure Checkout,Easy Returns,24/7 Support').split(',').map((b: string, i: number) => {
                       const icons = [<Truck key={0} />, <Shield key={1} />, <RotateCcw key={2} />, <Check key={3} />];
                       return (
-                        <div key={i} className="flex flex-col items-center text-center gap-3 p-5 rounded-2xl bg-gray-50">
+                        <div key={i} className="flex flex-col items-center text-center gap-3 p-5 rounded-3xl bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-all">
                           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ background: primary }}>
                             {icons[i % 4]}
                           </div>
-                          <p className="font-semibold text-gray-800 text-sm">{b.trim()}</p>
+                          <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{b.trim()}</p>
                         </div>
                       );
                     })}
