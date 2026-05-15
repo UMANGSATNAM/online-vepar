@@ -22,12 +22,10 @@ import OrdersPage from '@/components/orders/OrdersPage'
 import ProductsPage from '@/components/products/ProductsPage'
 import CustomersPage from '@/components/customers/CustomersPage'
 import AnalyticsPage from '@/components/analytics/AnalyticsPage'
-import MarketingPage from '@/components/marketing/MarketingPage'
 import DiscountsPage from '@/components/discounts/DiscountsPage'
-import ContentPage from '@/components/content/ContentPage'
-import SettingsPage from '@/components/settings/SettingsPage'
 import NotificationsPanel from './NotificationsPanel'
 import GlobalSearch from './GlobalSearch'
+import { type ViewType } from '@/lib/store'
 
 // Premium Floating Placeholder Page
 function PlaceholderPage({ viewName, icon: Icon }: { viewName: string, icon: any }) {
@@ -54,9 +52,9 @@ function PlaceholderPage({ viewName, icon: Icon }: { viewName: string, icon: any
   )
 }
 
-const NAVIGATION = [
+const NAVIGATION: { group: string; items: { name: string; view: ViewType; icon: any; badge?: string }[] }[] = [
   { group: 'Overview', items: [
-    { name: 'Home', view: 'home', icon: LayoutDashboard },
+    { name: 'Dashboard', view: 'dashboard', icon: LayoutDashboard },
     { name: 'Analytics', view: 'analytics', icon: BarChart3 },
     { name: 'Live View', view: 'live-view', icon: Play, badge: 'PRO' },
   ]},
@@ -83,7 +81,7 @@ const NAVIGATION = [
   { group: 'Online Store', items: [
     { name: 'Themes', view: 'themes', icon: Paintbrush },
     { name: 'Pages', view: 'pages', icon: FileText },
-    { name: 'Navigation', view: 'navigation', icon: Menu },
+    { name: 'Navigation', view: 'menus', icon: Menu },
   ]}
 ]
 
@@ -91,7 +89,6 @@ export default function DashboardLayout() {
   const { currentView, setView } = useAppStore()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
@@ -107,15 +104,12 @@ export default function DashboardLayout() {
 
   const renderContent = () => {
     switch (currentView) {
-      case 'home': return <DashboardHome />
+      case 'dashboard': return <DashboardHome />
       case 'orders': return <OrdersPage />
       case 'products': return <ProductsPage />
       case 'customers': return <CustomersPage />
       case 'analytics': return <AnalyticsPage />
-      case 'marketing': return <MarketingPage />
       case 'discounts': return <DiscountsPage />
-      case 'content': return <ContentPage />
-      case 'settings': return <SettingsPage />
       default:
         let icon = LayoutDashboard
         NAVIGATION.forEach(g => {
@@ -128,8 +122,7 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B] font-sans selection:bg-[#0052FF]/30 overflow-hidden">
-      {searchOpen && <GlobalSearch onClose={() => setSearchOpen(false)} />}
-      {notificationsOpen && <NotificationsPanel onClose={() => setNotificationsOpen(false)} />}
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
       {isMobile && isSidebarOpen && (
         <div 
@@ -206,9 +199,9 @@ export default function DashboardLayout() {
 
         <div className="p-5 border-t border-slate-200/40 dark:border-white/5">
           <button 
-            onClick={() => setView('settings')}
+            onClick={() => setView('store-settings')}
             className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-colors
-              ${currentView === 'settings' ? 'bg-[#0052FF]/10 text-[#0052FF]' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900'}
+              ${currentView === 'store-settings' ? 'bg-[#0052FF]/10 text-[#0052FF]' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900'}
             `}
           >
             <Settings size={18} /> Platform Settings
@@ -253,15 +246,7 @@ export default function DashboardLayout() {
               <Search size={20} />
             </button>
 
-            <div className="relative">
-              <button 
-                onClick={() => setNotificationsOpen(true)}
-                className="p-3 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-200/60 dark:border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-600 dark:text-slate-300 hover:bg-white transition-all hover:scale-105 active:scale-95"
-              >
-                <Bell size={20} />
-              </button>
-              <span className="absolute top-0.5 right-0.5 w-3 h-3 bg-[#0052FF] border-2 border-[#FAFAFA] rounded-full"></span>
-            </div>
+            <NotificationsPanel />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
