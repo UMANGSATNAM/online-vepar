@@ -1,514 +1,310 @@
 'use client'
+
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useTheme } from 'next-themes'
-import { Store, Home, Package, ShoppingCart, Users, BarChart3, Settings, Globe, FileText, Search, Menu, LogOut, ChevronDown, X, Command, Sun, Moon, Monitor, Plus, Tag, Warehouse, Truck, Star, Clock, Receipt, ShoppingBag, Layers, CreditCard, LayoutGrid, ChevronRight, PanelLeftClose, PanelLeftOpen, Shield, Bell, Zap, Database, Construction } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { 
+  LayoutDashboard, ShoppingCart, Package, Users, Settings, 
+  Menu, Bell, Search, LogOut, ChevronDown, Store,
+  CreditCard, Tag, FileText, Megaphone, HelpCircle,
+  BarChart3, Zap, Globe, Plus, X, Layers, Paintbrush, Play
+} from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { useAppStore, type ViewType } from '@/lib/store'
-import { useMounted } from '@/hooks/use-mounted'
+import { useAppStore } from '@/lib/store'
 import DashboardHome from '@/components/dashboard/DashboardHome'
-import ProductsPage from '@/components/products/ProductsPage'
 import OrdersPage from '@/components/orders/OrdersPage'
+import ProductsPage from '@/components/products/ProductsPage'
 import CustomersPage from '@/components/customers/CustomersPage'
-import StoreSettings from '@/components/store/StoreSettings'
-import StorePreview from '@/components/store/StorePreview'
 import AnalyticsPage from '@/components/analytics/AnalyticsPage'
-import FinancePage from '@/components/finance/FinancePage'
-import PagesPage from '@/components/pages/PagesPage'
-import CreateStoreDialog from '@/components/store/CreateStoreDialog'
+import MarketingPage from '@/components/marketing/MarketingPage'
 import DiscountsPage from '@/components/discounts/DiscountsPage'
-import InventoryPage from '@/components/inventory/InventoryPage'
-import ShippingPage from '@/components/shipping/ShippingPage'
-import TaxRatesPage from '@/components/tax/TaxRatesPage'
-import AbandonedCartsPage from '@/components/abandoned-carts/AbandonedCartsPage'
-import ReviewsPage from '@/components/reviews/ReviewsPage'
-import ActivityLogPage from '@/components/activity/ActivityLogPage'
-import CollectionsPage from '@/components/collections/CollectionsPage'
-import GiftCardsPage from '@/components/gift-cards/GiftCardsPage'
-import StaffPage from '@/components/staff/StaffPage'
-import NotificationsPanel from '@/components/layout/NotificationsPanel'
-import GlobalSearch from '@/components/layout/GlobalSearch'
-import DomainSettings from '@/components/store/DomainSettings'
-import BillingSettings from '@/components/store/BillingSettings'
-import SeoSettings from '@/components/store/SeoSettings'
-import StoreEditor from '@/components/store/StoreEditor'
-import OnboardingWizard from '@/components/dashboard/OnboardingWizard'
-import MetafieldsPage from '@/components/metafields/MetafieldsPage'
+import ContentPage from '@/components/content/ContentPage'
+import SettingsPage from '@/components/settings/SettingsPage'
+import NotificationsPanel from './NotificationsPanel'
+import GlobalSearch from './GlobalSearch'
 
-const navItems: { view: ViewType; label: string; icon: React.ComponentType<{ className?: string }>; parent?: string }[] = [
-  { view: 'dashboard', label: 'Home', icon: Home },
-  
-  { view: 'orders', label: 'Orders', icon: ShoppingCart },
-  { view: 'draft-orders', label: 'Draft Orders', icon: FileText, parent: 'Orders' },
-  { view: 'abandoned-checkouts', label: 'Abandoned Checkouts', icon: ShoppingBag, parent: 'Orders' },
-  { view: 'returns', label: 'Returns', icon: Truck, parent: 'Orders' },
-
-  { view: 'products', label: 'Products', icon: Package },
-  { view: 'collections', label: 'Collections', icon: Layers, parent: 'Products' },
-  { view: 'inventory', label: 'Inventory', icon: Warehouse, parent: 'Products' },
-  { view: 'transfers', label: 'Transfers', icon: Truck, parent: 'Products' },
-  { view: 'purchase-orders', label: 'Purchase Orders', icon: Receipt, parent: 'Products' },
-  { view: 'gift-cards', label: 'Gift Cards', icon: CreditCard, parent: 'Products' },
-
-  { view: 'customers', label: 'Customers', icon: Users },
-  { view: 'segments', label: 'Segments', icon: Users, parent: 'Customers' },
-
-  { view: 'marketing', label: 'Marketing', icon: Star },
-  { view: 'automations', label: 'Automations', icon: Zap, parent: 'Marketing' },
-  { view: 'activity', label: 'Activity', icon: Clock, parent: 'Marketing' },
-
-  { view: 'discounts', label: 'Discounts', icon: Tag },
-
-  { view: 'content', label: 'Content', icon: FileText },
-  { view: 'pages', label: 'Pages', icon: FileText, parent: 'Content' },
-  { view: 'blog-posts', label: 'Blog Posts', icon: FileText, parent: 'Content' },
-  { view: 'menus', label: 'Navigation', icon: LayoutGrid, parent: 'Content' },
-  { view: 'files', label: 'Files', icon: Database, parent: 'Content' },
-  { view: 'metaobjects', label: 'Metaobjects', icon: Database, parent: 'Content' },
-
-  { view: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { view: 'reports', label: 'Reports', icon: BarChart3, parent: 'Analytics' },
-  { view: 'live-view', label: 'Live View', icon: Globe, parent: 'Analytics' },
-
-  { view: 'online-store', label: 'Online Store', icon: Globe },
-  { view: 'themes', label: 'Themes', icon: LayoutGrid, parent: 'Online Store' },
-  { view: 'domains', label: 'Domains', icon: Globe, parent: 'Online Store' },
-  { view: 'preferences', label: 'Preferences', icon: Settings, parent: 'Online Store' },
-
-  { view: 'apps', label: 'Apps', icon: Package },
-]
-
-const viewLabels: Record<string, string> = {
-  dashboard: 'Home', products: 'Products', orders: 'Orders', customers: 'Customers',
-  analytics: 'Analytics', finance: 'Finance', 'store-settings': 'Settings', 'store-preview': 'Store Preview',
-  pages: 'Pages', 'create-store': 'Create Store', discounts: 'Discounts', 'gift-cards': 'Gift Cards',
-  inventory: 'Inventory', shipping: 'Shipping', 'tax-rates': 'Tax Rates',
-  'abandoned-checkouts': 'Abandoned Checkouts', reviews: 'Reviews', activity: 'Activity Log',
-  collections: 'Collections', staff: 'Staff', 'domains': 'Domains',
-  billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Theme Editor',
-  metaobjects: 'Metaobjects', marketing: 'Marketing', content: 'Content', 'online-store': 'Online Store', apps: 'Apps',
-  'draft-orders': 'Draft Orders', 'returns': 'Returns', 'transfers': 'Transfers', 'purchase-orders': 'Purchase Orders',
-  'segments': 'Segments', 'automations': 'Automations', 'blog-posts': 'Blog Posts', 'menus': 'Navigation',
-  'files': 'Files', 'reports': 'Reports', 'live-view': 'Live View', 'themes': 'Themes', 'preferences': 'Preferences'
-}
-
-function PlaceholderPage({ title }: { title: string }) {
+// Premium Floating Placeholder Page
+function PlaceholderPage({ viewName, icon: Icon }: { viewName: string, icon: any }) {
   return (
-    <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-md mx-auto">
-      <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-6">
-        <Construction className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+    <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="relative">
+        <div className="absolute inset-0 bg-blue-500/20 blur-[100px] rounded-full" />
+        <div className="relative bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 p-12 rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.04)] text-center max-w-lg mx-auto">
+          <div className="w-20 h-20 bg-gradient-to-tr from-[#0052FF] to-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform duration-500">
+            <Icon size={36} className="text-white" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-3 capitalize">
+            {viewName.replace('-', ' ')}
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+            This module is currently being crafted to international standards. It will be available in an upcoming platform update.
+          </p>
+          <Button className="bg-[#0052FF] text-white hover:bg-[#0052FF]/90 rounded-full px-8 py-6 shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all">
+            Return Home
+          </Button>
+        </div>
       </div>
-      <h2 className="text-2xl font-bold mb-2">{title}</h2>
-      <p className="text-muted-foreground">This module is currently under construction and will be available in the next platform update.</p>
     </div>
   )
 }
 
-function NavItem({ view, label, icon: Icon, collapsed, active, isSubitem, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; isSubitem?: boolean; onClick: () => void }) {
-  const btn = (
-    <button onClick={onClick} className={`relative w-full flex items-center gap-3 py-1.5 rounded-lg text-sm transition-all duration-150 group ${
-      active
-        ? 'bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold'
-        : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'
-    } ${collapsed ? 'justify-center px-2' : isSubitem ? 'px-3 pl-9 text-[13px]' : 'px-3'}`}>
-      {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-blue-600 rounded-r-full" />}
-      {!isSubitem && <Icon className={`w-4 h-4 shrink-0 transition-transform duration-150 ${active ? 'text-blue-600 dark:text-blue-400' : 'group-hover:scale-110'}`} />}
-      {!collapsed && <span className="truncate">{label}</span>}
-    </button>
-  )
-  if (!collapsed) return btn
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{btn}</TooltipTrigger>
-      <TooltipContent side="right" className="font-medium">{label}</TooltipContent>
-    </Tooltip>
-  )
-}
+const NAVIGATION = [
+  { group: 'Overview', items: [
+    { name: 'Home', view: 'home', icon: LayoutDashboard },
+    { name: 'Analytics', view: 'analytics', icon: BarChart3 },
+    { name: 'Live View', view: 'live-view', icon: Play, badge: 'PRO' },
+  ]},
+  { group: 'Sales', items: [
+    { name: 'Orders', view: 'orders', icon: ShoppingCart },
+    { name: 'Draft Orders', view: 'draft-orders', icon: FileText },
+    { name: 'Abandoned Checkouts', view: 'abandoned-checkouts', icon: ShoppingCart },
+  ]},
+  { group: 'Inventory', items: [
+    { name: 'Products', view: 'products', icon: Package },
+    { name: 'Collections', view: 'collections', icon: Layers },
+    { name: 'Inventory', view: 'inventory', icon: Package },
+    { name: 'Transfers', view: 'transfers', icon: Package },
+  ]},
+  { group: 'Audience', items: [
+    { name: 'Customers', view: 'customers', icon: Users },
+    { name: 'Segments', view: 'segments', icon: Users },
+  ]},
+  { group: 'Growth', items: [
+    { name: 'Marketing', view: 'marketing', icon: Megaphone },
+    { name: 'Discounts', view: 'discounts', icon: Tag },
+    { name: 'Automations', view: 'automations', icon: Zap },
+  ]},
+  { group: 'Online Store', items: [
+    { name: 'Themes', view: 'themes', icon: Paintbrush },
+    { name: 'Pages', view: 'pages', icon: FileText },
+    { name: 'Navigation', view: 'navigation', icon: Menu },
+  ]}
+]
 
-function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const mounted = useMounted()
-  if (!mounted) return <Button variant="ghost" size="icon" className="h-8 w-8"><Sun className="w-4 h-4" /></Button>
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent text-muted-foreground hover:text-foreground">
-          {theme === 'dark' ? <Moon className="w-4 h-4" /> : theme === 'light' ? <Sun className="w-4 h-4" /> : <Monitor className="w-4 h-4" />}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}><Sun className="w-4 h-4 mr-2" />Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}><Moon className="w-4 h-4 mr-2" />Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}><Monitor className="w-4 h-4 mr-2" />System</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+export default function DashboardLayout() {
+  const { currentView, setView } = useAppStore()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
-function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
-  const { currentView, setView, currentStore, stores, setStore, currentUser, logout } = useAppStore()
-  const nav = (v: ViewType) => { setView(v); onNavigate?.() }
-  const initials = currentUser?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
-  const storeInit = currentStore?.name?.[0]?.toUpperCase() || 'S'
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024)
+      if (window.innerWidth < 1024) setIsSidebarOpen(false)
+      else setIsSidebarOpen(true)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-  const handleVisitStore = () => {
-    if (!currentStore) return
-    const isDev = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-    const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'
-    
-    if (currentStore.domain) {
-      window.open(`https://${currentStore.domain}`, '_blank')
-    } else {
-      if (isDev) {
-        window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
-      } else if (platformDomain.includes('up.railway.app')) {
-        // Railway free domains don't support wildcard subdomains natively
-        window.open(`https://${platformDomain}/store/${currentStore.slug}`, '_blank')
-      } else {
-        window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
-      }
+  const renderContent = () => {
+    switch (currentView) {
+      case 'home': return <DashboardHome />
+      case 'orders': return <OrdersPage />
+      case 'products': return <ProductsPage />
+      case 'customers': return <CustomersPage />
+      case 'analytics': return <AnalyticsPage />
+      case 'marketing': return <MarketingPage />
+      case 'discounts': return <DiscountsPage />
+      case 'content': return <ContentPage />
+      case 'settings': return <SettingsPage />
+      default:
+        let icon = LayoutDashboard
+        NAVIGATION.forEach(g => {
+          const item = g.items.find(i => i.view === currentView)
+          if (item) icon = item.icon
+        })
+        return <PlaceholderPage viewName={currentView} icon={icon} />
     }
   }
 
   return (
-    <div className="flex flex-col h-full bg-card border-r border-border/60">
-      {/* Logo */}
-      <div className={`h-14 flex items-center shrink-0 border-b border-border/40 ${collapsed ? 'justify-center px-2' : 'gap-2.5 px-4'}`}>
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm shadow-blue-600/20">
-          <Store className="w-4 h-4 text-white" />
-        </div>
-        {!collapsed && (
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-sm font-bold truncate">Online Vepar</span>
-            <Badge className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-0 text-[9px] px-1.5 h-4 font-bold shrink-0">PRO</Badge>
-          </div>
-        )}
-      </div>
+    <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B] font-sans selection:bg-[#0052FF]/30 overflow-hidden">
+      {searchOpen && <GlobalSearch onClose={() => setSearchOpen(false)} />}
+      {notificationsOpen && <NotificationsPanel onClose={() => setNotificationsOpen(false)} />}
 
-      {/* Store Selector */}
-      {!collapsed ? (
-        <div className="px-3 py-2.5 border-b border-border/40 shrink-0">
-          <div className="flex gap-1.5">
-            <Select value={currentStore?.id || ''} onValueChange={v => { const s = stores.find(x => x.id === v); if (s) setStore(s) }}>
-              <SelectTrigger className="flex-1 h-8 text-xs border-border/50 bg-muted/30 hover:bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-4 h-4 bg-blue-600/10 rounded flex items-center justify-center shrink-0">
-                    <span className="text-[9px] font-bold text-blue-700 dark:text-blue-400">{storeInit}</span>
-                  </div>
-                  <SelectValue placeholder="Select store" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {stores.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="outline" className="h-8 w-8 shrink-0 border-border/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 hover:border-blue-200 rounded-lg" onClick={() => nav('create-store')}>
-                  <Plus className="w-3.5 h-3.5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">New Store</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-      ) : (
-        <div className="px-2 py-2 border-b border-border/40 shrink-0 flex justify-center">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-600/20 transition-colors">
-                <span className="text-xs font-bold text-blue-700 dark:text-blue-400">{storeInit}</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="right">{currentStore?.name || 'Select Store'}</TooltipContent>
-          </Tooltip>
-        </div>
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 transition-opacity duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
 
-      {/* Nav */}
-      <ScrollArea className="flex-1 min-h-0 py-2">
-        <nav className={`space-y-1 ${collapsed ? 'px-2' : 'px-3'}`}>
-          {navItems.filter(item => !item.parent).map(item => (
-            <div key={item.view} className="space-y-0.5">
-              <NavItem {...item} collapsed={collapsed} active={currentView === item.view} onClick={() => nav(item.view as ViewType)} />
-              
-              {/* Render sub-items if not collapsed */}
-              {!collapsed && navItems.filter(sub => sub.parent === item.label).map(subItem => (
-                <NavItem key={subItem.view} {...subItem} isSubitem collapsed={collapsed} active={currentView === subItem.view} onClick={() => nav(subItem.view as ViewType)} />
+      {/* Sidebar - Antigravity Glassmorphism Style */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        ${isSidebarOpen ? 'w-[280px] translate-x-0' : '-translate-x-full lg:w-0 lg:hidden'}
+        bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border-r border-slate-200/60 dark:border-white/10
+        flex flex-col transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+      `}>
+        <div className="h-20 flex items-center px-6 shrink-0 border-b border-slate-200/40 dark:border-white/5">
+          <div className="w-9 h-9 bg-gradient-to-br from-[#0052FF] to-[#3B82F6] rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#0052FF]/20">
+            <Store size={18} className="text-white" />
+          </div>
+          <span className="ml-3 font-bold tracking-tight text-slate-900 dark:text-white text-lg">OmniBuilder</span>
+          {isMobile && (
+            <button onClick={() => setIsSidebarOpen(false)} className="ml-auto p-2 text-slate-400 hover:text-slate-600">
+              <X size={20} />
+            </button>
+          )}
+        </div>
+
+        <div className="px-5 py-4">
+          <button className="w-full flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200/60 dark:bg-white/5 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group">
+            <div className="flex items-center gap-3 truncate">
+              <Avatar className="h-9 w-9 rounded-xl border border-slate-200/50 shadow-sm">
+                <AvatarFallback className="bg-white text-[#0052FF] rounded-xl font-bold text-xs">ST</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col items-start truncate">
+                <span className="text-sm font-bold text-slate-900 dark:text-white truncate">My Storefront</span>
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">PREMIUM TIER</span>
+              </div>
+            </div>
+            <ChevronDown size={16} className="text-slate-400 group-hover:text-slate-600" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-2 space-y-8 scrollbar-hide">
+          {NAVIGATION.map((group, idx) => (
+            <div key={idx} className="space-y-1.5">
+              <p className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
+                {group.group}
+              </p>
+              {group.items.map((item) => (
+                <button
+                  key={item.view}
+                  onClick={() => { setView(item.view); if (isMobile) setIsSidebarOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative group
+                    ${currentView === item.view 
+                      ? 'bg-[#0052FF]/10 text-[#0052FF] dark:bg-[#0052FF]/20 dark:text-[#3B82F6]' 
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
+                  `}
+                >
+                  {currentView === item.view && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#0052FF] rounded-r-full" />
+                  )}
+                  <item.icon size={18} className={`transition-transform duration-300 ${currentView === item.view ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  <span className="tracking-wide">{item.name}</span>
+                  {item.badge && (
+                    <Badge variant="secondary" className="ml-auto text-[9px] py-0 px-1.5 h-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-0 shadow-sm font-bold">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </button>
               ))}
             </div>
           ))}
-          
-          <div className="my-4 border-t border-border/40" />
-          <NavItem view="store-settings" label="Settings" icon={Settings} collapsed={collapsed} active={currentView === 'store-settings'} onClick={() => nav('store-settings')} />
-        </nav>
-      </ScrollArea>
-
-      {/* Visit Store */}
-      <div className={`border-t border-border/40 py-2 ${collapsed ? 'px-2' : 'px-3'}`}>
-        <NavItem view="checkout" label="Visit Store" icon={Globe} collapsed={collapsed} onClick={handleVisitStore} />
-      </div>
-
-      {/* User */}
-      <div className="border-t border-border/40 p-2 shrink-0">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className={`w-full flex items-center ${collapsed ? 'justify-center p-1' : 'gap-2.5 px-2 py-1.5'} hover:bg-accent/60 rounded-lg transition-colors`}>
-              <div className="relative shrink-0">
-                <Avatar className="h-7 w-7">
-                  <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/60 dark:to-indigo-900/60 text-blue-700 dark:text-blue-400 text-[10px] font-bold">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-card" />
-              </div>
-              {!collapsed && (
-                <div className="text-left flex-1 min-w-0">
-                  <div className="text-xs font-semibold truncate">{currentUser?.name || 'User'}</div>
-                  <div className="text-[10px] text-muted-foreground truncate">{currentUser?.email || ''}</div>
-                </div>
-              )}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            {(currentUser as { role?: string })?.role === 'superadmin' && (
-              <>
-                <DropdownMenuItem onClick={() => window.open('/admin', '_blank')}>
-                  <Shield className="w-4 h-4 mr-2 text-violet-500" /><span className="text-violet-600 font-medium">Super Admin</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            <DropdownMenuItem onClick={() => nav('store-settings')}><Settings className="w-4 h-4 mr-2" />Settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => { logout(); setView('landing') }}>
-              <LogOut className="w-4 h-4 mr-2" />Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {!collapsed && <p className="text-[9px] text-muted-foreground/30 text-center mt-1.5">Online Vepar v2.0</p>}
-      </div>
-    </div>
-  )
-}
-
-function renderContent(view: string) {
-  switch (view) {
-    case 'dashboard': return <DashboardHome />
-    case 'products': return <ProductsPage />
-    case 'orders': return <OrdersPage />
-    case 'customers': return <CustomersPage />
-    case 'analytics': return <AnalyticsPage />
-    case 'finance': return <FinancePage />
-    case 'store-settings': return <StoreSettings />
-    case 'store-preview': return <StorePreview />
-    case 'pages': return <PagesPage />
-    case 'discounts': return <DiscountsPage />
-    case 'inventory': return <InventoryPage />
-    case 'shipping': return <ShippingPage />
-    case 'tax-rates': return <TaxRatesPage />
-    case 'abandoned-checkouts': return <AbandonedCartsPage />
-    case 'reviews': return <ReviewsPage />
-    case 'activity': return <ActivityLogPage />
-    case 'collections': return <CollectionsPage />
-    case 'gift-cards': return <GiftCardsPage />
-    case 'staff': return <StaffPage />
-    case 'create-store': return <CreateStoreDialog />
-    case 'domains': return <DomainSettings />
-    case 'billing': return <BillingSettings />
-    case 'seo-settings': return <SeoSettings />
-    case 'store-editor': return <StoreEditor />
-    case 'metaobjects': return <MetafieldsPage />
-    
-    // Fallback for currently unmapped nav items
-    case 'draft-orders':
-    case 'returns':
-    case 'transfers':
-    case 'purchase-orders':
-    case 'segments':
-    case 'automations':
-    case 'blog-posts':
-    case 'menus':
-    case 'files':
-    case 'reports':
-    case 'live-view':
-    case 'themes':
-    case 'preferences':
-    case 'apps':
-      return <PlaceholderPage title={viewLabels[view] || view} />
-      
-    default: return <DashboardHome />
-  }
-}
-
-export default function DashboardLayout() {
-  const { currentView, setView, currentUser, currentStore, sidebarOpen, toggleSidebar } = useAppStore()
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const initials = currentUser?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
-
-  const handleVisitStore = () => {
-    if (!currentStore) return
-    const isDev = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-    const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'
-    
-    if (currentStore.domain) {
-      window.open(`https://${currentStore.domain}`, '_blank')
-    } else {
-      if (isDev) {
-        window.open(`http://${currentStore.slug}.localhost:3000`, '_blank')
-      } else if (platformDomain.includes('up.railway.app')) {
-        // Railway free domains don't support wildcard subdomains natively
-        window.open(`https://${platformDomain}/store/${currentStore.slug}`, '_blank')
-      } else {
-        window.open(`https://${currentStore.slug}.${platformDomain}`, '_blank')
-      }
-    }
-  }
-
-  useEffect(() => {
-    const el = document.getElementById('main-content')
-    if (!el) return
-    const h = () => setScrolled(el.scrollTop > 4)
-    el.addEventListener('scroll', h)
-    return () => el.removeEventListener('scroll', h)
-  }, [])
-
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setSearchOpen(p => !p) } }
-    document.addEventListener('keydown', h)
-    return () => document.removeEventListener('keydown', h)
-  }, [])
-
-  return (
-    <TooltipProvider delayDuration={300}>
-      <div className="h-screen flex bg-background">
-        {/* Desktop Sidebar */}
-        <motion.aside
-          className="hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-hidden"
-          animate={{ width: sidebarOpen ? 232 : 52 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        >
-          <Sidebar collapsed={!sidebarOpen} />
-        </motion.aside>
-
-        {/* Main */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden">
-          {/* Header */}
-          <header className={`h-14 shrink-0 flex items-center gap-2 px-4 border-b border-border/50 bg-card/80 backdrop-blur-sm transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
-            {/* Mobile menu */}
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8"><Menu className="w-4 h-4" /></Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0">
-                <SheetHeader className="sr-only"><SheetTitle>Navigation</SheetTitle></SheetHeader>
-                <Sidebar onNavigate={() => setMobileOpen(false)} />
-              </SheetContent>
-            </Sheet>
-
-            {/* Breadcrumb */}
-            <div className="hidden md:block">
-              <Breadcrumb>
-                <BreadcrumbList className="text-xs">
-                  <BreadcrumbItem>
-                    <BreadcrumbLink className="cursor-pointer text-muted-foreground/60 hover:text-foreground transition-colors" onClick={() => setView('dashboard')}>
-                      {currentStore?.name || 'My Store'}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="text-muted-foreground/30" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="font-medium">{viewLabels[currentView] || 'Dashboard'}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-            <div className="md:hidden text-sm font-semibold">{viewLabels[currentView] || 'Dashboard'}</div>
-
-            <div className="flex-1" />
-
-            {/* Search */}
-            <button onClick={() => setSearchOpen(true)}
-              className="hidden sm:flex items-center gap-2 h-8 px-3 rounded-lg border border-border/50 bg-muted/30 text-muted-foreground text-xs hover:bg-muted/60 hover:border-border transition-all max-w-[200px] xl:max-w-[240px]">
-              <Search className="w-3.5 h-3.5 shrink-0" />
-              <span className="flex-1 text-left truncate">Search...</span>
-              <kbd className="hidden lg:inline-flex items-center gap-0.5 rounded border border-border bg-background px-1 font-mono text-[9px] text-muted-foreground/70 shrink-0">
-                <Command className="w-2 h-2" />K
-              </kbd>
-            </button>
-
-            {/* Actions */}
-            <div className="flex items-center gap-0.5">
-              <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground" onClick={toggleSidebar}>
-                {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
-              </Button>
-              <Button variant="outline" size="sm" className="hidden sm:flex h-7 gap-1.5 text-[11px] border-border/50 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" onClick={handleVisitStore}>
-                <Globe className="w-3 h-3" /><span className="hidden md:inline">Visit Store</span>
-              </Button>
-              <ThemeToggle />
-              <NotificationsPanel />
-              <Avatar className="h-7 w-7 lg:hidden">
-                <AvatarFallback className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-[10px] font-bold">{initials}</AvatarFallback>
-              </Avatar>
-            </div>
-          </header>
-
-          {/* Content */}
-          <main id="main-content" className="flex-1 overflow-auto pb-20 lg:pb-0">
-            <div className="p-4 lg:p-6 max-w-[1600px] mx-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentView}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.18, ease: [0.25, 0.46, 0.45, 0.94] }}
-                >
-                  {renderContent(currentView)}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </main>
         </div>
 
-        {/* Mobile Bottom Nav */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 safe-bottom">
-          <div className="flex items-center justify-around h-16 max-w-md mx-auto px-2">
-            {[
-              { view: 'dashboard' as ViewType, label: 'Home', icon: Home },
-              { view: 'orders' as ViewType, label: 'Orders', icon: ShoppingCart },
-              { view: 'products' as ViewType, label: 'Products', icon: Package },
-              { view: 'customers' as ViewType, label: 'Customers', icon: Users },
-              { view: 'analytics' as ViewType, label: 'More', icon: LayoutGrid },
-            ].map(item => {
-              const active = currentView === item.view
-              return (
-                <button key={item.view} onClick={() => setView(item.view)}
-                  className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-xl min-w-[54px] transition-all ${active ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>
-                  <div className={`p-1 rounded-lg transition-all ${active ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}>
-                    <item.icon className={`w-5 h-5 transition-transform ${active ? 'scale-110' : ''}`} />
-                  </div>
-                  <span className="text-[10px] font-medium">{item.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        </nav>
+        <div className="p-5 border-t border-slate-200/40 dark:border-white/5">
+          <button 
+            onClick={() => setView('settings')}
+            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-colors
+              ${currentView === 'settings' ? 'bg-[#0052FF]/10 text-[#0052FF]' : 'text-slate-600 hover:bg-slate-100/60 hover:text-slate-900'}
+            `}
+          >
+            <Settings size={18} /> Platform Settings
+          </button>
+        </div>
+      </aside>
 
-        <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
+      {/* Main Container */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         
-        <AnimatePresence>
-          {currentStore?.kycStatus === 'pending' && <OnboardingWizard />}
-        </AnimatePresence>
-      </div>
-    </TooltipProvider>
+        {/* Top Header - Floating Glassmorphism */}
+        <header className="h-20 px-6 sm:px-10 flex items-center justify-between shrink-0 z-30 transition-all">
+          <div className="flex items-center gap-4">
+            {!isSidebarOpen && (
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2.5 bg-white border border-slate-200/60 rounded-xl shadow-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all hover:scale-105 active:scale-95"
+              >
+                <Menu size={20} />
+              </button>
+            )}
+            <div className="hidden sm:block">
+              <h1 className="text-[1.75rem] font-bold tracking-tight text-slate-900 dark:text-white capitalize">
+                {currentView.replace('-', ' ')}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-5">
+            <button 
+              onClick={() => setSearchOpen(true)}
+              className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-md dark:bg-zinc-900/60 border border-slate-200/60 dark:border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-sm text-slate-500 hover:border-slate-300 transition-colors w-72"
+            >
+              <Search size={16} />
+              <span>Search everywhere...</span>
+              <div className="ml-auto flex gap-1.5">
+                <kbd className="bg-slate-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 text-[10px] font-sans font-bold text-slate-400">⌘</kbd>
+                <kbd className="bg-slate-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 text-[10px] font-sans font-bold text-slate-400">K</kbd>
+              </div>
+            </button>
+            <button className="md:hidden p-2.5 bg-white/60 border border-slate-200/60 rounded-full shadow-sm text-slate-600">
+              <Search size={20} />
+            </button>
+
+            <div className="relative">
+              <button 
+                onClick={() => setNotificationsOpen(true)}
+                className="p-3 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-200/60 dark:border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-600 dark:text-slate-300 hover:bg-white transition-all hover:scale-105 active:scale-95"
+              >
+                <Bell size={20} />
+              </button>
+              <span className="absolute top-0.5 right-0.5 w-3 h-3 bg-[#0052FF] border-2 border-[#FAFAFA] rounded-full"></span>
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 p-1.5 bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 border border-slate-200/60 dark:border-white/10 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:scale-105 transition-all">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-gradient-to-tr from-[#0052FF] to-blue-400 text-white text-xs font-bold">US</AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-slate-200/60 shadow-[0_20px_40px_rgba(0,0,0,0.08)] bg-white/95 backdrop-blur-xl">
+                <DropdownMenuLabel className="px-4 py-3">
+                  <div className="flex flex-col">
+                    <span className="font-bold text-slate-900">John Doe</span>
+                    <span className="text-xs text-slate-500 font-medium">john@omnibuilder.com</span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-slate-100" />
+                <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-50 font-medium">
+                  <Store className="mr-3 h-4 w-4 text-slate-500" /> Switch Store
+                </DropdownMenuItem>
+                <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-50 font-medium">
+                  <Settings className="mr-3 h-4 w-4 text-slate-500" /> Preferences
+                </DropdownMenuItem>
+                <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-50 font-medium">
+                  <HelpCircle className="mr-3 h-4 w-4 text-slate-500" /> Support Hub
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-slate-100" />
+                <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700 font-bold">
+                  <LogOut className="mr-3 h-4 w-4" /> Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto px-6 sm:px-10 pb-12">
+          <div className="max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {renderContent()}
+          </div>
+        </div>
+
+      </main>
+    </div>
   )
 }
