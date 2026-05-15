@@ -23,10 +23,13 @@ model User {
   backupCodes      String?  // JSON array of backup codes
   avatar           String?
   role             String   @default("owner") // owner, staff, superadmin
+  isSeeded         Boolean  @default(false)
+  lastLoginAt      DateTime?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   stores           Store[]
   orders           Order[]
+  adminPermissions AdminPermissions[]
 }
 
 model Store {
@@ -42,7 +45,10 @@ model Store {
   currency       String   @default("INR")
   domain         String?
   sectionsConfig String?  @default("[]")
-  isActive       Boolean  @default(true)
+  status         String   @default("TRIAL") // TRIAL, ACTIVE, PAST_DUE, SUSPENDED, CANCELED
+  trialStartedAt DateTime @default(now())
+  trialEndsAt    DateTime?
+  isActive       Boolean  @default(true) // Legacy, mapped to status
   
   // Business Profile
   businessType       String? // Sole Proprietor / Partnership / LLP / Pvt Ltd / Public Ltd
@@ -99,6 +105,11 @@ model Store {
   locations             Location[]
   expenses              Expense[]
   omniThemes            OmniTheme[]
+  invoices       Invoice[]
+  carts          Cart[]
+  emailTemplates EmailTemplate[]
+  emailLogs      EmailLog[]
+  pageVersions   PageVersion[]
 }
 
 model Category {
@@ -180,6 +191,7 @@ model Order {
   items         OrderItem[]
   shipments     Shipment[]
   orderNotes    OrderNote[]
+  events        OrderEvent[]
   metafields    Metafield[]
 }
 
@@ -217,10 +229,8 @@ model Customer {
   name      String
   email     String?
   phone     String?
-  address   String?
-  city      String?
-  state     String?
-  zip       String?
+  passwordHash String? // New for storefront auth
+  acceptsMarketing Boolean @default(false)
   notes     String?
   totalOrders Int    @default(0)
   totalSpent  Float  @default(0)
@@ -229,6 +239,8 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   metafields Metafield[]
+  addresses  Address[]
+  carts      Cart[]
 }
 
 model Page {
@@ -307,6 +319,7 @@ model ProductVariant {
 
   inventoryLevels InventoryLevel[]
   metafields      Metafield[]
+  cartItems       CartItem[]
 
   @@index([productId])
   @@index([storeId])
@@ -565,17 +578,19 @@ model GiftCard {
 // --- SaaS Billing & Subscriptions ---
 
 model SubscriptionPlan {
-  id            String   @id @default(cuid())
-  name          String   // e.g., "Pro Plan"
-  price         Float    // e.g., 999.00
-  currency      String   @default("INR")
-  interval      String   @default("month") // month, year
-  stripePriceId String?
-  razorpayPlanId String?
-  features      String   @default("[]") // JSON array of features
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(cuid())
+  name            String   // e.g., "Pro Plan"
+  priceMonthly    Float    @default(0)
+  priceQuarterly  Float    @default(0)
+  priceYearly     Float    @default(0)
+  currency        String   @default("INR")
+  stripePriceId   String?
+  razorpayPlanId  String?
+  features        String   @default("[]") // JSON array of features
+  featureLimits   String   @default("{}") // JSON: { product_limit: 100, staff_limit: 3 }
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   subscriptions StoreSubscription[]
 }
@@ -595,6 +610,7 @@ model StoreSubscription {
   providerCustomerId     String?
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  invoices               Invoice[]
 
   @@index([storeId])
   @@index([providerSubscriptionId])
@@ -799,9 +815,148 @@ model OmniTheme {
   @@index([storeId, isActive])
 }
 
+// ─── NEW MODELS (PHASE 2) ───────────────────────────────────────────────────
+
+model AdminPermissions {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionKey  String   // e.g. "can_view_merchants"
+  grantedBy      String?
+  grantedAt      DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  storeId        String
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  subscriptionId String
+  subscription   StoreSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  amount         Float
+  currency       String   @default("INR")
+  status         String   // DRAFT, PAID, FAILED, VOID
+  dueAt          DateTime?
+  paidAt         DateTime?
+  paymentGatewayInvoiceId String?
+  pdfUrl         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([storeId])
+}
+
+model Address {
+  id             String   @id @default(cuid())
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  addressLine1   String
+  addressLine2   String?
+  city           String
+  state          String
+  pincode        String
+  country        String   @default("India")
+  phone          String?
+  isDefault      Boolean  @default(false)
+
+  @@index([customerId])
+}
+
+model Cart {
+  id             String   @id @default(cuid())
+  storeId        String
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerId     String?
+  customer       Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  sessionToken   String   @unique
+  currency       String   @default("INR")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  items          CartItem[]
+
+  @@index([storeId])
+}
+
+model CartItem {
+  id             String   @id @default(cuid())
+  cartId         String
+  cart           Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId      String
+  variant        ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  qty            Int      @default(1)
+  priceSnapshot  Float    @default(0)
+
+  @@index([cartId])
+}
+
+model OrderEvent {
+  id             String   @id @default(cuid())
+  orderId        String
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  eventType      String   // e.g., "order_placed", "order_shipped"
+  message        String?
+  createdByUserId String?
+  createdAt      DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model EmailTemplate {
+  id             String   @id @default(cuid())
+  storeId        String?  // nullable for platform defaults
+  store          Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  triggerEvent   String   // e.g., "order_placed"
+  subject        String
+  htmlBody       String   @db.Text
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([storeId])
+}
+
+model EmailLog {
+  id             String   @id @default(cuid())
+  storeId        String
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  toEmail        String
+  triggerEvent   String
+  status         String   // PENDING, SENT, FAILED
+  sentAt         DateTime?
+  error          String?  @db.Text
+  createdAt      DateTime @default(now())
+
+  @@index([storeId])
+}
+
+model ThemeTemplate {
+  id             String   @id @default(cuid())
+  name           String
+  niche          String   // e.g., "jewellery", "fashion"
+  previewImage   String?
+  baseSections   String   @db.Text @default("[]") // JSON
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SectionTemplate {
+  id             String   @id @default(cuid())
+  sectionType    String   // e.g., "hero", "product_grid"
+  niche          String
+  previewImage   String?
+  defaultSettings String  @db.Text @default("{}") // JSON
+  tags           String   @default("[]") // JSON array
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+
 model PageVersion {
   id           String   @id @default(cuid())
   storeId      String
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   pageSlug     String   // 'home' | 'product' | 'collection' | 'cart' | ...
   versionNum   Int      @default(1)
   sectionsJson String   @db.Text

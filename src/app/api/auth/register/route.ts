@@ -48,9 +48,14 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (process.env.NODE_ENV === 'production' && !jwtSecret) {
+      throw new Error('JWT_SECRET is missing in production');
+    }
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'dev-secret-change-in-production',
+      jwtSecret || 'dev-secret-change-in-production',
       { expiresIn: '7d' }
     )
 

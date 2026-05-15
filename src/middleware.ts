@@ -11,10 +11,59 @@ export function middleware(request: NextRequest) {
   // Platform domain - e.g. onlinevepar.com or localhost
   const platformDomain = process.env.PLATFORM_DOMAIN || 'onlinevepar.com'
   const isDev = hostname.includes('localhost') || hostname.includes('127.0.0.1')
-  const isPlatformHost = hostname === platformDomain || hostname.includes('.up.railway.app')
+  const isPlatformHost = isDev || hostname === platformDomain || hostname.includes('.up.railway.app')
 
-  // Admin panel - let it through
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api')) {
+  // Protect Admin UI routes
+  if (url.pathname.startsWith('/admin')) {
+    const token = request.cookies.get('auth-token')?.value
+    if (!token) {
+      const loginUrl = url.clone()
+      loginUrl.pathname = '/login'
+      return NextResponse.redirect(loginUrl)
+    }
+    
+    // Quick JWT decode (verification happens at API level)
+    try {
+      const payloadBase64 = token.split('.')[1]
+      const payloadString = Buffer.from(payloadBase64, 'base64').toString()
+      const payload = JSON.parse(payloadString)
+      
+      if (payload.role !== 'superadmin' && payload.role !== 'subadmin') {
+        // Merchant trying to access admin
+        const dashboardUrl = url.clone()
+        dashboardUrl.pathname = '/dashboard' // Assuming Flutter web or future dashboard
+        return NextResponse.redirect(dashboardUrl)
+      }
+    } catch (e) {
+      // Invalid token format
+      const loginUrl = url.clone()
+      loginUrl.pathname = '/login'
+      return NextResponse.redirect(loginUrl)
+    }
+
+    // We defer full JWT verification to the page/API level
+    return NextResponse.next()
+  }
+
+  // Protect Dashboard UI routes (merchants)
+  if (url.pathname.startsWith('/dashboard')) {
+    const token = request.cookies.get('auth-token')?.value
+    if (!token) {
+      const loginUrl = url.clone()
+      loginUrl.pathname = '/login'
+      return NextResponse.redirect(loginUrl)
+    }
+    return NextResponse.next()
+  }
+
+  // Public platform routes — always pass through on platform host
+  const publicPaths = ['/login', '/register', '/forgot-password', '/_next', '/favicon']
+  if (publicPaths.some(p => url.pathname.startsWith(p))) {
+    return NextResponse.next()
+  }
+
+  // API routes
+  if (url.pathname.startsWith('/api')) {
     return NextResponse.next()
   }
 

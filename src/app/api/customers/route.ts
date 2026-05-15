@@ -36,7 +36,6 @@ export async function GET(request: Request) {
         { name: { contains: search } },
         { email: { contains: search } },
         { phone: { contains: search } },
-        { city: { contains: search } },
       ];
     }
 
@@ -95,14 +94,24 @@ export async function POST(request: Request) {
         name,
         email,
         phone,
-        address,
-        city,
-        state,
-        zip,
         notes,
         storeId,
       },
     });
+
+    // Create address separately if provided
+    if (address && city) {
+      await db.address.create({
+        data: {
+          customerId: customer.id,
+          addressLine1: address,
+          city,
+          state: state || '',
+          pincode: zip || '',
+          isDefault: true,
+        },
+      });
+    }
 
     // Log activity
     await logActivity({
@@ -113,7 +122,7 @@ export async function POST(request: Request) {
       entity: 'customer',
       entityId: customer.id,
       entityName: customer.name,
-      details: { email: customer.email, city: customer.city },
+      details: { email: customer.email },
     });
 
     return NextResponse.json({ customer }, { status: 201 });

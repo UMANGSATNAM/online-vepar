@@ -28,16 +28,12 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, email, phone, address, city, state, zip, notes, totalOrders, totalSpent } = body;
+    const { name, email, phone, notes, totalOrders, totalSpent } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
-    if (address !== undefined) updateData.address = address;
-    if (city !== undefined) updateData.city = city;
-    if (state !== undefined) updateData.state = state;
-    if (zip !== undefined) updateData.zip = zip;
     if (notes !== undefined) updateData.notes = notes;
     if (totalOrders !== undefined) updateData.totalOrders = parseInt(String(totalOrders));
     if (totalSpent !== undefined) updateData.totalSpent = parseFloat(String(totalSpent));

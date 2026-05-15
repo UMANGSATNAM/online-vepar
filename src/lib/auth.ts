@@ -1,48 +1,46 @@
 import { cookies, headers } from 'next/headers';
 import { db } from '@/lib/db';
 
-// Simple hash function for passwords
-export function hashPassword(password: string): string {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password + 'ov_salt_2024');
-  // Simple hash using basic algorithm
-  let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    const char = data[i];
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return Math.abs(hash).toString(36) + '_' + Buffer.from(password + 'ov_salt_2024').toString('base64');
-}
+import * as jwt from 'jsonwebtoken';
 
-export function verifyPassword(password: string, hashedPassword: string): boolean {
-  return hashPassword(password) === hashedPassword;
-}
-
-// Get current user from cookie or X-User-Id header (fallback for sandbox environments)
+// Get current user from cookie or Authorization header
 export async function getCurrentUser(): Promise<{ id: string; email: string; name: string; role: string } | null> {
   try {
+    let token: string | undefined;
+
     // Try cookie first
     const cookieStore = await cookies();
-    const session = cookieStore.get('ov_session');
+    const session = cookieStore.get('auth-token');
     
-    let userId = session?.value;
-    
-    // Fallback: check X-User-Id header (for sandbox environments where cookies may not work)
-    if (!userId) {
-      const headersList = await headers();
-      userId = headersList.get('x-user-id') || undefined;
+    if (session?.value) {
+      token = session.value;
     }
     
-    if (!userId) return null;
+    // Fallback: check Authorization header
+    if (!token) {
+      const headersList = await headers();
+      const authHeader = headersList.get('authorization');
+      if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
     
+    if (!token) return null;
+    
+    // Verify JWT
+    const secret = process.env.JWT_SECRET || 'dev-secret-change-in-production';
+    const decoded = jwt.verify(token, secret) as { userId: string; email: string; role: string };
+    
+    if (!decoded || !decoded.userId) return null;
+
     const user = await db.user.findUnique({
-      where: { id: userId },
+      where: { id: decoded.userId },
       select: { id: true, email: true, name: true, role: true },
     });
     
     return user;
-  } catch {
+  } catch (err) {
+    console.error('getCurrentUser Error:', err);
     return null;
   }
 }
