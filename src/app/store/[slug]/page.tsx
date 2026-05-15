@@ -34,9 +34,23 @@ export default async function StoreSlugPage({ params }: { params: Promise<{ slug
 
   if (!store) return notFound()
 
+  const pageVersion = await db.pageVersion.findFirst({
+    where: { storeId: store.id, pageSlug: 'home', isPublished: true },
+    orderBy: { versionNum: 'desc' }
+  })
+
+  // Fallback to unpublished version if no published version exists (for preview)
+  const draftVersion = !pageVersion ? await db.pageVersion.findFirst({
+    where: { storeId: store.id, pageSlug: 'home' },
+    orderBy: { versionNum: 'desc' }
+  }) : null;
+
+  const activeVersion = pageVersion || draftVersion;
+
   const mappedStore = {
     ...store,
-    products: store.products.map(p => ({ ...p, storeSlug: store.slug }))
+    products: store.products.map(p => ({ ...p, storeSlug: store.slug })),
+    sectionsConfig: activeVersion?.sectionsJson || store.sectionsConfig
   }
 
   return <StorefrontPage store={mappedStore} />

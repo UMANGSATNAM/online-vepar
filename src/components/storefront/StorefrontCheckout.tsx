@@ -36,7 +36,8 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
     address: '',
     city: '',
     state: '',
-    zip: ''
+    zip: '',
+    paymentMethod: 'ONLINE'
   })
 
   useEffect(() => {
@@ -62,6 +63,11 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
     setIsSubmitting(true)
 
     try {
+      if (formData.paymentMethod === 'ONLINE') {
+        // Simulate Razorpay Gateway Delay
+        await new Promise(resolve => setTimeout(resolve, 2000))
+      }
+
       const res = await fetch('/api/storefront/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -231,15 +237,26 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Payment</h2>
-              <div className="border border-emerald-500 bg-emerald-50 p-4 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border-4 border-emerald-500 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <h2 className="text-xl font-bold mb-4">Payment Method</h2>
+              <div className="space-y-3">
+                <label onClick={() => setFormData(p => ({...p, paymentMethod: 'ONLINE'}))} className={`border p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${formData.paymentMethod === 'ONLINE' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.paymentMethod === 'ONLINE' ? 'border-indigo-500' : 'border-gray-300'}`}>
+                      {formData.paymentMethod === 'ONLINE' && <div className="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>}
+                    </div>
+                    <span className={`font-bold ${formData.paymentMethod === 'ONLINE' ? 'text-indigo-900' : 'text-gray-700'}`}>Online Payment (Razorpay / UPI / Cards)</span>
                   </div>
-                  <span className="font-bold text-emerald-900">Cash on Delivery (COD)</span>
-                </div>
-                <ShieldCheck className="text-emerald-500" />
+                  <ShieldCheck className={formData.paymentMethod === 'ONLINE' ? 'text-indigo-500' : 'text-gray-400'} />
+                </label>
+                
+                <label onClick={() => setFormData(p => ({...p, paymentMethod: 'COD'}))} className={`border p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${formData.paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.paymentMethod === 'COD' ? 'border-emerald-500' : 'border-gray-300'}`}>
+                      {formData.paymentMethod === 'COD' && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>}
+                    </div>
+                    <span className={`font-bold ${formData.paymentMethod === 'COD' ? 'text-emerald-900' : 'text-gray-700'}`}>Cash on Delivery (COD)</span>
+                  </div>
+                </label>
               </div>
               <p className="text-sm text-gray-500 mt-3 flex items-center gap-1"><Lock size={14} /> Your data is securely encrypted.</p>
             </div>
@@ -252,7 +269,14 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
               className="w-full h-16 rounded-xl text-white font-black text-xl shadow-xl transition-all hover:scale-[1.02] disabled:opacity-70 disabled:hover:scale-100 flex justify-center items-center gap-2"
               style={{ background: primary }}
             >
-              {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Complete Order'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" /> 
+                  {formData.paymentMethod === 'ONLINE' ? 'Processing Payment...' : 'Completing Order...'}
+                </>
+              ) : (
+                formData.paymentMethod === 'ONLINE' ? `Pay ${formatPrice(total, store.currency)}` : 'Complete Order'
+              )}
             </button>
           </form>
         </div>

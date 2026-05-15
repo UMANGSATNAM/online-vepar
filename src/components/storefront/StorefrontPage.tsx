@@ -234,10 +234,68 @@ export default function StorefrontPage({ store }: { store: Store }) {
       </header>
 
       {/* ── STICKY ADD TO CART FLOATER (Mobile Only or Always) ── */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 md:hidden flex justify-between items-center">
-        <div className="font-bold text-lg">{formatPrice(cartTotal, store.currency)}</div>
-        <button className="px-8 py-3 rounded-full text-white font-bold" style={{ background: primary }}>Checkout Now</button>
+      <div className={`fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 flex justify-between items-center transition-transform ${cartCount > 0 ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="font-bold text-lg">{formatPrice(cartTotal, store.currency)} <span className="text-sm font-normal text-gray-500">({cartCount} items)</span></div>
+        <button onClick={() => setCartOpen(true)} className="px-8 py-3 rounded-full text-white font-bold" style={{ background: primary }}>View Cart</button>
       </div>
+
+      {/* ── CART SLIDE-OVER / MODAL ── */}
+      {cartOpen && (
+        <div className="fixed inset-0 z-[100] flex justify-end">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setCartOpen(false)} />
+          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl animate-in slide-in-from-right">
+            <div className="p-6 border-b flex justify-between items-center bg-gray-50">
+              <h2 className="text-2xl font-black uppercase tracking-tight">Your Cart</h2>
+              <button onClick={() => setCartOpen(false)} className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"><X size={20} /></button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {cart.length === 0 ? (
+                <div className="text-center text-gray-500 mt-20">
+                  <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
+                  <p className="text-lg font-medium">Your cart is empty</p>
+                </div>
+              ) : (
+                cart.map(c => (
+                  <div key={c.product.id} className="flex gap-4 border-b pb-4">
+                    <div className="w-20 h-24 bg-gray-100 rounded-lg overflow-hidden shrink-0 relative">
+                      {images(c.product)[0] && <img src={images(c.product)[0]} alt={c.product.name} className="w-full h-full object-cover" />}
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <h4 className="font-bold text-sm uppercase">{c.product.name}</h4>
+                        <p className="text-sm text-gray-500">{formatPrice(c.product.price, store.currency)}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center border rounded">
+                          <button onClick={() => updateQty(c.product.id, c.quantity - 1)} className="px-3 py-1 hover:bg-gray-100">-</button>
+                          <span className="px-3 py-1 text-sm font-bold">{c.quantity}</span>
+                          <button onClick={() => updateQty(c.product.id, c.quantity + 1)} className="px-3 py-1 hover:bg-gray-100">+</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="p-6 border-t bg-gray-50 space-y-4">
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(cartTotal, store.currency)}</span>
+                </div>
+                <p className="text-xs text-gray-500 text-center">Shipping & taxes calculated at checkout.</p>
+                <Link href={`/store/${store.slug}/checkout`} className="block w-full">
+                  <button className="w-full py-4 text-white font-black uppercase tracking-widest text-sm rounded-xl hover:opacity-90 transition-opacity" style={{ background: primary }}>
+                    Checkout Securely
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── DPDP COMPLIANCE BANNER ── */}
       {!dpdpAccepted && (

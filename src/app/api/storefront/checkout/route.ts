@@ -249,6 +249,23 @@ export async function POST(request: Request) {
       // Customer creation is non-critical, don't fail the order
     }
 
+    // CREATE EMAIL LOG (Track 3)
+    try {
+      await db.emailLog.create({
+        data: {
+          storeId: store.id,
+          to: customer.email,
+          subject: `Order Confirmation - ${orderNumber}`,
+          body: `Hi ${customer.name}, thank you for your order! Your order ${orderNumber} for ${store.currency} ${total} has been received.`,
+          status: 'sent',
+          type: 'order_confirmation',
+          sentAt: new Date()
+        }
+      });
+    } catch (e) {
+      console.error('Failed to log email', e);
+    }
+
     return NextResponse.json({
       success: true,
       order: {
