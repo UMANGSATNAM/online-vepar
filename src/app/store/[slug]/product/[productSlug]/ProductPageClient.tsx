@@ -89,7 +89,7 @@ export default function ProductPageClient({
                   <button 
                     key={i} 
                     onClick={() => setActiveImageIndex(i)}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${activeImageIndex === i ? 'border-emerald-500' : 'border-transparent'}`}
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${activeImageIndex === i ? 'border-blue-500' : 'border-transparent'}`}
                   >
                     <Image src={img} alt={`Thumbnail ${i}`} fill className="object-cover" />
                   </button>
@@ -181,7 +181,7 @@ export default function ProductPageClient({
             {/* TRUST BADGES */}
             <div className="grid grid-cols-2 gap-4 mt-auto pt-6 border-t border-gray-100">
               <div className="flex items-center gap-3 text-sm font-medium text-gray-700">
-                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-full"><ShieldCheck size={20} /></div>
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-full"><ShieldCheck size={20} /></div>
                 Secure Checkout
               </div>
               <div className="flex items-center gap-3 text-sm font-medium text-gray-700">

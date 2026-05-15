@@ -334,7 +334,7 @@ export default function AnalyticsPage() {
   const getInsightStyle = (type: 'opportunity' | 'warning' | 'info') => {
     switch (type) {
       case 'opportunity':
-        return { icon: Lightbulb, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', border: 'border-emerald-100 dark:border-emerald-800/30' }
+        return { icon: Lightbulb, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', border: 'border-blue-100 dark:border-blue-800/30' }
       case 'warning':
         return { icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-100 dark:border-amber-800/30' }
       case 'info':
@@ -394,7 +394,7 @@ export default function AnalyticsPage() {
                   key={opt.value}
                   variant={dateRange === opt.value ? 'secondary' : 'ghost'}
                   size="sm"
-                  className={`h-7 sm:h-8 px-2 sm:px-3 rounded-none text-[10px] sm:text-xs whitespace-nowrap ${dateRange === opt.value ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium' : ''}`}
+                  className={`h-7 sm:h-8 px-2 sm:px-3 rounded-none text-[10px] sm:text-xs whitespace-nowrap ${dateRange === opt.value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium' : ''}`}
                   onClick={() => setDateRange(opt.value)}
                 >
                   {opt.value === 'custom' ? <Calendar className="w-3 h-3 mr-1" /> : null}
@@ -423,7 +423,7 @@ export default function AnalyticsPage() {
                     <span className="text-[10px] sm:text-xs text-muted-foreground line-through hidden sm:inline">{formatCurrency(metric.previous)}</span>
                   </div>
                 </div>
-                <div className={`flex items-center gap-0.5 text-xs font-medium px-2 py-1 rounded-full ${metric.up ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600' : 'bg-red-50 dark:bg-red-900/30 text-red-600'}`}>
+                <div className={`flex items-center gap-0.5 text-xs font-medium px-2 py-1 rounded-full ${metric.up ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'bg-red-50 dark:bg-red-900/30 text-red-600'}`}>
                   {metric.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                   {metric.trend}
                 </div>
@@ -446,8 +446,8 @@ export default function AnalyticsPage() {
             <Card className="hover:shadow-md transition-shadow hover-lift">
               <CardHeader className="flex flex-row items-center justify-between pb-2 p-3 sm:p-4 lg:p-6">
                 <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Avg. Order Value</CardTitle>
-                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center ring-1 ring-emerald-600/20">
-                  <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center ring-1 ring-blue-600/20">
+                  <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                 </div>
               </CardHeader>
               <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 sm:pt-0 lg:pt-0">
@@ -515,8 +515,8 @@ export default function AnalyticsPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                     </div>
                     Revenue Overview
                   </CardTitle>
@@ -528,7 +528,7 @@ export default function AnalyticsPage() {
                     <Button
                       variant={chartType === 'area' ? 'secondary' : 'ghost'}
                       size="sm"
-                      className={`h-7 px-2 rounded-none ${chartType === 'area' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : ''}`}
+                      className={`h-7 px-2 rounded-none ${chartType === 'area' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : ''}`}
                       onClick={() => setChartType('area')}
                     >
                       <LineChart className="w-3.5 h-3.5" />
@@ -536,7 +536,7 @@ export default function AnalyticsPage() {
                     <Button
                       variant={chartType === 'bar' ? 'secondary' : 'ghost'}
                       size="sm"
-                      className={`h-7 px-2 rounded-none ${chartType === 'bar' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : ''}`}
+                      className={`h-7 px-2 rounded-none ${chartType === 'bar' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : ''}`}
                       onClick={() => setChartType('bar')}
                     >
                       <BarChart3 className="w-3.5 h-3.5" />
@@ -554,7 +554,7 @@ export default function AnalyticsPage() {
                     <span className="hidden sm:inline">Export</span>
                   </Button>
                   <div className="text-right">
-                    <div className="text-lg sm:text-2xl font-bold text-emerald-600">
+                    <div className="text-lg sm:text-2xl font-bold text-blue-600">
                       {loading ? <Skeleton className="h-7 w-24 inline-block shimmer-line" /> : formatCurrencyShort(data?.stats.totalRevenue || 0)}
                     </div>
                     <p className="text-[10px] sm:text-xs text-muted-foreground">Total Revenue</p>
@@ -720,8 +720,8 @@ export default function AnalyticsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-emerald-600 animate-sparkle-pulse" />
+                    <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-blue-600 animate-sparkle-pulse" />
                     </div>
                     AI Insights
                   </CardTitle>
@@ -803,8 +803,8 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader className="p-3 sm:p-4 lg:p-6">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
               </div>
               Revenue Trend
             </CardTitle>
@@ -955,15 +955,15 @@ export default function AnalyticsPage() {
               ) : (
                 <>
                   {/* Total Customers */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
-                    <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
-                      <Users className="w-5 h-5 text-emerald-600" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                      <Users className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-foreground">Total Customers</p>
                       <p className="text-xs text-muted-foreground">All time</p>
                     </div>
-                    <span className="text-lg font-bold text-emerald-600">{data?.stats.totalCustomers || 0}</span>
+                    <span className="text-lg font-bold text-blue-600">{data?.stats.totalCustomers || 0}</span>
                   </div>
 
                   {/* New Customers (estimated) */}

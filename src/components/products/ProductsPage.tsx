@@ -174,7 +174,7 @@ function parseJSONField(field: string | null | undefined): string[] {
 function getStatusBadge(status: string) {
   switch (status) {
     case 'active':
-      return <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0 hover:bg-emerald-100">Active</Badge>
+      return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-0 hover:bg-blue-100">Active</Badge>
     case 'draft':
       return <Badge variant="secondary" className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border-0 hover:bg-gray-100">Draft</Badge>
     case 'archived':
@@ -188,7 +188,7 @@ function getStockBadge(stock: number, trackInventory: boolean) {
   if (!trackInventory) return <Badge variant="outline" className="text-blue-600 border-blue-300">Not tracked</Badge>
   if (stock <= 0) return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-0">Out of stock</Badge>
   if (stock <= 5) return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-0">Low stock ({stock})</Badge>
-  return <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0">In stock ({stock})</Badge>
+  return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-0">In stock ({stock})</Badge>
 }
 
 const emptyFormData: ProductFormData = {
@@ -926,7 +926,7 @@ export default function ProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
-            <Package className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+            <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
             Products
             {pagination.total > 0 && (
               <span className="text-xs sm:text-sm font-normal text-muted-foreground">
@@ -1051,7 +1051,7 @@ export default function ProductsPage() {
                 variant={displayMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setDisplayMode('grid')}
-                className={displayMode === 'grid' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
+                className={displayMode === 'grid' ? 'bg-blue-600 hover:bg-blue-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
               >
                 <LayoutGrid className="w-4 h-4" />
               </Button>
@@ -1059,7 +1059,7 @@ export default function ProductsPage() {
                 variant={displayMode === 'table' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setDisplayMode('table')}
-                className={displayMode === 'table' ? 'bg-emerald-600 hover:bg-emerald-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
+                className={displayMode === 'table' ? 'bg-blue-600 hover:bg-blue-700 text-white rounded-none h-9 sm:h-10' : 'rounded-none h-9 sm:h-10'}
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -1075,9 +1075,9 @@ export default function ProductsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800 flex-wrap"
+            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 flex-wrap"
           >
-            <span className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-300">
+            <span className="text-xs sm:text-sm font-medium text-blue-700 dark:text-blue-300">
               {selectedIds.size} selected
             </span>
             <Button size="sm" variant="outline" className="h-8 sm:h-9 text-xs" onClick={() => handleBulkStatusChange('active')}>
@@ -1164,7 +1164,7 @@ export default function ProductsPage() {
                     key={page}
                     variant={pagination.page === page ? 'default' : 'outline'}
                     size="sm"
-                    className={pagination.page === page ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                    className={pagination.page === page ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
                     onClick={() => handlePageChange(page)}
                   >
                     {page}
@@ -1222,8 +1222,8 @@ export default function ProductsPage() {
     >
       <Card className="py-16">
         <CardContent className="text-center space-y-4">
-          <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto">
-            <Package className="w-10 h-10 text-emerald-600 empty-state-icon" />
+          <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto">
+            <Package className="w-10 h-10 text-blue-600 empty-state-icon" />
           </div>
           <h3 className="text-xl font-semibold">No products yet</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
@@ -1304,8 +1304,8 @@ export default function ProductsPage() {
                       <PopoverContent className="w-80 p-0 glass-effect" align="end">
                         <div className="p-5 space-y-5">
                           <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                              <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 animate-sparkle-pulse" />
+                            <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-sparkle-pulse" />
                             </div>
                             <div>
                               <h4 className="font-semibold text-sm">AI Description Generator</h4>
@@ -1315,7 +1315,7 @@ export default function ProductsPage() {
                           <div className="space-y-2 p-3 rounded-lg bg-muted/50 dark:bg-muted/30 border border-border/50">
                             <Label className="text-xs font-medium">Tone</Label>
                             <Select value={aiTone} onValueChange={setAiTone}>
-                              <SelectTrigger className="h-8 text-xs border-emerald-200 dark:border-emerald-800/50 focus:ring-emerald-500/20">
+                              <SelectTrigger className="h-8 text-xs border-blue-200 dark:border-blue-800/50 focus:ring-blue-500/20">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -1332,7 +1332,7 @@ export default function ProductsPage() {
                               placeholder="e.g. Cotton, Handmade, Eco-friendly"
                               value={aiFeatures}
                               onChange={(e) => setAiFeatures(e.target.value)}
-                              className="h-8 text-xs border-emerald-200 dark:border-emerald-800/50 focus:ring-emerald-500/20"
+                              className="h-8 text-xs border-blue-200 dark:border-blue-800/50 focus:ring-blue-500/20"
                             />
                             <p className="text-[10px] text-muted-foreground">Comma-separated features to highlight</p>
                           </div>
@@ -1377,7 +1377,7 @@ export default function ProductsPage() {
             {/* Media */}
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Upload className="w-4 h-4 text-emerald-600" />
+                <Upload className="w-4 h-4 text-blue-600" />
                 Media
               </h3>
               <div className="space-y-4">
@@ -1442,7 +1442,7 @@ export default function ProductsPage() {
                           )}
                         </div>
                         {idx === 0 && (
-                          <Badge className="absolute bottom-1 left-1 text-[9px] bg-emerald-600 text-white border-0 px-1 py-0">
+                          <Badge className="absolute bottom-1 left-1 text-[9px] bg-blue-600 text-white border-0 px-1 py-0">
                             Cover
                           </Badge>
                         )}
@@ -1452,7 +1452,7 @@ export default function ProductsPage() {
                 )}
 
                 {/* Drop zone placeholder */}
-                <div className="border-2 border-dashed rounded-lg p-8 text-center border-muted-foreground/25 hover:border-emerald-400 transition-colors">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center border-muted-foreground/25 hover:border-blue-400 transition-colors">
                   <Upload className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
                   <p className="text-sm text-muted-foreground">
                     Paste an image URL above to add product images
@@ -1464,7 +1464,7 @@ export default function ProductsPage() {
             {/* Pricing */}
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <IndianRupee className="w-4 h-4 text-emerald-600" />
+                <IndianRupee className="w-4 h-4 text-blue-600" />
                 Pricing
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1520,9 +1520,9 @@ export default function ProductsPage() {
                 </div>
               </div>
               {profitMargin !== null && (
-                <div className="mt-3 flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-md">
-                  <Calculator className="w-4 h-4 text-emerald-600" />
-                  <span className="text-sm text-emerald-700 dark:text-emerald-300">
+                <div className="mt-3 flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <Calculator className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm text-blue-700 dark:text-blue-300">
                     Profit margin: <strong>{profitMargin}%</strong>
                   </span>
                 </div>
@@ -1532,7 +1532,7 @@ export default function ProductsPage() {
             {/* Inventory */}
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Barcode className="w-4 h-4 text-emerald-600" />
+                <Barcode className="w-4 h-4 text-blue-600" />
                 Inventory
               </h3>
               <div className="space-y-4">
@@ -1609,7 +1609,7 @@ export default function ProductsPage() {
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="active" id="status-active" />
                   <Label htmlFor="status-active" className="cursor-pointer flex items-center gap-2">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                    <CheckCircle2 className="w-3 h-3 text-blue-500" />
                     Active
                   </Label>
                 </div>
@@ -1619,7 +1619,7 @@ export default function ProductsPage() {
             {/* Product Organization */}
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Filter className="w-4 h-4 text-emerald-600" />
+                <Filter className="w-4 h-4 text-blue-600" />
                 Product Organization
               </h3>
               <div className="space-y-4">
@@ -1677,7 +1677,7 @@ export default function ProductsPage() {
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border-0 pr-1"
+                          className="bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border-0 pr-1"
                         >
                           {tag}
                           <button
@@ -1697,7 +1697,7 @@ export default function ProductsPage() {
             {/* Shipping */}
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Scale className="w-4 h-4 text-emerald-600" />
+                <Scale className="w-4 h-4 text-blue-600" />
                 Shipping
               </h3>
               <div className="flex gap-3">
@@ -1733,9 +1733,9 @@ export default function ProductsPage() {
             </Card>
 
             {/* Compliance & Region */}
-            <Card className="p-6 border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/30 dark:bg-emerald-900/10">
+            <Card className="p-6 border-blue-100 dark:border-blue-900/50 bg-blue-50/30 dark:bg-blue-900/10">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Globe className="w-4 h-4 text-emerald-600" />
+                <Globe className="w-4 h-4 text-blue-600" />
                 Compliance & Region (India)
               </h3>
               <div className="space-y-4">
@@ -1815,7 +1815,7 @@ export default function ProductsPage() {
             {/* Action Buttons */}
             <Card className="p-6 space-y-3">
               <Button
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 onClick={() => handleSave(formData.status === 'active' ? undefined : 'active')}
                 disabled={isSaving}
               >
@@ -1961,10 +1961,10 @@ export default function ProductsPage() {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-emerald-600" />
+                  <Layers className="w-4 h-4 text-blue-600" />
                   Variants
                   {variants.length > 0 && (
-                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border-0 text-xs">
+                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border-0 text-xs">
                       {variants.length}
                     </Badge>
                   )}
@@ -1972,7 +1972,7 @@ export default function ProductsPage() {
                 <Button
                   size="sm"
                   onClick={openAddVariantDialog}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
+                  className="bg-blue-600 hover:bg-blue-700 text-white button-press"
                 >
                   <Plus className="w-3.5 h-3.5 mr-1" />
                   Add Variant
@@ -1988,7 +1988,7 @@ export default function ProductsPage() {
               ) : variants.length === 0 ? (
                 <div className="text-center py-10 bg-muted/20 rounded-lg border-2 border-dashed border-muted-foreground/20">
                   <div className="empty-state-icon mb-3">
-                    <Layers className="w-14 h-14 mx-auto text-emerald-300 dark:text-emerald-700" />
+                    <Layers className="w-14 h-14 mx-auto text-blue-300 dark:text-blue-700" />
                   </div>
                   <p className="text-sm text-muted-foreground font-medium">No variants yet</p>
                   <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
@@ -1998,7 +1998,7 @@ export default function ProductsPage() {
                     size="sm"
                     variant="outline"
                     onClick={openAddVariantDialog}
-                    className="mt-4 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                    className="mt-4 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
                   >
                     <Plus className="w-3.5 h-3.5 mr-1" />
                     Add First Variant
@@ -2051,7 +2051,7 @@ export default function ProductsPage() {
                             </TableCell>
                             <TableCell>
                               {variant.price !== null ? (
-                                <span className="font-medium text-sm text-emerald-600 dark:text-emerald-400">
+                                <span className="font-medium text-sm text-blue-600 dark:text-blue-400">
                                   {formatPrice(variant.price)}
                                 </span>
                               ) : (
@@ -2076,7 +2076,7 @@ export default function ProductsPage() {
                             </TableCell>
                             <TableCell>
                               {variant.isActive ? (
-                                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0 text-[10px]">Active</Badge>
+                                <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-0 text-[10px]">Active</Badge>
                               ) : (
                                 <Badge variant="secondary" className="text-[10px]">Inactive</Badge>
                               )}
@@ -2086,7 +2086,7 @@ export default function ProductsPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-7 w-7 p-0 hover:text-emerald-600"
+                                  className="h-7 w-7 p-0 hover:text-blue-600"
                                   onClick={() => openEditVariantDialog(variant)}
                                   title="Edit variant"
                                 >
@@ -2138,7 +2138,7 @@ export default function ProductsPage() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Price</span>
-                  <span className="font-semibold text-lg text-emerald-600 dark:text-emerald-400">
+                  <span className="font-semibold text-lg text-blue-600 dark:text-blue-400">
                     {formatPrice(detailProduct.price)}
                   </span>
                 </div>
@@ -2159,7 +2159,7 @@ export default function ProductsPage() {
                 {detailProduct.cost && detailProduct.price > 0 && (
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Margin</span>
-                    <span className="text-sm font-medium text-emerald-600">
+                    <span className="text-sm font-medium text-blue-600">
                       {((detailProduct.price - detailProduct.cost) / detailProduct.price * 100).toFixed(1)}%
                     </span>
                   </div>
@@ -2219,7 +2219,7 @@ export default function ProductsPage() {
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border-0"
+                          className="bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border-0"
                         >
                           {tag}
                         </Badge>

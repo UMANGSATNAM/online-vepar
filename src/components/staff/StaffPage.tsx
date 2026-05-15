@@ -125,7 +125,7 @@ function getInitials(name: string): string {
 
 function getRoleBadgeClasses(role: string): string {
   const colors: Record<string, string> = {
-    admin: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 shadow-[0_0_8px_oklch(0.55_0.16_155/0.2)]',
+    admin: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800 shadow-[0_0_8px_oklch(0.55_0.16_155/0.2)]',
     manager: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800 shadow-[0_0_8px_oklch(0.55_0.15_240/0.2)]',
     staff: 'bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 border-violet-200 dark:border-violet-800 shadow-[0_0_8px_oklch(0.6_0.2_300/0.2)]',
     viewer: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700',
@@ -145,7 +145,7 @@ function getRoleIcon(role: string) {
 
 function getStatusBadgeClasses(status: string): string {
   const colors: Record<string, string> = {
-    active: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+    active: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800',
     invited: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
     disabled: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800',
   }
@@ -479,7 +479,7 @@ export default function StaffPage() {
             <p className="text-muted-foreground mt-1">Manage team members and their permissions</p>
           </div>
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+            className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
             onClick={handleInvite}
           >
             <UserPlus className="w-4 h-4 mr-2" />
@@ -499,9 +499,9 @@ export default function StaffPage() {
             value={totalStaff}
             label="Total Staff"
             icon={Users}
-            gradientClass="border-t-emerald-500"
-            iconBg="bg-emerald-50 dark:bg-emerald-900/30"
-            iconColor="text-emerald-600 dark:text-emerald-400"
+            gradientClass="border-t-blue-500"
+            iconBg="bg-blue-50 dark:bg-blue-900/30"
+            iconColor="text-blue-600 dark:text-blue-400"
           />
           <AnimatedStatCard
             value={activeMembers}
@@ -584,8 +584,8 @@ export default function StaffPage() {
         {staff.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-lg font-medium">No team members yet</h3>
               <p className="text-muted-foreground text-sm mt-1">
@@ -595,7 +595,7 @@ export default function StaffPage() {
               </p>
               {!search && statusFilter === 'all' && (
                 <Button
-                  className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
                   onClick={handleInvite}
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
@@ -628,7 +628,7 @@ export default function StaffPage() {
                           <div className="flex items-center gap-3 flex-1 min-w-0">
                             <Avatar className="h-10 w-10 flex-shrink-0">
                               <AvatarFallback className={`text-sm font-medium ${
-                                member.role === 'admin' ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300' :
+                                member.role === 'admin' ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300' :
                                 member.role === 'manager' ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300' :
                                 member.role === 'viewer' ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' :
                                 'bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300'
@@ -671,7 +671,7 @@ export default function StaffPage() {
                                   <span>{truePermCount}/{totalPermCount}</span>
                                   <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
                                     <div
-                                      className="bg-emerald-500 h-1.5 rounded-full transition-all"
+                                      className="bg-blue-500 h-1.5 rounded-full transition-all"
                                       style={{ width: `${(truePermCount / totalPermCount) * 100}%` }}
                                     />
                                   </div>
@@ -683,7 +683,7 @@ export default function StaffPage() {
                                   <div className="flex flex-wrap gap-1.5">
                                     {permissionGroups.map((pg) => {
                                       const permColors: Record<string, string> = {
-                                        products: 'bg-emerald-400',
+                                        products: 'bg-blue-400',
                                         orders: 'bg-blue-400',
                                         customers: 'bg-violet-400',
                                         analytics: 'bg-amber-400',
@@ -702,7 +702,7 @@ export default function StaffPage() {
                                           key={pg.key}
                                           className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                                             perms[pg.key]
-                                              ? permColors[pg.key] || 'bg-emerald-400'
+                                              ? permColors[pg.key] || 'bg-blue-400'
                                               : 'bg-gray-200 dark:bg-gray-700'
                                           }`}
                                           title={`${pg.label}: ${perms[pg.key] ? 'Enabled' : 'Disabled'}`}
@@ -819,7 +819,7 @@ export default function StaffPage() {
                 <SelectContent>
                   <SelectItem value="admin">
                     <span className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <ShieldCheck className="w-4 h-4 text-blue-600" />
                       Admin
                     </span>
                   </SelectItem>
@@ -843,9 +843,9 @@ export default function StaffPage() {
                   </SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex items-start gap-2 p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg mt-2">
-                <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-emerald-700 dark:text-emerald-300">
+              <div className="flex items-start gap-2 p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg mt-2">
+                <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   {roleDescriptions[form.role]}
                 </p>
               </div>
@@ -898,7 +898,7 @@ export default function StaffPage() {
                     key={pg.key}
                     className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                       form.permissions[pg.key]
-                        ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/10'
+                        ? 'border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10'
                         : 'border-border bg-background'
                     }`}
                   >
@@ -906,7 +906,7 @@ export default function StaffPage() {
                       id={`perm-${pg.key}`}
                       checked={form.permissions[pg.key]}
                       onCheckedChange={(checked) => handlePermissionChange(pg.key, !!checked)}
-                      className={form.permissions[pg.key] ? 'data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600' : ''}
+                      className={form.permissions[pg.key] ? 'data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600' : ''}
                     />
                     <label htmlFor={`perm-${pg.key}`} className="flex-1 cursor-pointer">
                       <span className="text-sm font-medium">{pg.label}</span>
@@ -923,7 +923,7 @@ export default function StaffPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleSave}
               disabled={saving || !form.email.trim() || !form.name.trim()}
             >

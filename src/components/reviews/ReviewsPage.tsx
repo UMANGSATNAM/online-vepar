@@ -253,8 +253,8 @@ export default function ReviewsPage() {
       value: stats.totalReviews,
       icon: Star,
       color: 'emerald',
-      bgClass: 'bg-emerald-50 dark:bg-emerald-900/20',
-      textClass: 'text-emerald-600 dark:text-emerald-400',
+      bgClass: 'bg-blue-50 dark:bg-blue-900/20',
+      textClass: 'text-blue-600 dark:text-blue-400',
       borderClass: 'border-t-gradient-emerald',
       glowClass: 'stat-glow',
       gradientClass: 'card-gradient-emerald',
@@ -309,7 +309,7 @@ export default function ReviewsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Star className="w-6 h-6 text-emerald-600" />
+            <Star className="w-6 h-6 text-blue-600" />
             Reviews
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -366,7 +366,7 @@ export default function ReviewsPage() {
           <Card className="card-premium">
             <CardContent className="p-5">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <Star className="w-4 h-4 text-emerald-600" />
+                <Star className="w-4 h-4 text-blue-600" />
                 Rating Distribution
               </h3>
               <div className="space-y-2.5">
@@ -374,7 +374,7 @@ export default function ReviewsPage() {
                   <div key={item.star} className="flex items-center gap-3">
                     <div className="flex items-center gap-1 w-12 text-sm">
                       <span className="font-medium">{item.star}</span>
-                      <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                      <Star className="w-3.5 h-3.5 fill-blue-500 text-blue-500" />
                     </div>
                     <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
                       <motion.div
@@ -385,7 +385,7 @@ export default function ReviewsPage() {
                       />
                     </div>
                     <span className="text-xs font-medium text-muted-foreground w-20 text-right">
-                      {item.count} <span className="text-emerald-600 dark:text-emerald-400">({item.percentage}%)</span>
+                      {item.count} <span className="text-blue-600 dark:text-blue-400">({item.percentage}%)</span>
                     </span>
                   </div>
                 ))}
@@ -481,7 +481,7 @@ export default function ReviewsPage() {
             <Card className="border-2 border-dashed border-muted-foreground/20">
               <CardContent className="p-16 text-center">
                 <div className="empty-state-icon mb-4">
-                  <StarOff className="w-16 h-16 mx-auto text-emerald-300 dark:text-emerald-700" />
+                  <StarOff className="w-16 h-16 mx-auto text-blue-300 dark:text-blue-700" />
                 </div>
                 <h3 className="text-lg font-semibold text-muted-foreground mb-2">No reviews found</h3>
                 <p className="text-sm text-muted-foreground max-w-sm mx-auto">
@@ -504,9 +504,9 @@ export default function ReviewsPage() {
                 className="animate-card-entrance"
                 style={{ animationDelay: `${idx * 0.06}s` }}
               >
-                <Card className={`overflow-hidden card-premium review-card border-l-4 hover:ring-1 hover:ring-inset hover:ring-emerald-200 dark:hover:ring-emerald-800 transition-all duration-200 ${
+                <Card className={`overflow-hidden card-premium review-card border-l-4 hover:ring-1 hover:ring-inset hover:ring-blue-200 dark:hover:ring-blue-800 transition-all duration-200 ${
                   review.rating >= 4
-                    ? 'border-l-emerald-500'
+                    ? 'border-l-blue-500'
                     : review.rating === 3
                       ? 'border-l-amber-400'
                       : 'border-l-red-400'
@@ -516,8 +516,8 @@ export default function ReviewsPage() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                       <div className="flex items-start gap-3">
                         {/* Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                          <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                          <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
                             {review.customerName.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -525,7 +525,7 @@ export default function ReviewsPage() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-sm">{review.customerName}</span>
                             {review.isVerified && (
-                              <Badge className="verified-glow bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
+                              <Badge className="verified-glow bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
                                 <ShieldCheck className="w-3 h-3" />
                                 Verified Purchase
                               </Badge>
@@ -537,7 +537,7 @@ export default function ReviewsPage() {
                               </Badge>
                             )}
                             {review.isApproved && (
-                              <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
+                              <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-[10px] px-1.5 py-0 h-5 gap-0.5">
                                 <CheckCircle2 className="w-3 h-3" />
                                 Approved
                               </Badge>
@@ -609,7 +609,7 @@ export default function ReviewsPage() {
                     {/* Product reference */}
                     <div className="mt-3 flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Product:</span>
-                      <Badge variant="outline" className="text-[10px] gap-1 border-emerald-200 text-emerald-600 dark:border-emerald-800 dark:text-emerald-400">
+                      <Badge variant="outline" className="text-[10px] gap-1 border-blue-200 text-blue-600 dark:border-blue-800 dark:text-blue-400">
                         {review.product?.name || 'Unknown Product'}
                       </Badge>
                     </div>
@@ -621,9 +621,9 @@ export default function ReviewsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-4 ml-2"
                       >
-                        <div className="merchant-response p-3 bg-emerald-50/60 dark:bg-emerald-900/20">
+                        <div className="merchant-response p-3 bg-blue-50/60 dark:bg-blue-900/20">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                            <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
                               Merchant Response
                             </span>
                             {review.respondedAt && (
@@ -647,8 +647,8 @@ export default function ReviewsPage() {
                           transition={{ duration: 0.2 }}
                           className="mt-4 overflow-hidden"
                         >
-                          <div className="merchant-response p-4 space-y-2 bg-emerald-50/60 dark:bg-emerald-900/20">
-                            <label className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                          <div className="merchant-response p-4 space-y-2 bg-blue-50/60 dark:bg-blue-900/20">
+                            <label className="text-xs font-semibold text-blue-700 dark:text-blue-300">
                               Your Response
                             </label>
                             <Textarea

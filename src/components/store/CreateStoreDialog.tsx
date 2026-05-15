@@ -46,8 +46,8 @@ const THEME_OPTIONS = [
           <div className="h-1 w-6 bg-gray-200 dark:bg-gray-700 rounded-full ml-2" />
           <div className="h-1 w-5 bg-gray-200 dark:bg-gray-700 rounded-full ml-auto" />
         </div>
-        <div className="h-4 bg-gradient-to-r from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30 rounded-sm flex items-center justify-center">
-          <div className="h-1 w-6 bg-emerald-300 dark:bg-emerald-600 rounded-full" />
+        <div className="h-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-sm flex items-center justify-center">
+          <div className="h-1 w-6 bg-blue-300 dark:bg-blue-600 rounded-full" />
         </div>
         <div className="flex gap-0.5 flex-1">
           <div className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-sm" />
@@ -102,10 +102,10 @@ const THEME_OPTIONS = [
     preview: (
       <div className="w-full h-16 rounded-md border bg-gray-900 dark:bg-gray-950 p-1.5 flex flex-col gap-1">
         <div className="h-2 bg-gray-800 dark:bg-gray-900 rounded-sm w-full flex items-center px-1">
-          <div className="h-1.5 w-4 bg-emerald-400 rounded-sm" />
+          <div className="h-1.5 w-4 bg-blue-400 rounded-sm" />
           <div className="h-1 w-6 bg-gray-500 rounded-full ml-2" />
         </div>
-        <div className="h-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-sm" />
+        <div className="h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-sm" />
         <div className="flex gap-0.5 flex-1">
           <div className="flex-1 bg-gray-800 dark:bg-gray-900 rounded-sm" />
           <div className="flex-1 bg-gray-800 dark:bg-gray-900 rounded-sm" />
@@ -231,8 +231,8 @@ export default function CreateStoreDialog() {
             Back to Dashboard
           </Button>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl flex items-center justify-center">
-              <Store className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/40 rounded-xl flex items-center justify-center">
+              <Store className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">Create New Store</h1>
@@ -322,7 +322,7 @@ export default function CreateStoreDialog() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Palette className="w-5 h-5 text-emerald-600" />
+                <Palette className="w-5 h-5 text-blue-600" />
                 Theme & Appearance
               </CardTitle>
             </CardHeader>
@@ -339,12 +339,12 @@ export default function CreateStoreDialog() {
                       }
                       className={`relative rounded-lg border-2 p-3 text-left transition-all hover:shadow-md ${
                         formData.theme === theme.id
-                          ? 'border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800'
-                          : 'border-muted hover:border-emerald-300'
+                          ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800'
+                          : 'border-muted hover:border-blue-300'
                       }`}
                     >
                       {formData.theme === theme.id && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </div>
                       )}
@@ -388,8 +388,8 @@ export default function CreateStoreDialog() {
                       }
                       className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-all text-xs ${
                         formData.primaryColor === color.value
-                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 shadow-sm'
-                          : 'border-muted hover:border-emerald-300'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-sm'
+                          : 'border-muted hover:border-blue-300'
                       }`}
                     >
                       <div
@@ -416,7 +416,7 @@ export default function CreateStoreDialog() {
             <Button
               onClick={handleCreateStore}
               disabled={creating || !formData.name.trim()}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white min-w-[140px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
             >
               {creating ? (
                 <>

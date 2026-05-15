@@ -73,7 +73,7 @@ function getDiscountStatus(discount: Discount): 'active' | 'inactive' | 'expired
 
 function getStatusBadge(status: string): string {
   const colors: Record<string, string> = {
-    active: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    active: 'bg-blue-100 text-blue-800 border-blue-200',
     inactive: 'bg-gray-100 text-gray-600 border-gray-200',
     expired: 'bg-red-100 text-red-700 border-red-200',
     scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -416,8 +416,8 @@ export default function DiscountsPage() {
         {filteredDiscounts.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Tag className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Tag className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-lg font-medium">No discounts found</h3>
               <p className="text-muted-foreground text-sm mt-1">
@@ -468,9 +468,9 @@ export default function DiscountsPage() {
                                 </span>
                               </Badge>
                               {discount.type === 'percentage' ? (
-                                <Percent className="w-4 h-4 text-emerald-600" />
+                                <Percent className="w-4 h-4 text-blue-600" />
                               ) : (
-                                <DollarSign className="w-4 h-4 text-emerald-600" />
+                                <DollarSign className="w-4 h-4 text-blue-600" />
                               )}
                             </div>
                             <CardTitle className="text-lg leading-tight">{discount.name}</CardTitle>
@@ -517,7 +517,7 @@ export default function DiscountsPage() {
                       <CardContent className="space-y-3">
                         {/* Discount Code */}
                         <div className="flex items-center gap-2">
-                          <code className="px-2 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 rounded font-mono text-sm font-bold tracking-wider">
+                          <code className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded font-mono text-sm font-bold tracking-wider">
                             {discount.code}
                           </code>
                           <Button
@@ -531,7 +531,7 @@ export default function DiscountsPage() {
                         </div>
 
                         {/* Value Display */}
-                        <div className="text-2xl font-bold text-emerald-600">
+                        <div className="text-2xl font-bold text-blue-600">
                           {discount.type === 'percentage'
                             ? `${discount.value}% OFF`
                             : `${formatPrice(discount.value)} OFF`}

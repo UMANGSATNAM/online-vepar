@@ -66,7 +66,7 @@ const SHIPMENT_STATUS_CONFIG: Record<string, { label: string; color: string; bgC
   picked_up: { label: 'Picked Up', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/40', icon: Package },
   in_transit: { label: 'In Transit', color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-100 dark:bg-indigo-900/40', icon: Truck },
   out_for_delivery: { label: 'Out for Delivery', color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/40', icon: Truck },
-  delivered: { label: 'Delivered', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/40', icon: CheckCircle2 },
+  delivered: { label: 'Delivered', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/40', icon: CheckCircle2 },
   failed: { label: 'Failed', color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/40', icon: AlertCircle },
   returned: { label: 'Returned', color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/40', icon: RotateCcw },
 }
@@ -650,7 +650,7 @@ export default function ShippingPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Truck className="w-6 h-6 text-emerald-600" />
+            <Truck className="w-6 h-6 text-blue-600" />
             Shipping
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Manage shipping zones, rates, and track shipments</p>
@@ -666,7 +666,7 @@ export default function ShippingPage() {
           <Button
             onClick={openCreateShipment}
             variant="outline"
-            className="border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+            className="border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
           >
             <Package className="w-4 h-4 mr-1.5" />
             New Shipment
@@ -677,15 +677,15 @@ export default function ShippingPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
-          <Card className="card-premium animate-card-entrance stagger-1 hover-lift border-t-2 border-t-emerald-500 stat-glow-green">
+          <Card className="card-premium animate-card-entrance stagger-1 hover-lift border-t-2 border-t-blue-500 stat-glow-green">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Active Zones</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{stats.activeZones}</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-emerald-600" />
+                <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -741,11 +741,11 @@ export default function ShippingPage() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-muted/50">
-          <TabsTrigger value="zones" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+          <TabsTrigger value="zones" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <MapPin className="w-4 h-4 mr-1.5" />
             Shipping Zones
           </TabsTrigger>
-          <TabsTrigger value="shipments" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+          <TabsTrigger value="shipments" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Package className="w-4 h-4 mr-1.5" />
             Shipments
           </TabsTrigger>
@@ -788,7 +788,7 @@ export default function ShippingPage() {
                           >
                             <div className="flex items-center gap-2">
                               <CardTitle className="text-base font-semibold">{zone.name}</CardTitle>
-                              <Badge variant={zone.isActive ? 'default' : 'secondary'} className={`text-[10px] ${zone.isActive ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : ''}`}>
+                              <Badge variant={zone.isActive ? 'default' : 'secondary'} className={`text-[10px] ${zone.isActive ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800' : ''}`}>
                                 {zone.isActive ? 'Active' : 'Inactive'}
                               </Badge>
                             </div>
@@ -819,7 +819,7 @@ export default function ShippingPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleToggleZoneActive(zone)}>
-                              <div className={`w-2 h-2 rounded-full ${zone.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                              <div className={`w-2 h-2 rounded-full ${zone.isActive ? 'bg-blue-500' : 'bg-gray-400'}`} />
                             </Button>
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditZone(zone)}>
                               <Edit2 className="w-3.5 h-3.5" />
@@ -848,7 +848,7 @@ export default function ShippingPage() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="h-7 text-xs border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                                    className="h-7 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300"
                                     onClick={() => openAddRate(zone.id)}
                                   >
                                     <Plus className="w-3 h-3 mr-1" />
@@ -872,7 +872,7 @@ export default function ShippingPage() {
                                             </Badge>
                                           </div>
                                           <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                                            <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(rate.rate)}</span>
+                                            <span className="font-medium text-blue-600 dark:text-blue-400">{formatCurrency(rate.rate)}</span>
                                             {rate.freeAbove && <span>Free above {formatCurrency(rate.freeAbove)}</span>}
                                             <span className="flex items-center gap-0.5"><Clock className="w-3 h-3" />{rate.estimatedDays} days</span>
                                           </div>
@@ -981,16 +981,16 @@ export default function ShippingPage() {
                         return (
                           <tr
                             key={shipment.id}
-                            className={`border-b border-border cursor-pointer transition-colors hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 ${idx % 2 === 1 ? 'bg-muted/20' : ''}`}
+                            className={`border-b border-border cursor-pointer transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-900/10 ${idx % 2 === 1 ? 'bg-muted/20' : ''}`}
                             onClick={() => handleViewShipment(shipment)}
                           >
                             <td className="p-3">
                               <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400">{shipment.trackingNumber || '—'}</span>
+                                <span className="text-xs font-mono text-blue-600 dark:text-blue-400">{shipment.trackingNumber || '—'}</span>
                                 {shipment.trackingNumber && (
                                   <button
                                     onClick={(e) => { e.stopPropagation(); copyTracking(shipment.trackingNumber!) }}
-                                    className="opacity-0 group-hover:opacity-100 hover:text-emerald-600"
+                                    className="opacity-0 group-hover:opacity-100 hover:text-blue-600"
                                   >
                                     <Copy className="w-3 h-3" />
                                   </button>
@@ -1012,7 +1012,7 @@ export default function ShippingPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 text-xs text-emerald-600 dark:text-emerald-400"
+                                className="h-7 text-xs text-blue-600 dark:text-blue-400"
                                 onClick={(e) => { e.stopPropagation(); handleViewShipment(shipment) }}
                               >
                                 <ExternalLink className="w-3 h-3 mr-1" />
@@ -1066,7 +1066,7 @@ export default function ShippingPage() {
                         type="checkbox"
                         checked={zoneForm.regions.includes(state)}
                         onChange={() => toggleRegion(state)}
-                        className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       {state}
                     </label>
@@ -1090,7 +1090,7 @@ export default function ShippingPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 text-xs border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+                    className="h-7 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300"
                     onClick={() => setZoneRates(prev => [...prev, { name: '', priceType: 'flat', rate: 0, estimatedDays: '3-5', freeAbove: null, minWeight: null, maxWeight: null, minOrderValue: null, maxOrderValue: null, isActive: true }])}
                   >
                     <Plus className="w-3 h-3 mr-1" />
@@ -1418,8 +1418,8 @@ export default function ShippingPage() {
                           <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                             step.completed
                               ? step.current
-                                ? 'bg-emerald-600 text-white'
-                                : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
                               : 'bg-muted text-muted-foreground'
                           }`}>
                             {step.completed ? (
@@ -1429,14 +1429,14 @@ export default function ShippingPage() {
                             )}
                           </div>
                           {idx < shipmentTimeline.length - 1 && (
-                            <div className={`w-0.5 flex-1 mt-1 ${step.completed ? 'bg-emerald-300 dark:bg-emerald-700' : 'bg-border'}`} />
+                            <div className={`w-0.5 flex-1 mt-1 ${step.completed ? 'bg-blue-300 dark:bg-blue-700' : 'bg-border'}`} />
                           )}
                         </div>
                         <div className="flex-1 pb-1">
                           <div className="flex items-center gap-2">
                             <p className={`text-sm font-medium ${step.completed ? 'text-foreground' : 'text-muted-foreground'}`}>{step.label}</p>
                             {step.current && (
-                              <Badge className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-0 text-[10px]">
+                              <Badge className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-0 text-[10px]">
                                 Current
                               </Badge>
                             )}
@@ -1465,7 +1465,7 @@ export default function ShippingPage() {
                         key={status}
                         size="sm"
                         variant="outline"
-                        className="h-8 text-xs border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                        className="h-8 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                         onClick={() => handleUpdateShipmentStatus(selectedShipment.id, status)}
                       >
                         <Icon className="w-3 h-3 mr-1" />

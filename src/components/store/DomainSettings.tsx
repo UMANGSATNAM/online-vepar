@@ -100,7 +100,7 @@ export default function DomainSettings() {
         <CardContent>
           <div className="flex items-center justify-between p-4 bg-muted/30 border rounded-lg">
             <div className="flex items-center gap-3">
-              <Globe className="w-5 h-5 text-emerald-600" />
+              <Globe className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-medium">
                   {typeof window !== 'undefined' && window.location.hostname.includes('up.railway.app')
@@ -108,7 +108,7 @@ export default function DomainSettings() {
                     : `${currentStore.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'onlinevepar.com'}`}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Connected
+                  <CheckCircle2 className="w-3 h-3 text-blue-500" /> Connected
                 </p>
               </div>
             </div>
@@ -156,10 +156,10 @@ export default function DomainSettings() {
                   <div>
                     <p className="font-medium text-lg">{domain.domain}</p>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${domain.isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${domain.isVerified ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'}`}>
                         {domain.isVerified ? 'Verified' : 'Pending Verification'}
                       </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${domain.sslStatus === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : 'bg-muted text-muted-foreground'}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${domain.sslStatus === 'active' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : 'bg-muted text-muted-foreground'}`}>
                         SSL: {domain.sslStatus}
                       </span>
                     </div>
@@ -186,7 +186,7 @@ export default function DomainSettings() {
                           <tr>
                             <td className="px-3 py-2 font-mono text-xs">CNAME</td>
                             <td className="px-3 py-2 font-mono text-xs">{domain.domain.startsWith('www') ? 'www' : '@'}</td>
-                            <td className="px-3 py-2 font-mono text-xs text-emerald-600 dark:text-emerald-400">{currentStore.slug}.onlinevepar.com</td>
+                            <td className="px-3 py-2 font-mono text-xs text-blue-600 dark:text-blue-400">{currentStore.slug}.onlinevepar.com</td>
                           </tr>
                         </tbody>
                       </table>

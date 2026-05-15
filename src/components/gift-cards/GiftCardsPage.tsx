@@ -81,14 +81,14 @@ interface GiftCardData {
 }
 
 const templateGradients: Record<string, string> = {
-  classic: 'from-emerald-500 via-emerald-600 to-emerald-800',
+  classic: 'from-blue-500 via-blue-600 to-blue-800',
   birthday: 'from-rose-400 via-pink-500 to-rose-700',
   festive: 'from-amber-400 via-orange-500 to-amber-700',
   minimal: 'from-slate-400 via-slate-500 to-slate-700',
 }
 
 const templateDarkGradients: Record<string, string> = {
-  classic: 'dark:from-emerald-700 dark:via-emerald-800 dark:to-emerald-950',
+  classic: 'dark:from-blue-700 dark:via-blue-800 dark:to-blue-950',
   birthday: 'dark:from-rose-600 dark:via-pink-700 dark:to-rose-900',
   festive: 'dark:from-amber-600 dark:via-orange-700 dark:to-amber-900',
   minimal: 'dark:from-slate-600 dark:via-slate-700 dark:to-slate-900',
@@ -109,7 +109,7 @@ const templateColors: Record<string, string> = {
 }
 
 const statusColors: Record<string, string> = {
-  active: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  active: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   redeemed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   expired: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
   disabled: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
@@ -503,7 +503,7 @@ export default function GiftCardsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Gift className="w-6 h-6 text-emerald-600" />
+            <Gift className="w-6 h-6 text-blue-600" />
             Gift Cards
           </h1>
           <p className="text-muted-foreground mt-1">Create, sell, and manage gift cards for your store</p>
@@ -514,7 +514,7 @@ export default function GiftCardsPage() {
             setFormData((prev) => ({ ...prev, code: generateCode() }))
             setCreateDialog(true)
           }}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
         >
           <Plus className="w-4 h-4" />
           Create Gift Card
@@ -528,9 +528,9 @@ export default function GiftCardsPage() {
             value={total}
             label="Total Gift Cards"
             icon={CreditCard}
-            gradientClass="border-t-emerald-500"
-            iconBg="bg-emerald-50 dark:bg-emerald-900/30"
-            iconColor="text-emerald-600 dark:text-emerald-400"
+            gradientClass="border-t-blue-500"
+            iconBg="bg-blue-50 dark:bg-blue-900/30"
+            iconColor="text-blue-600 dark:text-blue-400"
           />
         </motion.div>
 
@@ -605,8 +605,8 @@ export default function GiftCardsPage() {
           animate={{ opacity: 1 }}
           className="text-center py-16"
         >
-          <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-5">
-            <Gift className="w-10 h-10 text-emerald-300 dark:text-emerald-600" />
+          <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <Gift className="w-10 h-10 text-blue-300 dark:text-blue-600" />
           </div>
           <h3 className="text-lg font-medium text-muted-foreground">No gift cards found</h3>
           <p className="text-sm text-muted-foreground mt-1">
@@ -621,7 +621,7 @@ export default function GiftCardsPage() {
                 setFormData((prev) => ({ ...prev, code: generateCode() }))
                 setCreateDialog(true)
               }}
-              className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white gap-2 transition-all duration-200 hover:scale-[1.02]"
+              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white gap-2 transition-all duration-200 hover:scale-[1.02]"
             >
               <Plus className="w-4 h-4" />
               Create Gift Card
@@ -708,7 +708,7 @@ export default function GiftCardsPage() {
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <span>Initial: {formatCurrency(gc.initialBalance, gc.currency)}</span>
                       {gc.currentBalance !== gc.initialBalance && gc.status === 'active' && (
-                        <span className="text-emerald-600 dark:text-emerald-400 ml-1">
+                        <span className="text-blue-600 dark:text-blue-400 ml-1">
                           ({formatCurrency(gc.currentBalance - gc.initialBalance, gc.currency)} adj.)
                         </span>
                       )}
@@ -758,7 +758,7 @@ export default function GiftCardsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-emerald-600 hover:text-emerald-700"
+                          className="h-7 w-7 text-blue-600 hover:text-blue-700"
                           onClick={() => handleStatusChange(gc, 'active')}
                           title="Enable"
                         >
@@ -791,7 +791,7 @@ export default function GiftCardsPage() {
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Gift className="w-5 h-5 text-emerald-600" />
+              <Gift className="w-5 h-5 text-blue-600" />
               Create Gift Card
             </DialogTitle>
           </DialogHeader>
@@ -808,8 +808,8 @@ export default function GiftCardsPage() {
                     onClick={() => setFormData((prev) => ({ ...prev, template: key }))}
                     className={`relative rounded-lg overflow-hidden h-16 transition-all ${
                       formData.template === key
-                        ? 'ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-background'
-                        : 'ring-1 ring-border hover:ring-emerald-300'
+                        ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-background'
+                        : 'ring-1 ring-border hover:ring-blue-300'
                     }`}
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${templateGradients[key]}`} />
@@ -948,7 +948,7 @@ export default function GiftCardsPage() {
             <Button
               onClick={handleCreate}
               disabled={submitting || !formData.name || !formData.initialBalance}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+              className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
               {submitting ? 'Creating...' : 'Create'}
@@ -962,7 +962,7 @@ export default function GiftCardsPage() {
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Pencil className="w-5 h-5 text-emerald-600" />
+              <Pencil className="w-5 h-5 text-blue-600" />
               Edit Gift Card
             </DialogTitle>
           </DialogHeader>
@@ -979,8 +979,8 @@ export default function GiftCardsPage() {
                     onClick={() => setFormData((prev) => ({ ...prev, template: key }))}
                     className={`relative rounded-lg overflow-hidden h-16 transition-all ${
                       formData.template === key
-                        ? 'ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-background'
-                        : 'ring-1 ring-border hover:ring-emerald-300'
+                        ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-background'
+                        : 'ring-1 ring-border hover:ring-blue-300'
                     }`}
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${templateGradients[key]}`} />
@@ -1028,7 +1028,7 @@ export default function GiftCardsPage() {
                       key={s}
                       variant={selectedCard.status === s ? 'default' : 'outline'}
                       size="sm"
-                      className={selectedCard.status === s ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                      className={selectedCard.status === s ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
                       onClick={() => {
                         handleStatusChange(selectedCard, s)
                         setSelectedCard({ ...selectedCard, status: s })
@@ -1104,7 +1104,7 @@ export default function GiftCardsPage() {
             <Button
               onClick={handleUpdate}
               disabled={submitting}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
               Save Changes
@@ -1119,7 +1119,7 @@ export default function GiftCardsPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {adjustData.type === 'add' ? (
-                <ArrowUpRight className="w-5 h-5 text-emerald-600" />
+                <ArrowUpRight className="w-5 h-5 text-blue-600" />
               ) : (
                 <ArrowDownRight className="w-5 h-5 text-red-600" />
               )}
@@ -1141,7 +1141,7 @@ export default function GiftCardsPage() {
                   <Button
                     variant={adjustData.type === 'add' ? 'default' : 'outline'}
                     size="sm"
-                    className={adjustData.type === 'add' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                    className={adjustData.type === 'add' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
                     onClick={() => setAdjustData((prev) => ({ ...prev, type: 'add' }))}
                   >
                     <ArrowUpRight className="w-3.5 h-3.5 mr-1" />
@@ -1208,7 +1208,7 @@ export default function GiftCardsPage() {
             <Button
               onClick={handleAdjustBalance}
               disabled={submitting || !adjustData.amount}
-              className={adjustData.type === 'add' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
+              className={adjustData.type === 'add' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               {adjustData.type === 'add' ? 'Add Balance' : 'Subtract Balance'}

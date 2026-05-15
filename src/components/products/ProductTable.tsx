@@ -81,7 +81,7 @@ export function ProductTable({
                     </div>
                     <div className="min-w-0">
                       <p
-                        className="font-medium text-sm truncate cursor-pointer hover:text-emerald-600 transition-colors"
+                        className="font-medium text-sm truncate cursor-pointer hover:text-blue-600 transition-colors"
                         onClick={() => openDetail(product.id)}
                       >
                         {product.name}
@@ -102,7 +102,7 @@ export function ProductTable({
                   )}
                 </TableCell>
                 <TableCell>
-                  <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                  <span className="font-medium text-blue-600 dark:text-blue-400">
                     {formatPrice(product.price)}
                   </span>
                   {product.comparePrice && product.comparePrice > product.price && (

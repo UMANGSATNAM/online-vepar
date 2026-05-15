@@ -175,7 +175,7 @@ export default function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) 
                   onSelect={() => handleQuickAction(action.view)}
                   className="cursor-pointer"
                 >
-                  <action.icon className="w-4 h-4 text-emerald-600" />
+                  <action.icon className="w-4 h-4 text-blue-600" />
                   <span>{action.label}</span>
                   <ArrowRight className="w-3 h-3 ml-auto text-muted-foreground" />
                 </CommandItem>
@@ -192,7 +192,7 @@ export default function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) 
                 onSelect={() => handleProductSelect(product.id)}
                 className="cursor-pointer"
               >
-                <Package className="w-4 h-4 text-emerald-600" />
+                <Package className="w-4 h-4 text-blue-600" />
                 <div className="flex-1 min-w-0">
                   <span className="font-medium truncate block">{product.name}</span>
                   <span className="text-xs text-muted-foreground">

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { Store, Home, Package, ShoppingCart, Users, BarChart3, Settings, Globe, FileText, Search, Menu, LogOut, ChevronDown, X, Command, Sun, Moon, Monitor, Plus, Tag, Warehouse, Truck, Star, Clock, Receipt, ShoppingBag, Layers, CreditCard, LayoutGrid, ChevronRight, PanelLeftClose, PanelLeftOpen, Shield, Bell, Zap, Database } from 'lucide-react'
+import { Store, Home, Package, ShoppingCart, Users, BarChart3, Settings, Globe, FileText, Search, Menu, LogOut, ChevronDown, X, Command, Sun, Moon, Monitor, Plus, Tag, Warehouse, Truck, Star, Clock, Receipt, ShoppingBag, Layers, CreditCard, LayoutGrid, ChevronRight, PanelLeftClose, PanelLeftOpen, Shield, Bell, Zap, Database, Construction } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -95,18 +95,33 @@ const viewLabels: Record<string, string> = {
   'abandoned-checkouts': 'Abandoned Checkouts', reviews: 'Reviews', activity: 'Activity Log',
   collections: 'Collections', staff: 'Staff', 'domains': 'Domains',
   billing: 'Billing & Plan', 'seo-settings': 'SEO & Marketing', 'store-editor': 'Theme Editor',
-  metaobjects: 'Metaobjects', marketing: 'Marketing', content: 'Content', 'online-store': 'Online Store', apps: 'Apps'
+  metaobjects: 'Metaobjects', marketing: 'Marketing', content: 'Content', 'online-store': 'Online Store', apps: 'Apps',
+  'draft-orders': 'Draft Orders', 'returns': 'Returns', 'transfers': 'Transfers', 'purchase-orders': 'Purchase Orders',
+  'segments': 'Segments', 'automations': 'Automations', 'blog-posts': 'Blog Posts', 'menus': 'Navigation',
+  'files': 'Files', 'reports': 'Reports', 'live-view': 'Live View', 'themes': 'Themes', 'preferences': 'Preferences'
+}
+
+function PlaceholderPage({ title }: { title: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-md mx-auto">
+      <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-6">
+        <Construction className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+      </div>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      <p className="text-muted-foreground">This module is currently under construction and will be available in the next platform update.</p>
+    </div>
+  )
 }
 
 function NavItem({ view, label, icon: Icon, collapsed, active, isSubitem, onClick }: { view: string; label: string; icon: React.ComponentType<{ className?: string }>; collapsed?: boolean; active?: boolean; isSubitem?: boolean; onClick: () => void }) {
   const btn = (
     <button onClick={onClick} className={`relative w-full flex items-center gap-3 py-1.5 rounded-lg text-sm transition-all duration-150 group ${
       active
-        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold'
+        ? 'bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold'
         : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'
     } ${collapsed ? 'justify-center px-2' : isSubitem ? 'px-3 pl-9 text-[13px]' : 'px-3'}`}>
-      {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-emerald-600 rounded-r-full" />}
-      {!isSubitem && <Icon className={`w-4 h-4 shrink-0 transition-transform duration-150 ${active ? 'text-emerald-600 dark:text-emerald-400' : 'group-hover:scale-110'}`} />}
+      {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-blue-600 rounded-r-full" />}
+      {!isSubitem && <Icon className={`w-4 h-4 shrink-0 transition-transform duration-150 ${active ? 'text-blue-600 dark:text-blue-400' : 'group-hover:scale-110'}`} />}
       {!collapsed && <span className="truncate">{label}</span>}
     </button>
   )
@@ -168,13 +183,13 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
     <div className="flex flex-col h-full bg-card border-r border-border/60">
       {/* Logo */}
       <div className={`h-14 flex items-center shrink-0 border-b border-border/40 ${collapsed ? 'justify-center px-2' : 'gap-2.5 px-4'}`}>
-        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm shadow-emerald-600/30">
+        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm shadow-blue-600/20">
           <Store className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
           <div className="flex items-center gap-1.5 min-w-0">
             <span className="text-sm font-bold truncate">Online Vepar</span>
-            <Badge className="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-0 text-[9px] px-1.5 h-4 font-bold shrink-0">PRO</Badge>
+            <Badge className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-0 text-[9px] px-1.5 h-4 font-bold shrink-0">PRO</Badge>
           </div>
         )}
       </div>
@@ -186,8 +201,8 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
             <Select value={currentStore?.id || ''} onValueChange={v => { const s = stores.find(x => x.id === v); if (s) setStore(s) }}>
               <SelectTrigger className="flex-1 h-8 text-xs border-border/50 bg-muted/30 hover:bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-4 h-4 bg-emerald-600/10 rounded flex items-center justify-center shrink-0">
-                    <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400">{storeInit}</span>
+                  <div className="w-4 h-4 bg-blue-600/10 rounded flex items-center justify-center shrink-0">
+                    <span className="text-[9px] font-bold text-blue-700 dark:text-blue-400">{storeInit}</span>
                   </div>
                   <SelectValue placeholder="Select store" />
                 </div>
@@ -198,7 +213,7 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
             </Select>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="icon" variant="outline" className="h-8 w-8 shrink-0 border-border/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 hover:border-emerald-200 rounded-lg" onClick={() => nav('create-store')}>
+                <Button size="icon" variant="outline" className="h-8 w-8 shrink-0 border-border/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 hover:border-blue-200 rounded-lg" onClick={() => nav('create-store')}>
                   <Plus className="w-3.5 h-3.5" />
                 </Button>
               </TooltipTrigger>
@@ -210,8 +225,8 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
         <div className="px-2 py-2 border-b border-border/40 shrink-0 flex justify-center">
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-8 h-8 bg-emerald-600/10 rounded-lg flex items-center justify-center cursor-pointer hover:bg-emerald-600/20 transition-colors">
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">{storeInit}</span>
+              <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-600/20 transition-colors">
+                <span className="text-xs font-bold text-blue-700 dark:text-blue-400">{storeInit}</span>
               </div>
             </TooltipTrigger>
             <TooltipContent side="right">{currentStore?.name || 'Select Store'}</TooltipContent>
@@ -250,9 +265,9 @@ function Sidebar({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: 
             <button className={`w-full flex items-center ${collapsed ? 'justify-center p-1' : 'gap-2.5 px-2 py-1.5'} hover:bg-accent/60 rounded-lg transition-colors`}>
               <div className="relative shrink-0">
                 <Avatar className="h-7 w-7">
-                  <AvatarFallback className="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">{initials}</AvatarFallback>
+                  <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/60 dark:to-indigo-900/60 text-blue-700 dark:text-blue-400 text-[10px] font-bold">{initials}</AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full border-2 border-card" />
+                <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-card" />
               </div>
               {!collapsed && (
                 <div className="text-left flex-1 min-w-0">
@@ -311,6 +326,24 @@ function renderContent(view: string) {
     case 'seo-settings': return <SeoSettings />
     case 'store-editor': return <StoreEditor />
     case 'metaobjects': return <MetafieldsPage />
+    
+    // Fallback for currently unmapped nav items
+    case 'draft-orders':
+    case 'returns':
+    case 'transfers':
+    case 'purchase-orders':
+    case 'segments':
+    case 'automations':
+    case 'blog-posts':
+    case 'menus':
+    case 'files':
+    case 'reports':
+    case 'live-view':
+    case 'themes':
+    case 'preferences':
+    case 'apps':
+      return <PlaceholderPage title={viewLabels[view] || view} />
+      
     default: return <DashboardHome />
   }
 }
@@ -417,13 +450,13 @@ export default function DashboardLayout() {
               <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground" onClick={toggleSidebar}>
                 {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
               </Button>
-              <Button variant="outline" size="sm" className="hidden sm:flex h-7 gap-1.5 text-[11px] border-border/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg" onClick={handleVisitStore}>
+              <Button variant="outline" size="sm" className="hidden sm:flex h-7 gap-1.5 text-[11px] border-border/50 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" onClick={handleVisitStore}>
                 <Globe className="w-3 h-3" /><span className="hidden md:inline">Visit Store</span>
               </Button>
               <ThemeToggle />
               <NotificationsPanel />
               <Avatar className="h-7 w-7 lg:hidden">
-                <AvatarFallback className="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">{initials}</AvatarFallback>
+                <AvatarFallback className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-[10px] font-bold">{initials}</AvatarFallback>
               </Avatar>
             </div>
           </header>
@@ -459,8 +492,8 @@ export default function DashboardLayout() {
               const active = currentView === item.view
               return (
                 <button key={item.view} onClick={() => setView(item.view)}
-                  className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-xl min-w-[54px] transition-all ${active ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
-                  <div className={`p-1 rounded-lg transition-all ${active ? 'bg-emerald-50 dark:bg-emerald-950/50' : ''}`}>
+                  className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-xl min-w-[54px] transition-all ${active ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>
+                  <div className={`p-1 rounded-lg transition-all ${active ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}>
                     <item.icon className={`w-5 h-5 transition-transform ${active ? 'scale-110' : ''}`} />
                   </div>
                   <span className="text-[10px] font-medium">{item.label}</span>

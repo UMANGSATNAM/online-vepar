@@ -97,7 +97,7 @@ function getOrderStatusColor(status: string): string {
     confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
     processing: 'bg-purple-100 text-purple-800 border-purple-200',
     shipped: 'bg-orange-100 text-orange-800 border-orange-200',
-    delivered: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    delivered: 'bg-blue-100 text-blue-800 border-blue-200',
     cancelled: 'bg-red-100 text-red-800 border-red-200',
     refunded: 'bg-pink-100 text-pink-800 border-pink-200',
   }
@@ -106,7 +106,7 @@ function getOrderStatusColor(status: string): string {
 
 function getPaymentStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    paid: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    paid: 'bg-blue-100 text-blue-800 border-blue-200',
     unpaid: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     refunded: 'bg-pink-100 text-pink-800 border-pink-200',
     partially_refunded: 'bg-orange-100 text-orange-800 border-orange-200',
@@ -116,7 +116,7 @@ function getPaymentStatusColor(status: string): string {
 
 function getFulfillmentStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    fulfilled: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    fulfilled: 'bg-blue-100 text-blue-800 border-blue-200',
     unfulfilled: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     partial: 'bg-orange-100 text-orange-800 border-orange-200',
   }
@@ -505,7 +505,7 @@ export default function OrdersPage() {
                 {selectedOrder.status === 'shipped' && (
                   <Button
                     size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { status: 'delivered' })}
                   >
                     <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
@@ -529,7 +529,7 @@ export default function OrdersPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-8 sm:h-9 text-xs sm:text-sm"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50 h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { paymentStatus: 'paid' })}
                   >
                     <span className="hidden sm:inline">Mark as Paid</span>
@@ -540,7 +540,7 @@ export default function OrdersPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-8 sm:h-9 text-xs sm:text-sm"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50 h-8 sm:h-9 text-xs sm:text-sm"
                     onClick={() => updateOrderStatus(selectedOrder.id, { fulfillmentStatus: 'fulfilled' })}
                   >
                     <span className="hidden sm:inline">Mark as Fulfilled</span>
@@ -618,7 +618,7 @@ export default function OrdersPage() {
                   {selectedOrder.discount > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Discount</span>
-                      <span className="text-emerald-600">-{formatPrice(selectedOrder.discount)}</span>
+                      <span className="text-blue-600">-{formatPrice(selectedOrder.discount)}</span>
                     </div>
                   )}
                   <Separator />
@@ -659,7 +659,7 @@ export default function OrdersPage() {
                       <Button
                         size="sm"
                         variant={!newNoteIsInternal ? 'default' : 'outline'}
-                        className={`h-7 text-xs gap-1 ${!newNoteIsInternal ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}`}
+                        className={`h-7 text-xs gap-1 ${!newNoteIsInternal ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}`}
                         onClick={() => setNewNoteIsInternal(false)}
                       >
                         <Globe className="w-3 h-3" />
@@ -683,7 +683,7 @@ export default function OrdersPage() {
                         size="sm"
                         onClick={handleAddNote}
                         disabled={addingNote || !newNoteContent.trim()}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white h-fit self-end"
+                        className="bg-blue-600 hover:bg-blue-700 text-white h-fit self-end"
                       >
                         {addingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                       </Button>
@@ -705,11 +705,11 @@ export default function OrdersPage() {
                         <div
                           key={note.id}
                           className={`relative pl-6 pb-3 border-l-2 ${
-                            note.isInternal ? 'border-amber-300 dark:border-amber-700' : 'border-emerald-300 dark:border-emerald-700'
+                            note.isInternal ? 'border-amber-300 dark:border-amber-700' : 'border-blue-300 dark:border-blue-700'
                           }`}
                         >
                           <div className={`absolute left-0 top-1 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-background ${
-                            note.isInternal ? 'bg-amber-400' : 'bg-emerald-400'
+                            note.isInternal ? 'bg-amber-400' : 'bg-blue-400'
                           }`} />
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1 min-w-0">
@@ -725,7 +725,7 @@ export default function OrdersPage() {
                                   className={`text-[9px] h-4 px-1.5 ${
                                     note.isInternal
                                       ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                                      : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                                      : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                                   }`}
                                 >
                                   {note.isInternal ? 'Internal' : 'Customer'}
@@ -781,7 +781,7 @@ export default function OrdersPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
                       {selectedOrder.customerName.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -1077,8 +1077,8 @@ export default function OrdersPage() {
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <ShoppingCart className="w-8 h-8 text-emerald-600" />
+                <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <ShoppingCart className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-medium">No orders found</h3>
                 <p className="text-muted-foreground text-sm mt-1">
@@ -1088,7 +1088,7 @@ export default function OrdersPage() {
                 </p>
                 {!search && statusFilter === 'all' && paymentFilter === 'all' && fulfillmentFilter === 'all' && (
                   <Button
-                    className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={() => setShowCreateDialog(true)}
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -1126,7 +1126,7 @@ export default function OrdersPage() {
                             className={`table-row-hover animate-row-appear border-b transition-colors cursor-pointer ${orders.indexOf(order) % 2 === 1 ? 'table-row-alt' : ''}`}
                             onClick={() => setSelectedOrderId(order.id)}
                           >
-                            <TableCell className="font-medium text-emerald-700">
+                            <TableCell className="font-medium text-blue-700">
                               {order.orderNumber}
                             </TableCell>
                             <TableCell className="text-muted-foreground text-sm">
@@ -1208,7 +1208,7 @@ export default function OrdersPage() {
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <p className="font-medium text-emerald-700">{order.orderNumber}</p>
+                          <p className="font-medium text-blue-700">{order.orderNumber}</p>
                           <p className="text-sm text-muted-foreground">{order.customerName}</p>
                         </div>
                         <DropdownMenu>
@@ -1279,7 +1279,7 @@ export default function OrdersPage() {
                             key={pageNum}
                             variant={pageNum === page ? 'default' : 'outline'}
                             size="sm"
-                            className={pageNum === page ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                            className={pageNum === page ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
                             onClick={() => setPage(pageNum)}
                           >
                             {pageNum}
@@ -1502,7 +1502,7 @@ export default function OrdersPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
+              className="bg-blue-600 hover:bg-blue-700 text-white button-press"
               onClick={handleCreate}
               disabled={creating}
             >

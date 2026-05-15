@@ -107,16 +107,16 @@ export default function BillingSettings() {
         <p className="text-muted-foreground text-sm mt-1">Manage your subscription and payment methods</p>
       </div>
 
-      <Card className="bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900">
+      <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-900">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-emerald-800 dark:text-emerald-300">Current Status</CardTitle>
+              <CardTitle className="text-blue-800 dark:text-blue-300">Current Status</CardTitle>
               <CardDescription>
                 {currentStore.isActive ? 'Your store is active and publicly accessible.' : 'Your store is currently inactive.'}
               </CardDescription>
             </div>
-            <Badge variant={currentStore.isActive ? 'default' : 'destructive'} className={currentStore.isActive ? 'bg-emerald-500' : ''}>
+            <Badge variant={currentStore.isActive ? 'default' : 'destructive'} className={currentStore.isActive ? 'bg-blue-500' : ''}>
               {currentStore.isActive ? 'ACTIVE' : 'INACTIVE'}
             </Badge>
           </div>
@@ -141,7 +141,7 @@ export default function BillingSettings() {
             return (
               <Card key={plan.id} className="flex flex-col relative overflow-hidden">
                 {plan.name.toLowerCase().includes('pro') && (
-                  <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-wider rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-wider rounded-bl-lg">
                     Recommended
                   </div>
                 )}
@@ -156,14 +156,14 @@ export default function BillingSettings() {
                   <ul className="space-y-3 text-sm">
                     {features.length > 0 ? features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     )) : (
                       <>
-                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /><span>Unlimited Products</span></li>
-                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /><span>Custom Domain</span></li>
-                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /><span>0% Transaction Fee</span></li>
+                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><span>Unlimited Products</span></li>
+                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><span>Custom Domain</span></li>
+                        <li className="flex items-start gap-2"><Check className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><span>0% Transaction Fee</span></li>
                       </>
                     )}
                   </ul>

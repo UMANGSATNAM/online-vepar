@@ -81,7 +81,7 @@ export default function OnboardingWizard() {
         {/* Left Sidebar - Progress */}
         <div className="w-full md:w-64 bg-muted/30 border-r border-border p-6 flex flex-col">
           <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Store className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-lg">Online Vepar</span>
@@ -94,8 +94,8 @@ export default function OnboardingWizard() {
               return (
                 <div key={step.id} className="flex items-start gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
-                    active ? 'border-emerald-600 text-emerald-600 bg-emerald-50' : 
-                    completed ? 'border-emerald-600 bg-emerald-600 text-white' : 
+                    active ? 'border-blue-600 text-blue-600 bg-blue-50' : 
+                    completed ? 'border-blue-600 bg-blue-600 text-white' : 
                     'border-muted-foreground/30 text-muted-foreground'
                   }`}>
                     {completed ? <CheckCircle2 className="w-4 h-4" /> : <step.icon className="w-4 h-4" />}
@@ -262,11 +262,11 @@ export default function OnboardingWizard() {
             </Button>
             
             {currentStep < steps.length - 1 ? (
-              <Button onClick={handleNext} className="bg-emerald-600 hover:bg-emerald-700">
+              <Button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700">
                 Continue <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} disabled={loading} className="bg-emerald-600 hover:bg-emerald-700">
+              <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
                 {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Verifying...</> : <>Complete Setup <CheckCircle2 className="w-4 h-4 ml-2" /></>}
               </Button>
             )}

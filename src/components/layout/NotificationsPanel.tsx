@@ -40,9 +40,9 @@ const NOTIFICATION_ICONS: Record<string, React.ComponentType<{ className?: strin
 }
 
 const NOTIFICATION_COLORS: Record<string, string> = {
-  new_order: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400',
+  new_order: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400',
   low_stock: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400',
-  payment_received: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400',
+  payment_received: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400',
   order_status: 'bg-sky-100 text-sky-600 dark:bg-sky-900/40 dark:text-sky-400',
 }
 
@@ -115,7 +115,7 @@ export default function NotificationsPanel() {
                 exit={{ scale: 0 }}
                 className="absolute -top-0.5 -right-0.5"
               >
-                <span className="flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-emerald-600 text-[9px] font-semibold text-white leading-none">
+                <span className="flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-blue-600 text-[9px] font-semibold text-white leading-none">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               </motion.div>
@@ -133,7 +133,7 @@ export default function NotificationsPanel() {
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-sm">Notifications</h3>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="text-[10px] h-5 px-1.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-0 font-medium">
+              <Badge variant="secondary" className="text-[10px] h-5 px-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border-0 font-medium">
                 {unreadCount} new
               </Badge>
             )}
@@ -142,7 +142,7 @@ export default function NotificationsPanel() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-[11px] h-7 px-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+              className="text-[11px] h-7 px-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
               onClick={handleMarkAllRead}
             >
               <Check className="w-3 h-3 mr-1" />
@@ -173,7 +173,7 @@ export default function NotificationsPanel() {
                   <button
                     key={notification.id}
                     className={`w-full text-left px-4 py-2.5 hover:bg-accent/50 transition-colors flex gap-3 ${
-                      !notification.read ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : ''
+                      !notification.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
@@ -186,7 +186,7 @@ export default function NotificationsPanel() {
                           {notification.title}
                         </p>
                         {!notification.read && (
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 mt-1.5" />
+                          <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5" />
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
@@ -209,7 +209,7 @@ export default function NotificationsPanel() {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full text-xs h-9 rounded-none text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 font-medium"
+              className="w-full text-xs h-9 rounded-none text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium"
               onClick={() => {
                 setView('orders')
                 setOpen(false)

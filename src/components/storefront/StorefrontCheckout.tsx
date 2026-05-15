@@ -95,7 +95,7 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-600" /></div>
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>
   }
 
   const themeClass = `theme-${store.theme || 'modern'}`
@@ -104,7 +104,7 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
     return (
       <div className={`min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 ${themeClass}`}>
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-lg max-w-lg w-full text-center space-y-6">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto">
             <CheckCircle className="w-10 h-10" />
           </div>
           <h1 className="text-3xl font-black text-gray-900">Order Confirmed!</h1>
@@ -249,12 +249,12 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
                   <ShieldCheck className={formData.paymentMethod === 'ONLINE' ? 'text-indigo-500' : 'text-gray-400'} />
                 </label>
                 
-                <label onClick={() => setFormData(p => ({...p, paymentMethod: 'COD'}))} className={`border p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${formData.paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200'}`}>
+                <label onClick={() => setFormData(p => ({...p, paymentMethod: 'COD'}))} className={`border p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${formData.paymentMethod === 'COD' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
                   <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.paymentMethod === 'COD' ? 'border-emerald-500' : 'border-gray-300'}`}>
-                      {formData.paymentMethod === 'COD' && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>}
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.paymentMethod === 'COD' ? 'border-blue-500' : 'border-gray-300'}`}>
+                      {formData.paymentMethod === 'COD' && <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>}
                     </div>
-                    <span className={`font-bold ${formData.paymentMethod === 'COD' ? 'text-emerald-900' : 'text-gray-700'}`}>Cash on Delivery (COD)</span>
+                    <span className={`font-bold ${formData.paymentMethod === 'COD' ? 'text-blue-900' : 'text-gray-700'}`}>Cash on Delivery (COD)</span>
                   </div>
                 </label>
               </div>
@@ -323,7 +323,7 @@ export default function StorefrontCheckout({ store }: { store: Store }) {
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span className="text-emerald-600 font-medium">Free</span>
+                <span className="text-blue-600 font-medium">Free</span>
               </div>
               <div className="flex justify-between font-black text-2xl pt-3 border-t border-gray-200 mt-3">
                 <span>Total</span>

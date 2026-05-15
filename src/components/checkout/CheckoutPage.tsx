@@ -1450,7 +1450,7 @@ export default function CheckoutPage() {
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm bg-emerald-500">S</div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm bg-blue-500">S</div>
                 <span className="font-bold text-lg">Online Vepar</span>
               </div>
               <Button

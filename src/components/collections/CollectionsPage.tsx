@@ -147,8 +147,8 @@ function AnimatedStat({ value, label, icon: Icon, gradientClass, borderClass }: 
             <p className="text-xs text-muted-foreground font-medium">{label}</p>
             <p className="text-2xl font-bold mt-1 animate-count-up">{animatedValue}</p>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+            <Icon className="w-5 h-5 text-blue-600" />
           </div>
         </div>
       </CardContent>
@@ -476,7 +476,7 @@ export default function CollectionsPage() {
 
   const getStatusBadge = (status: string): string => {
     const colors: Record<string, string> = {
-      active: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700',
+      active: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
       draft: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700',
     }
     return colors[status] || colors.draft
@@ -563,8 +563,8 @@ export default function CollectionsPage() {
                   className="w-16 h-16 rounded-lg object-cover border"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center border">
-                  <Layers className="w-8 h-8 text-emerald-600" />
+                <div className="w-16 h-16 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center border">
+                  <Layers className="w-8 h-8 text-blue-600" />
                 </div>
               )}
               <div>
@@ -714,8 +714,8 @@ export default function CollectionsPage() {
                             className="w-10 h-10 rounded-md object-cover border"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center border">
-                            <Package className="w-5 h-5 text-emerald-500" />
+                          <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center border">
+                            <Package className="w-5 h-5 text-blue-500" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
@@ -736,7 +736,7 @@ export default function CollectionsPage() {
                           <Badge
                             variant="outline"
                             className={product.status === 'active'
-                              ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 text-[10px]'
+                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-[10px]'
                               : 'bg-gray-50 dark:bg-gray-800 text-gray-500 text-[10px]'
                             }
                           >
@@ -787,7 +787,7 @@ export default function CollectionsPage() {
             <p className="text-muted-foreground mt-1">Group products into collections for your store</p>
           </div>
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
             onClick={handleCreate}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -803,7 +803,7 @@ export default function CollectionsPage() {
         transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <AnimatedStat value={totalCollections} label="Total Collections" icon={Layers} gradientClass="card-gradient-emerald" borderClass="border-t-2 border-t-emerald-500" />
+          <AnimatedStat value={totalCollections} label="Total Collections" icon={Layers} gradientClass="card-gradient-emerald" borderClass="border-t-2 border-t-blue-500" />
           <AnimatedStat value={activeCollections} label="Active" icon={CheckCircle2} gradientClass="card-gradient-sky" borderClass="border-t-2 border-t-sky-500" />
           <AnimatedStat value={featuredCollections} label="Featured" icon={Star} gradientClass="card-gradient-violet" borderClass="border-t-2 border-t-violet-500" />
           <AnimatedStat value={totalProducts} label="Products in Collections" icon={Package} gradientClass="card-gradient-orange" borderClass="border-t-2 border-t-orange-500" />
@@ -864,8 +864,8 @@ export default function CollectionsPage() {
         {filteredCollections.length === 0 ? (
           <Card className="border-2 border-dashed border-muted-foreground/20">
             <CardContent className="p-16 text-center">
-              <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4 empty-state-icon">
-                <Layers className="w-10 h-10 text-emerald-600" />
+              <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4 empty-state-icon">
+                <Layers className="w-10 h-10 text-blue-600" />
               </div>
               <h3 className="text-lg font-medium">No collections found</h3>
               <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
@@ -875,7 +875,7 @@ export default function CollectionsPage() {
               </p>
               {!search && statusFilter === 'all' && (
                 <Button
-                  className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
                   onClick={handleCreate}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -1126,12 +1126,12 @@ export default function CollectionsPage() {
                   onClick={() => setForm({ ...form, type: 'manual' })}
                   className={`p-4 rounded-lg border-2 text-left transition-all ${
                     form.type === 'manual'
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                       : 'border-border hover:border-muted-foreground/30'
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <Sliders className={`w-4 h-4 ${form.type === 'manual' ? 'text-emerald-600' : 'text-muted-foreground'}`} />
+                    <Sliders className={`w-4 h-4 ${form.type === 'manual' ? 'text-blue-600' : 'text-muted-foreground'}`} />
                     <span className="font-medium text-sm">Manual</span>
                   </div>
                   <p className="text-xs text-muted-foreground">Manually select which products to include</p>
@@ -1290,7 +1290,7 @@ export default function CollectionsPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleSave}
               disabled={saving || !form.name.trim()}
             >
@@ -1343,7 +1343,7 @@ export default function CollectionsPage() {
                       key={product.id}
                       className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                         isSelected
-                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-border hover:bg-muted/30'
                       }`}
                       onClick={() => {
@@ -1362,8 +1362,8 @@ export default function CollectionsPage() {
                           className="w-10 h-10 rounded-md object-cover border"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center border">
-                          <Package className="w-5 h-5 text-emerald-500" />
+                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center border">
+                          <Package className="w-5 h-5 text-blue-500" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
@@ -1397,7 +1397,7 @@ export default function CollectionsPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleAddProducts}
               disabled={addingProducts || selectedProductIds.length === 0}
             >

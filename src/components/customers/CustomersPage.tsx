@@ -75,7 +75,7 @@ function getOrderStatusColor(status: string): string {
     confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
     processing: 'bg-purple-100 text-purple-800 border-purple-200',
     shipped: 'bg-orange-100 text-orange-800 border-orange-200',
-    delivered: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    delivered: 'bg-blue-100 text-blue-800 border-blue-200',
     cancelled: 'bg-red-100 text-red-800 border-red-200',
     refunded: 'bg-pink-100 text-pink-800 border-pink-200',
   }
@@ -291,7 +291,7 @@ export default function CustomersPage() {
               </Button>
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full avatar-gradient-border">
-                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-base sm:text-lg">
+                  <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-base sm:text-lg">
                     {selectedCustomer.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
@@ -304,7 +304,7 @@ export default function CustomersPage() {
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
-                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-9 sm:h-10"
+                className="border-blue-300 text-blue-700 hover:bg-blue-50 h-9 sm:h-10"
                 onClick={() => openEditDialog(selectedCustomer)}
               >
                 <Pencil className="w-4 h-4 sm:mr-2" />
@@ -368,7 +368,7 @@ export default function CustomersPage() {
                               setView('orders')
                             }}
                           >
-                            <TableCell className="font-medium text-emerald-700">{order.orderNumber}</TableCell>
+                            <TableCell className="font-medium text-blue-700">{order.orderNumber}</TableCell>
                             <TableCell className="text-muted-foreground text-sm">{formatDate(order.createdAt)}</TableCell>
                             <TableCell>
                               <Badge className={getOrderStatusColor(order.status)} variant="outline">
@@ -710,8 +710,8 @@ export default function CustomersPage() {
               </div>
             ) : customers.length === 0 ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-emerald-600 empty-state-icon" />
+                <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-blue-600 empty-state-icon" />
                 </div>
                 <h3 className="text-lg font-medium">No customers found</h3>
                 <p className="text-muted-foreground text-sm mt-1">
@@ -721,7 +721,7 @@ export default function CustomersPage() {
                 </p>
                 {!search && (
                   <Button
-                    className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={openCreateDialog}
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -762,7 +762,7 @@ export default function CustomersPage() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <div className="avatar-gradient-border w-8 h-8">
-                                  <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs">
+                                  <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-xs">
                                     {customer.name.charAt(0).toUpperCase()}
                                   </div>
                                 </div>
@@ -831,7 +831,7 @@ export default function CustomersPage() {
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold">
+                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold">
                             {customer.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -913,7 +913,7 @@ export default function CustomersPage() {
                             key={pageNum}
                             variant={pageNum === page ? 'default' : 'outline'}
                             size="sm"
-                            className={pageNum === page ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                            className={pageNum === page ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
                             onClick={() => setPage(pageNum)}
                           >
                             {pageNum}

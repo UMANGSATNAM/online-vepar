@@ -331,7 +331,7 @@ export default function PagesPage() {
                   <Button
                     onClick={savePage}
                     disabled={saving || !formTitle.trim()}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                     {editPage ? 'Update Page' : 'Create Page'}
@@ -360,7 +360,7 @@ export default function PagesPage() {
           </div>
           <Button
             onClick={openCreateEditor}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Page
@@ -416,8 +416,8 @@ export default function PagesPage() {
         >
           <Card>
             <CardHeader className="text-center py-12">
-              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileIcon className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <FileIcon className="w-8 h-8 text-blue-600" />
               </div>
               <CardTitle className="text-xl">
                 {pages.length === 0 ? 'Create your first page' : 'No pages found'}
@@ -430,7 +430,7 @@ export default function PagesPage() {
               {pages.length === 0 && (
                 <Button
                   onClick={openCreateEditor}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white w-fit mx-auto mt-4"
+                  className="bg-blue-600 hover:bg-blue-700 text-white w-fit mx-auto mt-4"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Create Page
@@ -479,7 +479,7 @@ export default function PagesPage() {
                       <TableCell>
                         <Badge
                           variant={page.published ? 'default' : 'outline'}
-                          className={`text-xs ${page.published ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : ''}`}
+                          className={`text-xs ${page.published ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' : ''}`}
                         >
                           {page.published ? 'Published' : 'Draft'}
                         </Badge>
@@ -562,7 +562,7 @@ export default function PagesPage() {
               </Badge>
               <Badge
                 variant={previewPage?.published ? 'default' : 'outline'}
-                className={`text-xs ${previewPage?.published ? 'bg-emerald-100 text-emerald-700' : ''}`}
+                className={`text-xs ${previewPage?.published ? 'bg-blue-100 text-blue-700' : ''}`}
               >
                 {previewPage?.published ? 'Published' : 'Draft'}
               </Badge>

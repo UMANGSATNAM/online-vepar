@@ -79,8 +79,8 @@ const THEME_OPTIONS = [
           <div className="h-1 w-6 bg-gray-200 rounded-full ml-2" />
           <div className="h-1 w-5 bg-gray-200 rounded-full ml-auto" />
         </div>
-        <div className="h-5 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-sm flex items-center justify-center">
-          <div className="h-1 w-8 bg-emerald-300 rounded-full" />
+        <div className="h-5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-sm flex items-center justify-center">
+          <div className="h-1 w-8 bg-blue-300 rounded-full" />
         </div>
         <div className="flex gap-0.5 flex-1">
           <div className="flex-1 bg-gray-50 rounded-sm" />
@@ -141,11 +141,11 @@ const THEME_OPTIONS = [
     preview: (
       <div className="w-full h-20 rounded-md border bg-gray-900 p-1.5 flex flex-col gap-1">
         <div className="h-2 bg-gray-800 rounded-sm w-full flex items-center px-1">
-          <div className="h-1.5 w-5 bg-emerald-400 rounded-sm" />
+          <div className="h-1.5 w-5 bg-blue-400 rounded-sm" />
           <div className="h-1 w-6 bg-gray-500 rounded-full ml-2" />
           <div className="h-1 w-5 bg-gray-500 rounded-full ml-auto" />
         </div>
-        <div className="h-5 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-sm flex items-center justify-center">
+        <div className="h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-sm flex items-center justify-center">
           <div className="h-1.5 w-10 bg-white rounded-full" />
         </div>
         <div className="flex gap-0.5 flex-1">
@@ -412,7 +412,7 @@ export default function StoreSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5 text-emerald-600" />
+                  <Settings className="w-5 h-5 text-blue-600" />
                   General Settings
                 </CardTitle>
                 <CardDescription>Basic information about your store</CardDescription>
@@ -533,7 +533,7 @@ export default function StoreSettings() {
                   <Button
                     onClick={() => saveSettings()}
                     disabled={saving}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Changes
@@ -554,7 +554,7 @@ export default function StoreSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Palette className="w-5 h-5 text-emerald-600" />
+                  <Palette className="w-5 h-5 text-blue-600" />
                   Theme & Appearance
                 </CardTitle>
                 <CardDescription>Customize how your store looks to customers</CardDescription>
@@ -570,12 +570,12 @@ export default function StoreSettings() {
                         onClick={() => setSettings(prev => ({ ...prev, theme: theme.id }))}
                         className={`relative rounded-lg border-2 p-3 text-left transition-all hover:shadow-md ${
                           settings.theme === theme.id
-                            ? 'border-emerald-500 ring-2 ring-emerald-200'
-                            : 'border-muted hover:border-emerald-300'
+                            ? 'border-blue-500 ring-2 ring-blue-200'
+                            : 'border-muted hover:border-blue-300'
                         }`}
                       >
                         {settings.theme === theme.id && (
-                          <div className="absolute top-2 right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                          <div className="absolute top-2 right-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                             <Check className="w-3 h-3 text-white" />
                           </div>
                         )}
@@ -618,8 +618,8 @@ export default function StoreSettings() {
                           onClick={() => setSettings(prev => ({ ...prev, primaryColor: color.value }))}
                           className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
                             settings.primaryColor === color.value
-                              ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                              : 'border-muted hover:border-emerald-300'
+                              ? 'border-blue-500 bg-blue-50 shadow-sm'
+                              : 'border-muted hover:border-blue-300'
                           }`}
                         >
                           <div
@@ -715,7 +715,7 @@ export default function StoreSettings() {
                   <Button
                     onClick={() => saveSettings()}
                     disabled={saving}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Theme
@@ -736,7 +736,7 @@ export default function StoreSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-emerald-600" />
+                  <Globe className="w-5 h-5 text-blue-600" />
                   Domain & URL
                 </CardTitle>
                 <CardDescription>Manage your store domain and URL settings</CardDescription>
@@ -745,7 +745,7 @@ export default function StoreSettings() {
                 <div className="space-y-3">
                   <Label>Default Store Domain</Label>
                   <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <Globe className="w-4 h-4 text-blue-600" />
                     <span className="text-sm font-medium">
                       {settings.slug || 'your-store'}.onlinevepar.com
                     </span>
@@ -787,7 +787,7 @@ export default function StoreSettings() {
                   <Button
                     onClick={() => saveSettings({ domain: settings.domain })}
                     disabled={saving}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Domain
@@ -808,7 +808,7 @@ export default function StoreSettings() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Coins className="w-5 h-5 text-emerald-600" />
+                  <Coins className="w-5 h-5 text-blue-600" />
                   Currency & Regional
                 </CardTitle>
                 <CardDescription>Set your store&apos;s currency and regional preferences</CardDescription>
@@ -871,7 +871,7 @@ export default function StoreSettings() {
                   <Button
                     onClick={() => saveSettings({ currency: settings.currency })}
                     disabled={saving}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Regional Settings
@@ -899,10 +899,10 @@ export default function StoreSettings() {
             ) : notifPrefs ? (
               <>
                 {/* Notification Preview */}
-                <Card className="card-gradient-emerald border-emerald-200 dark:border-emerald-800">
+                <Card className="card-gradient-emerald border-blue-200 dark:border-blue-800">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-sm">
-                      <Bell className="w-4 h-4 text-emerald-600" />
+                      <Bell className="w-4 h-4 text-blue-600" />
                       Notification Preview
                     </CardTitle>
                     <CardDescription>This is what a sample notification email looks like</CardDescription>
@@ -910,8 +910,8 @@ export default function StoreSettings() {
                   <CardContent>
                     <div className="rounded-lg border bg-background p-4 space-y-3">
                       <div className="flex items-center gap-2 border-b pb-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                          <ShoppingCart className="w-4 h-4 text-emerald-600" />
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                          <ShoppingCart className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
                           <p className="text-sm font-semibold">Online Vepar</p>
@@ -923,13 +923,13 @@ export default function StoreSettings() {
                         <p className="text-xs text-muted-foreground">You have a new order #OV-1234 from Priya Sharma worth ₹2,499.</p>
                       </div>
                       <div className="pt-2 border-t">
-                        <div className="inline-block rounded-md bg-emerald-600 px-3 py-1.5 text-xs text-white font-medium">
+                        <div className="inline-block rounded-md bg-blue-600 px-3 py-1.5 text-xs text-white font-medium">
                           View Order Details
                         </div>
                       </div>
                       <p className="text-[10px] text-muted-foreground pt-1">
                         You are receiving this because you enabled order notifications.{' '}
-                        <span className="text-emerald-600">Manage preferences</span>
+                        <span className="text-blue-600">Manage preferences</span>
                       </p>
                     </div>
                   </CardContent>
@@ -939,7 +939,7 @@ export default function StoreSettings() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <ShoppingCart className="w-5 h-5 text-emerald-600" />
+                      <ShoppingCart className="w-5 h-5 text-blue-600" />
                       Order Notifications
                     </CardTitle>
                     <CardDescription>Configure email notifications for order events</CardDescription>
@@ -950,12 +950,12 @@ export default function StoreSettings() {
                         <Label className="text-sm font-medium">New order notifications</Label>
                         <p className="text-xs text-muted-foreground">Get notified when a new order is placed</p>
                       </div>
-                      <div className="data-[state=checked]:bg-emerald-600">
+                      <div className="data-[state=checked]:bg-blue-600">
                         <Switch
                           checked={notifPrefs.newOrderEmail}
                           onCheckedChange={(checked) => handleNotifChange({ newOrderEmail: checked })}
                           disabled={notifSaving}
-                          className="data-[state=checked]:bg-emerald-600"
+                          className="data-[state=checked]:bg-blue-600"
                         />
                       </div>
                     </div>
@@ -969,7 +969,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.orderStatusEmail}
                         onCheckedChange={(checked) => handleNotifChange({ orderStatusEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     <Separator />
@@ -982,7 +982,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.paymentReceivedEmail}
                         onCheckedChange={(checked) => handleNotifChange({ paymentReceivedEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                   </CardContent>
@@ -992,7 +992,7 @@ export default function StoreSettings() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Package className="w-5 h-5 text-emerald-600" />
+                      <Package className="w-5 h-5 text-blue-600" />
                       Inventory Alerts
                     </CardTitle>
                     <CardDescription>Get alerts about your product inventory levels</CardDescription>
@@ -1007,7 +1007,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.lowStockEmail}
                         onCheckedChange={(checked) => handleNotifChange({ lowStockEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     {notifPrefs.lowStockEmail && (
@@ -1037,7 +1037,7 @@ export default function StoreSettings() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-emerald-600" />
+                      <Star className="w-5 h-5 text-blue-600" />
                       Marketing &amp; Reviews
                     </CardTitle>
                     <CardDescription>Manage customer engagement notifications</CardDescription>
@@ -1052,7 +1052,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.reviewEmail}
                         onCheckedChange={(checked) => handleNotifChange({ reviewEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     <Separator />
@@ -1065,7 +1065,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.abandonedCartEmail}
                         onCheckedChange={(checked) => handleNotifChange({ abandonedCartEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     {notifPrefs.abandonedCartEmail && (
@@ -1095,7 +1095,7 @@ export default function StoreSettings() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-emerald-600" />
+                      <FileText className="w-5 h-5 text-blue-600" />
                       Reports
                     </CardTitle>
                     <CardDescription>Configure report and newsletter email preferences</CardDescription>
@@ -1110,7 +1110,7 @@ export default function StoreSettings() {
                         checked={notifPrefs.weeklyReportEmail}
                         onCheckedChange={(checked) => handleNotifChange({ weeklyReportEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     <Separator />
@@ -1123,13 +1123,13 @@ export default function StoreSettings() {
                         checked={notifPrefs.monthlyReportEmail}
                         onCheckedChange={(checked) => handleNotifChange({ monthlyReportEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                     <Separator />
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-emerald-600" />
+                        <Mail className="w-4 h-4 text-blue-600" />
                         <Label className="text-sm font-medium">Report email address</Label>
                       </div>
                       <p className="text-xs text-muted-foreground">Reports will be sent to this email address</p>
@@ -1151,14 +1151,14 @@ export default function StoreSettings() {
                         checked={notifPrefs.newsletterEmail}
                         onCheckedChange={(checked) => handleNotifChange({ newsletterEmail: checked })}
                         disabled={notifSaving}
-                        className="data-[state=checked]:bg-emerald-600"
+                        className="data-[state=checked]:bg-blue-600"
                       />
                     </div>
                   </CardContent>
                 </Card>
 
                 {notifSaving && (
-                  <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 pulse-glow rounded-lg px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 w-fit">
+                  <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 pulse-glow rounded-lg px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 w-fit">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Saving preferences...
                   </div>

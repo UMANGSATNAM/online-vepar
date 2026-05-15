@@ -84,7 +84,7 @@ export function CategoryModal({
           <Button
             onClick={handleCreateCategory}
             disabled={isCreatingCategory || !newCategoryName.trim()}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white button-press"
+            className="bg-blue-600 hover:bg-blue-700 text-white button-press"
           >
             {isCreatingCategory ? 'Creating...' : 'Create Category'}
           </Button>

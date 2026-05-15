@@ -455,7 +455,7 @@ export default function StorePreview() {
             >
               {shareCopied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <Check className="w-3.5 h-3.5 text-blue-500" />
                   Copied!
                 </>
               ) : (
@@ -529,7 +529,7 @@ export default function StorePreview() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs gap-1 hover:text-emerald-700 dark:hover:text-emerald-300"
+                  className="h-7 text-xs gap-1 hover:text-blue-700 dark:hover:text-blue-300"
                   onClick={() => setView('checkout')}
                 >
                   <ExternalLink className="w-3 h-3" />
@@ -1171,8 +1171,8 @@ export default function StorePreview() {
               {/* Stock Info */}
               {selectedProduct.stock !== undefined && selectedProduct.stock > 0 && (
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${selectedProduct.stock > 10 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                  <p className={`text-xs font-medium ${selectedProduct.stock > 10 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                  <div className={`w-2 h-2 rounded-full ${selectedProduct.stock > 10 ? 'bg-blue-500' : 'bg-amber-500'}`} />
+                  <p className={`text-xs font-medium ${selectedProduct.stock > 10 ? 'text-blue-600' : 'text-amber-600'}`}>
                     {selectedProduct.stock > 10 ? 'In Stock' : `Only ${selectedProduct.stock} left — order soon!`}
                   </p>
                 </div>
@@ -1310,7 +1310,7 @@ export default function StorePreview() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
-                <span className="font-medium text-emerald-600">Free</span>
+                <span className="font-medium text-blue-600">Free</span>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">

@@ -58,7 +58,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-background">
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[560px] flex-col relative overflow-hidden bg-emerald-600 dark:bg-emerald-950">
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[560px] flex-col relative overflow-hidden bg-blue-600 dark:bg-blue-950">
         <div className="absolute inset-0 dot-pattern opacity-10" />
         <div className="absolute top-10 left-10 w-80 h-80 bg-white/5 rounded-full blur-3xl animate-orb-1" />
         <div className="absolute bottom-10 right-10 w-60 h-60 bg-teal-400/10 rounded-full blur-3xl animate-orb-2" />
@@ -75,7 +75,7 @@ export default function LoginPage() {
             <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-4">
               Welcome back to your store
             </h1>
-            <p className="text-emerald-100/80 text-lg mb-10">
+            <p className="text-blue-100/80 text-lg mb-10">
               Sign in to manage your business, track orders, and grow your revenue.
             </p>
 
@@ -105,7 +105,7 @@ export default function LoginPage() {
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">PS</div>
               <div>
                 <div className="text-white text-sm font-medium">Priya Sharma</div>
-                <div className="text-emerald-200/70 text-xs">Founder, Sharma Sarees</div>
+                <div className="text-blue-200/70 text-xs">Founder, Sharma Sarees</div>
               </div>
             </div>
           </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
         <motion.div className="w-full max-w-sm" variants={containerVariants} initial="hidden" animate="visible">
           {/* Mobile logo */}
           <motion.button variants={itemVariants} onClick={() => setView('landing')} className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
               <Store className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg">Online Vepar</span>
@@ -134,19 +134,19 @@ export default function LoginPage() {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required
-                  className="pl-9 h-11 rounded-xl border-border/60 bg-background focus:border-emerald-500 transition-all" />
+                  className="pl-9 h-11 rounded-xl border-border/60 bg-background focus:border-blue-500 transition-all" />
               </div>
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                <button type="button" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors">Forgot password?</button>
+                <button type="button" className="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors">Forgot password?</button>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} required
-                  className="pl-9 pr-10 h-11 rounded-xl border-border/60 bg-background focus:border-emerald-500 transition-all" />
+                  className="pl-9 pr-10 h-11 rounded-xl border-border/60 bg-background focus:border-blue-500 transition-all" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -161,18 +161,18 @@ export default function LoginPage() {
             </motion.div>
           </form>
 
-          <motion.div variants={itemVariants} className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
-            <p className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 mb-1">Demo Account</p>
-            <p className="text-xs text-emerald-700 dark:text-emerald-400">demo@onlinevepar.com / demo123</p>
+          <motion.div variants={itemVariants} className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/50">
+            <p className="text-xs font-semibold text-blue-800 dark:text-blue-300 mb-1">Demo Account</p>
+            <p className="text-xs text-blue-700 dark:text-blue-400">demo@onlinevepar.com / demo123</p>
             <button type="button" onClick={() => { setEmail('demo@onlinevepar.com'); setPassword('demo123') }}
-              className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:text-emerald-700 mt-1 transition-colors">
+              className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 mt-1 transition-colors">
               Fill credentials →
             </button>
           </motion.div>
 
           <motion.div variants={itemVariants} className="mt-6 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{' '}
-            <button onClick={() => setView('register')} className="text-emerald-600 font-semibold hover:text-emerald-700 transition-colors">Sign up free</button>
+            <button onClick={() => setView('register')} className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">Sign up free</button>
           </motion.div>
         </motion.div>
       </div>

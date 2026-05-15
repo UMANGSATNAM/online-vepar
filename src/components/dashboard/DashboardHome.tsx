@@ -102,7 +102,7 @@ function getStatusColor(status: string): string {
     confirmed: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
     processing: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800',
     shipped: 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800',
-    delivered: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
+    delivered: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
     cancelled: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
     refunded: 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/30 dark:text-gray-300 dark:border-gray-800',
   }
@@ -111,7 +111,7 @@ function getStatusColor(status: string): string {
 
 function getPaymentStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    paid: 'text-emerald-600 dark:text-emerald-400',
+    paid: 'text-blue-600 dark:text-blue-400',
     unpaid: 'text-yellow-600 dark:text-yellow-400',
     partially_refunded: 'text-orange-600 dark:text-orange-400',
     refunded: 'text-red-600 dark:text-red-400',
@@ -282,9 +282,9 @@ export default function DashboardHome() {
           formatted: formatCurrency(data.stats.totalRevenue),
           sub: data.stats.pendingOrders > 0 ? `${data.stats.pendingOrders} pending orders` : 'All caught up',
           icon: DollarSign,
-          color: 'text-emerald-600 dark:text-emerald-400',
-          bg: 'bg-emerald-50 dark:bg-emerald-900/30',
-          borderColor: 'border-t-emerald-500',
+          color: 'text-blue-600 dark:text-blue-400',
+          bg: 'bg-blue-50 dark:bg-blue-900/20',
+          borderColor: 'border-t-blue-500',
         },
         {
           title: 'Total Orders',
@@ -337,13 +337,13 @@ export default function DashboardHome() {
           ? [{ icon: AlertCircle, text: `${data.stats.unfulfilledOrders} order(s) need fulfillment`, color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/30', dotColor: 'bg-orange-500', time: 'Action needed', view: 'orders' as const }]
           : []),
         ...(data.recentOrders.length > 0
-          ? [{ icon: CheckCircle2, text: `Latest order: ${data.recentOrders[0].orderNumber} from ${data.recentOrders[0].customerName}`, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30', dotColor: 'bg-emerald-500', time: formatDate(data.recentOrders[0].createdAt), view: 'orders' as const }]
+          ? [{ icon: CheckCircle2, text: `Latest order: ${data.recentOrders[0].orderNumber} from ${data.recentOrders[0].customerName}`, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/30', dotColor: 'bg-blue-500', time: formatDate(data.recentOrders[0].createdAt), view: 'orders' as const }]
           : []),
         ...(data.topProducts.length > 0
           ? [{ icon: TrendingUp, text: `Top seller: ${data.topProducts[0].name}`, color: 'text-violet-600 bg-violet-50 dark:bg-violet-900/30', dotColor: 'bg-violet-500', time: 'This period', view: 'products' as const }]
           : []),
         ...(data.stats.totalRevenue > 0
-          ? [{ icon: DollarSign, text: `Revenue: ${formatCurrency(data.stats.totalRevenue)} total`, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30', dotColor: 'bg-emerald-500', time: 'Lifetime', view: 'analytics' as const }]
+          ? [{ icon: DollarSign, text: `Revenue: ${formatCurrency(data.stats.totalRevenue)} total`, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20', dotColor: 'bg-blue-500', time: 'Lifetime', view: 'analytics' as const }]
           : []),
       ].slice(0, 5)
     : []
@@ -400,8 +400,8 @@ export default function DashboardHome() {
       <motion.div variants={itemVariants}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center shrink-0">
-              <GreetingIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 rounded-xl flex items-center justify-center shrink-0">
+              <GreetingIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <h1 className="text-lg sm:text-xl font-bold text-foreground">
@@ -425,7 +425,7 @@ export default function DashboardHome() {
             {highlights.map((h) => (
               <button
                 key={h.label}
-                className="flex items-center gap-2.5 p-2.5 sm:p-3 rounded-xl border border-border/60 hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-200 hover:shadow-sm group text-left"
+                className="flex items-center gap-2.5 p-2.5 sm:p-3 rounded-xl border border-border/60 hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-200 hover:shadow-sm group text-left"
                 onClick={() => setView(h.view)}
               >
                 <div className={`w-8 h-8 sm:w-9 sm:h-9 ${h.bg} rounded-lg flex items-center justify-center shrink-0`}>
@@ -458,8 +458,8 @@ export default function DashboardHome() {
         <Card>
           <CardHeader className="p-4 sm:p-5 pb-0">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-              <div className="w-7 h-7 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                <Eye className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <div className="w-7 h-7 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                <Eye className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               </div>
               Quick Actions
             </CardTitle>
@@ -467,15 +467,15 @@ export default function DashboardHome() {
           <CardContent className="p-4 sm:p-5 pt-3">
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {quickActions.map((action, idx) => {
-                const borderColors = ['border-l-emerald-500', 'border-l-orange-500', 'border-l-violet-500', 'border-l-sky-500']
+                const borderColors = ['border-l-blue-500', 'border-l-orange-500', 'border-l-violet-500', 'border-l-sky-500']
                 return (
                   <button
                     key={action.label}
-                    className={`flex items-center gap-2.5 p-3 sm:p-3.5 rounded-lg border border-border/60 border-l-[3px] ${borderColors[idx] || 'border-l-emerald-500'} hover:bg-accent/50 transition-all text-left group`}
+                    className={`flex items-center gap-2.5 p-3 sm:p-3.5 rounded-lg border border-border/60 border-l-[3px] ${borderColors[idx] || 'border-l-blue-500'} hover:bg-accent/50 transition-all text-left group`}
                     onClick={() => setView(action.view)}
                   >
-                    <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
-                      <action.icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center shrink-0">
+                      <action.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="min-w-0">
                       <span className="text-xs sm:text-sm font-medium text-foreground block">{action.label}</span>
@@ -505,7 +505,7 @@ export default function DashboardHome() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 gap-1 h-7"
+                  className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 h-7"
                   onClick={() => setView('orders')}
                 >
                   View All <ArrowRight className="w-3 h-3" />
@@ -538,10 +538,10 @@ export default function DashboardHome() {
                     {data.recentOrders.slice(0, 5).map((order, idx) => (
                       <TableRow
                         key={order.id}
-                        className={`cursor-pointer hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10 transition-colors ${idx % 2 === 1 ? 'bg-muted/20' : ''}`}
+                        className={`cursor-pointer hover:bg-blue-50/40 dark:hover:bg-blue-900/20 transition-colors ${idx % 2 === 1 ? 'bg-muted/20' : ''}`}
                         onClick={() => setView('orders')}
                       >
-                        <TableCell className="font-medium text-xs text-emerald-600 dark:text-emerald-400 whitespace-nowrap py-2.5">
+                        <TableCell className="font-medium text-xs text-foreground whitespace-nowrap py-2.5">
                           {order.orderNumber}
                         </TableCell>
                         <TableCell className="py-2.5">
@@ -576,7 +576,7 @@ export default function DashboardHome() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 gap-1.5 h-8"
+                  className="w-full text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1.5 h-8"
                   onClick={() => setView('orders')}
                 >
                   View All Orders <ArrowRight className="w-3.5 h-3.5" />
@@ -693,7 +693,7 @@ export default function DashboardHome() {
                             onClick={() => setView(activity.view)}
                           >
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs sm:text-sm text-foreground leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{activity.text}</p>
+                              <p className="text-xs sm:text-sm text-foreground leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{activity.text}</p>
                               <p className="text-[10px] text-muted-foreground mt-0.5">{activity.time}</p>
                             </div>
                             <ArrowRight className="w-3 h-3 text-muted-foreground/40 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />

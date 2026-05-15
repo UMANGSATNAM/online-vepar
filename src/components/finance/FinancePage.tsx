@@ -174,7 +174,7 @@ export default function FinancePage() {
               <SelectItem value="all">All Time</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => setShowAddExpense(true)}>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowAddExpense(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Add Expense
           </Button>
@@ -184,18 +184,18 @@ export default function FinancePage() {
       {/* Primary KPI Cards */}
       {overview && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-t-4 border-t-emerald-500">
+          <Card className="border-t-4 border-t-blue-500">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                  <Wallet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <Badge variant={overview.profitability.netProfit >= 0 ? "default" : "destructive"} className="font-semibold">
                   {overview.profitability.margin}% Margin
                 </Badge>
               </div>
               <p className="text-sm font-medium text-muted-foreground">Net Profit</p>
-              <h3 className={`text-2xl sm:text-3xl font-bold mt-1 ${overview.profitability.netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+              <h3 className={`text-2xl sm:text-3xl font-bold mt-1 ${overview.profitability.netProfit >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
                 {formatPrice(overview.profitability.netProfit)}
               </h3>
             </CardContent>
@@ -250,7 +250,7 @@ export default function FinancePage() {
         <Card className="card-premium">
           <CardHeader className="p-4 sm:p-6 pb-2 border-b">
             <CardTitle className="text-lg flex items-center gap-2">
-              <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
+              <FileSpreadsheet className="w-5 h-5 text-blue-600" />
               Income Statement
             </CardTitle>
           </CardHeader>
@@ -274,7 +274,7 @@ export default function FinancePage() {
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t font-semibold">
                     <span>Total Gross Revenue</span>
-                    <span className="text-emerald-600">{formatPrice(overview.totalRevenue)}</span>
+                    <span className="text-blue-600">{formatPrice(overview.totalRevenue)}</span>
                   </div>
                   <div className="flex justify-between items-center mt-4 text-muted-foreground">
                     <span>Less: Cost of Goods (COGS)</span>
@@ -311,11 +311,11 @@ export default function FinancePage() {
               </div>
             </div>
             
-            <div className={`p-4 rounded-xl border ${overview.profitability.netProfit >= 0 ? 'bg-emerald-50/50 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/50' : 'bg-red-50/50 border-red-200 dark:bg-red-950/20 dark:border-red-900/50'} flex justify-between items-center mt-6`}>
+            <div className={`p-4 rounded-xl border ${overview.profitability.netProfit >= 0 ? 'bg-blue-50/50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900/50' : 'bg-red-50/50 border-red-200 dark:bg-red-950/20 dark:border-red-900/50'} flex justify-between items-center mt-6`}>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Net Operating Income</p>
                 <div className="flex items-center gap-3 mt-1">
-                  <h2 className={`text-2xl font-bold ${overview.profitability.netProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
+                  <h2 className={`text-2xl font-bold ${overview.profitability.netProfit >= 0 ? 'text-blue-700 dark:text-blue-400' : 'text-red-700 dark:text-red-400'}`}>
                     {formatPrice(overview.profitability.netProfit)}
                   </h2>
                 </div>
@@ -427,7 +427,7 @@ export default function FinancePage() {
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button variant="ghost" onClick={() => setShowAddExpense(false)}>Cancel</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" disabled={addingExpense} onClick={handleAddExpense}>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white" disabled={addingExpense} onClick={handleAddExpense}>
               {addingExpense ? 'Saving...' : 'Save Expense'}
             </Button>
           </div>

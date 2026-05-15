@@ -178,8 +178,8 @@ export default function TaxRatesPage() {
   const SortIcon = ({ field }: { field: typeof sortField }) => {
     if (sortField !== field) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />
     return sortOrder === 'asc'
-      ? <ChevronUp className="w-3 h-3 ml-1 text-emerald-600" />
-      : <ChevronDown className="w-3 h-3 ml-1 text-emerald-600" />
+      ? <ChevronUp className="w-3 h-3 ml-1 text-blue-600" />
+      : <ChevronDown className="w-3 h-3 ml-1 text-blue-600" />
   }
 
   const handleCreate = () => {
@@ -338,7 +338,7 @@ export default function TaxRatesPage() {
             <p className="text-muted-foreground mt-1">Configure tax rates for your store based on regions</p>
           </div>
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+            className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
             onClick={handleCreate}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -354,11 +354,11 @@ export default function TaxRatesPage() {
         transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-t-2 border-t-emerald-500 hover:shadow-md transition-shadow">
+          <Card className="border-t-2 border-t-blue-500 hover:shadow-md transition-shadow">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <Receipt className="w-5 h-5 text-emerald-600" />
+                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Receipt className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalRates}</p>
@@ -469,8 +469,8 @@ export default function TaxRatesPage() {
         {sortedTaxRates.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Receipt className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Receipt className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-lg font-medium">No tax rates found</h3>
               <p className="text-muted-foreground text-sm mt-1">
@@ -480,7 +480,7 @@ export default function TaxRatesPage() {
               </p>
               {!search && statusFilter === 'all' && (
                 <Button
-                  className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
                   onClick={handleCreate}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -529,19 +529,19 @@ export default function TaxRatesPage() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="border-b border-border hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors"
+                        className="border-b border-border hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
                       >
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <Receipt className="w-4 h-4 text-emerald-600" />
+                            <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Receipt className="w-4 h-4 text-blue-600" />
                             </div>
                             <span className="truncate max-w-[200px]">{taxRate.name}</span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                               {taxRate.rate}%
                             </span>
                           </div>
@@ -582,7 +582,7 @@ export default function TaxRatesPage() {
                         </TableCell>
                         <TableCell>
                           {taxRate.isActive ? (
-                            <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800" variant="outline">
+                            <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" variant="outline">
                               <CheckCircle2 className="w-3 h-3 mr-1" />
                               Active
                             </Badge>
@@ -596,7 +596,7 @@ export default function TaxRatesPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20">
                                 <MoreHorizontal className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -690,7 +690,7 @@ export default function TaxRatesPage() {
             {/* Region / Location */}
             <div>
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-emerald-600" />
+                <MapPin className="w-4 h-4 text-blue-600" />
                 Region (Optional)
               </h4>
               <p className="text-xs text-muted-foreground mb-3">
@@ -751,7 +751,7 @@ export default function TaxRatesPage() {
             {/* Advanced Settings */}
             <div>
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <ToggleLeft className="w-4 h-4 text-emerald-600" />
+                <ToggleLeft className="w-4 h-4 text-blue-600" />
                 Advanced Settings
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -801,7 +801,7 @@ export default function TaxRatesPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+              className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
               onClick={handleSave}
               disabled={saving || !form.name.trim() || form.rate <= 0}
             >

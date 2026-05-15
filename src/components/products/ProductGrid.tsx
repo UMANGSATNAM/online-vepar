@@ -44,7 +44,7 @@ export function ProductGrid({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
           >
-            <Card className="group overflow-hidden card-premium animate-card-entrance border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800">
+            <Card className="group overflow-hidden card-premium animate-card-entrance border-border/50 hover:border-blue-200 dark:hover:border-blue-800">
               {/* Image */}
               <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                 {images.length > 0 ? (
@@ -79,7 +79,7 @@ export function ProductGrid({
               <CardContent className="p-4 space-y-2">
                 <div className="flex items-start justify-between gap-2">
                   <h3
-                    className="font-medium text-sm line-clamp-2 cursor-pointer hover:text-emerald-600 transition-colors"
+                    className="font-medium text-sm line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors"
                     onClick={() => openDetail(product.id)}
                   >
                     {product.name}
@@ -131,7 +131,7 @@ export function ProductGrid({
                 )}
 
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
                     {formatPrice(product.price)}
                   </span>
                   {product.comparePrice && product.comparePrice > product.price && (

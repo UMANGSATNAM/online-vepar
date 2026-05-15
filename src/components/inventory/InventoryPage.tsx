@@ -325,14 +325,14 @@ export default function InventoryPage() {
   const getStockStatus = (stock: number) => {
     if (stock === 0) return { label: 'Out of Stock', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800', dot: 'bg-red-500' }
     if (stock <= 10) return { label: 'Low Stock', color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800', dot: 'bg-amber-500' }
-    return { label: 'In Stock', color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800', dot: 'bg-emerald-500' }
+    return { label: 'In Stock', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800', dot: 'bg-blue-500' }
   }
 
   // Get log type badge
   const getLogTypeBadge = (type: string) => {
     switch (type) {
       case 'in':
-        return { label: 'Stock In', color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300', icon: TrendingUp }
+        return { label: 'Stock In', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', icon: TrendingUp }
       case 'out':
         return { label: 'Stock Out', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: TrendingDown }
       case 'adjustment':
@@ -373,9 +373,9 @@ export default function InventoryPage() {
       value: summary.totalProducts,
       icon: Package,
       color: 'emerald',
-      bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
-      iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-      iconColor: 'text-emerald-600 dark:text-emerald-400',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      iconBg: 'bg-blue-100 dark:bg-blue-900/40',
+      iconColor: 'text-blue-600 dark:text-blue-400',
     },
     {
       title: 'In Stock',
@@ -432,8 +432,8 @@ export default function InventoryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-            <Warehouse className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <Warehouse className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Inventory</h1>
@@ -444,7 +444,7 @@ export default function InventoryPage() {
           {selectedProducts.size > 0 && (
             <Button
               onClick={() => setBulkDialogOpen(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+              className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
             >
               <SlidersHorizontal className="w-4 h-4" />
               Bulk Adjust ({selectedProducts.size})
@@ -455,7 +455,7 @@ export default function InventoryPage() {
               setAdjustForm({ productId: '', type: 'in', quantity: 0, reason: '', reference: '' })
               setAdjustDialogOpen(true)
             }}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+            className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
           >
             <Plus className="w-4 h-4" />
             Adjust Stock
@@ -477,7 +477,7 @@ export default function InventoryPage() {
             transition={{ duration: 0.3, delay: idx * 0.05 }}
           >
             <Card className={`card-premium animate-card-entrance stagger-${idx + 1} hover-lift border-t-2 ${card.bgColor} ${
-              card.color === 'emerald' ? 'border-t-emerald-500 stat-glow-green' :
+              card.color === 'emerald' ? 'border-t-blue-500 stat-glow-green' :
               card.color === 'green' ? 'border-t-green-500 stat-glow-green' :
               card.color === 'amber' ? 'border-t-amber-500 stat-glow-orange' :
               'border-t-red-500 stat-glow-orange'
@@ -572,12 +572,12 @@ export default function InventoryPage() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-emerald-50 dark:bg-emerald-900/20">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+        <TabsList className="bg-blue-50 dark:bg-blue-900/20">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Package className="w-4 h-4 mr-1.5" />
             Stock Overview
           </TabsTrigger>
-          <TabsTrigger value="history" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+          <TabsTrigger value="history" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <History className="w-4 h-4 mr-1.5" />
             Inventory History
           </TabsTrigger>
@@ -628,7 +628,7 @@ export default function InventoryPage() {
                           <TableRow
                             key={product.id}
                             className={`table-row-hover cursor-pointer ${
-                              productHistoryId === product.id ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : ''
+                              productHistoryId === product.id ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
                             }`}
                           >
                             <TableCell>
@@ -639,8 +639,8 @@ export default function InventoryPage() {
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                                  <Package className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                                  <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div className="min-w-0">
                                   <p className="font-medium text-sm truncate max-w-[200px]">{product.name}</p>
@@ -717,11 +717,11 @@ export default function InventoryPage() {
         <TabsContent value="history" className="mt-4">
           {productHistoryId && (
             <div className="mb-4">
-              <Card className="border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/10">
+              <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
                 <CardContent className="p-3">
                   <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-sm text-emerald-700 dark:text-emerald-300">
+                    <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-sm text-blue-700 dark:text-blue-300">
                       Showing history for: <strong>{products.find(p => p.id === productHistoryId)?.name || 'Product'}</strong>
                     </span>
                     <Button
@@ -799,7 +799,7 @@ export default function InventoryPage() {
                             <TableCell className="text-right">
                               <span className={`font-semibold tabular-nums ${
                                 log.quantity > 0
-                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  ? 'text-blue-600 dark:text-blue-400'
                                   : 'text-red-600 dark:text-red-400'
                               }`}>
                                 {log.quantity > 0 ? '+' : ''}{log.quantity}
@@ -867,8 +867,8 @@ export default function InventoryPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded">
-                <SlidersHorizontal className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded">
+                <SlidersHorizontal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               </div>
               Adjust Stock
             </DialogTitle>
@@ -932,7 +932,7 @@ export default function InventoryPage() {
                 <SelectContent>
                   <SelectItem value="in">
                     <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                      <TrendingUp className="w-4 h-4 text-blue-600" />
                       Stock In
                     </div>
                   </SelectItem>
@@ -984,7 +984,7 @@ export default function InventoryPage() {
                   ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800'
                   : previewNewStock <= 10
                     ? 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800'
-                    : 'bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800'
+                    : 'bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800'
               }`}>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">New Stock Level</span>
@@ -993,7 +993,7 @@ export default function InventoryPage() {
                       ? 'text-red-600 dark:text-red-400'
                       : previewNewStock <= 10
                         ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-blue-600 dark:text-blue-400'
                   }`}>
                     {previewNewStock}
                   </span>
@@ -1042,7 +1042,7 @@ export default function InventoryPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleAdjustStock}
               disabled={!adjustForm.productId || !adjustForm.quantity}
             >
@@ -1057,8 +1057,8 @@ export default function InventoryPage() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded">
-                <SlidersHorizontal className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded">
+                <SlidersHorizontal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               </div>
               Bulk Stock Adjustment
             </DialogTitle>
@@ -1078,8 +1078,8 @@ export default function InventoryPage() {
                       key={product.id}
                       className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 dark:bg-muted/10"
                     >
-                      <div className="w-8 h-8 rounded bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                        <Package className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <div className="w-8 h-8 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{product.name}</p>
@@ -1127,7 +1127,7 @@ export default function InventoryPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleBulkAdjust}
             >
               Apply to {selectedProducts.size} Products

@@ -89,7 +89,7 @@ function StatusBadge({ status }: { status: string }) {
       label: 'Email Sent',
     },
     recovered: {
-      className: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+      className: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
       icon: <CheckCircle2 className="w-3 h-3 mr-1" />,
       label: 'Recovered',
     },
@@ -391,7 +391,7 @@ export default function AbandonedCartsPage() {
           </div>
           <Button
             variant="outline"
-            className="border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200"
+            className="border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200"
             onClick={fetchCarts}
           >
             <RefreshCw className="w-4 h-4 mr-2" />
@@ -421,11 +421,11 @@ export default function AbandonedCartsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-t-2 border-t-emerald-500 card-gradient-emerald hover-lift transition-all duration-200">
+          <Card className="border-t-2 border-t-blue-500 card-gradient-emerald hover-lift transition-all duration-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <IndianRupee className="w-5 h-5 text-emerald-600" />
+                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <IndianRupee className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{formatCurrency(stats.totalValue)}</p>
@@ -449,7 +449,7 @@ export default function AbandonedCartsPage() {
               {/* Recovery rate progress bar */}
               <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full animate-progress"
+                  className="h-full bg-gradient-to-r from-blue-500 to-teal-400 rounded-full animate-progress"
                   style={{ width: `${stats.recoveryRate}%` }}
                   initial={{ width: 0 }}
                   animate={{ width: `${stats.recoveryRate}%` }}
@@ -488,7 +488,7 @@ export default function AbandonedCartsPage() {
                 <h3 className="text-sm font-medium text-muted-foreground">Cart Recovery Overview</h3>
                 <div className="flex items-center gap-4 text-xs">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                    <div className="w-3 h-3 rounded-full bg-blue-500" />
                     <span className="text-muted-foreground">Recovered</span>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -517,7 +517,7 @@ export default function AbandonedCartsPage() {
                     <>
                       {recovered > 0 && (
                         <motion.div
-                          className="bg-emerald-500"
+                          className="bg-blue-500"
                           initial={{ width: 0 }}
                           animate={{ width: `${(recovered / total) * 100}%` }}
                           transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -630,17 +630,17 @@ export default function AbandonedCartsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/20">
+          <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
                   {selectedIds.size} cart{selectedIds.size !== 1 ? 's' : ''} selected
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+                    className="border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     onClick={handleBulkSendReminders}
                   >
                     <Send className="w-3.5 h-3.5 mr-1.5" />
@@ -670,8 +670,8 @@ export default function AbandonedCartsPage() {
         {carts.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <ShoppingBag className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ShoppingBag className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-lg font-medium">No abandoned carts found</h3>
               <p className="text-muted-foreground text-sm mt-1">
@@ -718,7 +718,7 @@ export default function AbandonedCartsPage() {
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.15 }}
                           className={`border-b border-border table-row-hover cursor-pointer ${
-                            cart.status === 'recovered' ? 'bg-emerald-50/30 dark:bg-emerald-900/10' : ''
+                            cart.status === 'recovered' ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''
                           }`}
                           onClick={() => toggleExpand(cart.id)}
                         >
@@ -762,7 +762,7 @@ export default function AbandonedCartsPage() {
 
                           {/* Total Value */}
                           <TableCell>
-                            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                            <span className="font-semibold text-blue-600 dark:text-blue-400">
                               {formatCurrency(cart.total)}
                             </span>
                           </TableCell>
@@ -799,7 +799,7 @@ export default function AbandonedCartsPage() {
                           <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20">
                                   <MoreHorizontal className="w-4 h-4" />
                                 </Button>
                               </DropdownMenuTrigger>
@@ -873,7 +873,7 @@ export default function AbandonedCartsPage() {
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-medium flex items-center gap-2">
-                          <Package className="w-4 h-4 text-emerald-600" />
+                          <Package className="w-4 h-4 text-blue-600" />
                           Cart Items
                         </h4>
                         <div className="text-xs text-muted-foreground">
@@ -886,11 +886,11 @@ export default function AbandonedCartsPage() {
                         <div className="space-y-2">
                           {items.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-background border border-border">
-                              <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                                 {item.image ? (
                                   <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg object-cover" />
                                 ) : (
-                                  <Package className="w-5 h-5 text-emerald-600" />
+                                  <Package className="w-5 h-5 text-blue-600" />
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
@@ -899,7 +899,7 @@ export default function AbandonedCartsPage() {
                                   {formatCurrency(item.price)} × {item.quantity}
                                 </p>
                               </div>
-                              <div className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                              <div className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                                 {formatCurrency(item.price * item.quantity)}
                               </div>
                             </div>
@@ -945,7 +945,7 @@ export default function AbandonedCartsPage() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Mail className="w-5 h-5 text-emerald-600" />
+              <Mail className="w-5 h-5 text-blue-600" />
               Send Recovery Reminder
             </DialogTitle>
             <DialogDescription>
@@ -958,7 +958,7 @@ export default function AbandonedCartsPage() {
               {/* Email preview */}
               <div className="border border-border rounded-lg overflow-hidden">
                 {/* Email header */}
-                <div className="bg-emerald-600 text-white p-3">
+                <div className="bg-blue-600 text-white p-3">
                   <div className="flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5" />
                     <span className="font-semibold">{currentStore?.name || 'Online Vepar Store'}</span>
@@ -976,7 +976,7 @@ export default function AbandonedCartsPage() {
                   <div className="space-y-2">
                     {parseItems(reminderCart.items).map((item, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/50">
-                        <Package className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                        <Package className="w-3 h-3 text-blue-600 flex-shrink-0" />
                         <span className="truncate flex-1">{item.name}</span>
                         <span className="font-medium">{formatCurrency(item.price * item.quantity)}</span>
                       </div>
@@ -986,7 +986,7 @@ export default function AbandonedCartsPage() {
                     Total: {formatCurrency(reminderCart.total)}
                   </div>
                   <div className="text-center pt-2">
-                    <div className="inline-block bg-emerald-600 text-white px-6 py-2 rounded-lg text-sm font-medium">
+                    <div className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium">
                       Complete Your Purchase
                     </div>
                   </div>
@@ -1010,7 +1010,7 @@ export default function AbandonedCartsPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+              className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
               onClick={handleSendReminder}
               disabled={sendingReminder}
             >
@@ -1035,7 +1035,7 @@ export default function AbandonedCartsPage() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <StickyNote className="w-5 h-5 text-emerald-600" />
+              <StickyNote className="w-5 h-5 text-blue-600" />
               Add Note
             </DialogTitle>
             <DialogDescription>
@@ -1059,7 +1059,7 @@ export default function AbandonedCartsPage() {
               Cancel
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 hover:scale-[1.02]"
+              className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-[1.02]"
               onClick={handleSaveNote}
               disabled={savingNote}
             >

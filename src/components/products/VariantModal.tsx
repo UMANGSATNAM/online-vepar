@@ -59,7 +59,7 @@ export function VariantModal({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-emerald-600" />
+            <Layers className="w-5 h-5 text-blue-600" />
             {editingVariantId ? 'Edit Variant' : 'Add Variant'}
           </DialogTitle>
           <DialogDescription>
@@ -83,7 +83,7 @@ export function VariantModal({
           {/* Options */}
           <div className="space-y-2">
             <Label className="text-sm font-medium flex items-center gap-1">
-              <Tag className="w-3 h-3 text-emerald-600" /> Options
+              <Tag className="w-3 h-3 text-blue-600" /> Options
             </Label>
             <div className="space-y-2">
               {variantFormData.options.map((opt, idx) => (
@@ -92,13 +92,13 @@ export function VariantModal({
                     placeholder="Option name (e.g., Color)"
                     value={opt.key}
                     onChange={(e) => handleUpdateOptionField(idx, 'key', e.target.value)}
-                    className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+                    className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-blue-500"
                   />
                   <Input
                     placeholder="Value (e.g., Red)"
                     value={opt.value}
                     onChange={(e) => handleUpdateOptionField(idx, 'value', e.target.value)}
-                    className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+                    className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-blue-500"
                   />
                   <Button
                     variant="ghost"
@@ -117,7 +117,7 @@ export function VariantModal({
               variant="outline"
               size="sm"
               onClick={handleAddOptionField}
-              className="w-full border-dashed border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+              className="w-full border-dashed border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
               title="Add another option"
             >
               <Plus className="w-3.5 h-3.5 mr-1" />
@@ -183,7 +183,7 @@ export function VariantModal({
                 className="w-32"
               />
               <div className="text-xs text-muted-foreground">
-                Total across all variants: <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                Total across all variants: <span className="font-semibold text-blue-600 dark:text-blue-400">
                   {variants.reduce((sum, v) => sum + v.stock, 0) + (parseInt(variantFormData.stock) || 0) - (editingVariantId ? (variants.find(v => v.id === editingVariantId)?.stock || 0) : 0)}
                 </span>
               </div>

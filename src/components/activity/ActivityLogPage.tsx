@@ -194,8 +194,8 @@ export default function ActivityLogPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-            <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+            <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Activity Log</h1>
@@ -206,7 +206,7 @@ export default function ActivityLogPage() {
           variant="outline"
           size="sm"
           onClick={handleExport}
-          className="gap-2 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+          className="gap-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
         >
           <Download className="w-4 h-4" />
           Export
@@ -234,7 +234,7 @@ export default function ActivityLogPage() {
                     <p className="text-2xl font-bold mt-1">{loading ? '—' : card.value}</p>
                   </div>
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                    card.color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' :
+                    card.color === 'emerald' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' :
                     card.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' :
                     'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400'
                   }`}>
@@ -312,9 +312,9 @@ export default function ActivityLogPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-16"
           >
-            <div className="max-w-sm mx-auto rounded-xl border-2 border-dashed border-emerald-200 dark:border-emerald-800/50 p-8">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-emerald-600 dark:text-emerald-400 empty-state-icon" />
+            <div className="max-w-sm mx-auto rounded-xl border-2 border-dashed border-blue-200 dark:border-blue-800/50 p-8">
+              <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-8 h-8 text-blue-600 dark:text-blue-400 empty-state-icon" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-1">No activity yet</h3>
               <p className="text-sm text-muted-foreground">Actions like creating products, updating orders, and managing discounts will appear here.</p>
@@ -334,31 +334,31 @@ export default function ActivityLogPage() {
                 const verb = getActionVerb(log.action)
 
                 const dotColorClasses = {
-                  emerald: 'bg-emerald-500',
+                  emerald: 'bg-blue-500',
                   blue: 'bg-blue-500',
                   violet: 'bg-violet-500',
                   amber: 'bg-amber-500',
                   pink: 'bg-pink-500',
                   gray: 'bg-gray-500',
-                }[color] || 'bg-emerald-500'
+                }[color] || 'bg-blue-500'
 
                 const iconBgClasses = {
-                  emerald: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+                  emerald: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
                   blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
                   violet: 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400',
                   amber: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
                   pink: 'bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400',
                   gray: 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400',
-                }[color] || 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                }[color] || 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
 
                 const badgeClasses = {
-                  emerald: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+                  emerald: 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
                   blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
                   violet: 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800',
                   amber: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
                   pink: 'bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800',
                   gray: 'bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-800',
-                }[color] || 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                }[color] || 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
 
                 return (
                   <motion.div
@@ -434,19 +434,19 @@ export default function ActivityLogPage() {
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-300 dark:hover:border-emerald-700"
+              className="h-8 w-8 border-blue-200 dark:border-blue-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-300 dark:hover:border-blue-700"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <span className="text-sm font-medium px-2 text-emerald-600 dark:text-emerald-400">
+            <span className="text-sm font-medium px-2 text-blue-600 dark:text-blue-400">
               {page} <span className="text-muted-foreground">/</span> {totalPages}
             </span>
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-300 dark:hover:border-emerald-700"
+              className="h-8 w-8 border-blue-200 dark:border-blue-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-300 dark:hover:border-blue-700"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >

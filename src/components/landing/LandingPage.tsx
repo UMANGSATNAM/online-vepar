@@ -21,7 +21,7 @@ const stagger = {
 }
 
 const features = [
-  { icon: Store, title: 'Instant Store Setup', desc: 'Launch your store in under 5 minutes. No coding, no hassle.', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+  { icon: Store, title: 'Instant Store Setup', desc: 'Launch your store in under 5 minutes. No coding, no hassle.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
   { icon: Package, title: 'Product Management', desc: 'Add unlimited products with variants, inventory, and bulk tools.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
   { icon: CreditCard, title: 'UPI & Card Payments', desc: 'Accept all Indian payment methods. Instant bank settlement.', color: 'text-violet-500', bg: 'bg-violet-500/10' },
   { icon: BarChart3, title: 'Real-Time Analytics', desc: 'Track revenue, orders, and customers with beautiful dashboards.', color: 'text-amber-500', bg: 'bg-amber-500/10' },
@@ -84,7 +84,7 @@ export default function LandingPage() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button onClick={() => setView('landing')} className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-600/30 group-hover:shadow-emerald-600/50 transition-shadow">
+            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:shadow-blue-600/50 transition-shadow">
               <Store className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">Online Vepar</span>
@@ -129,7 +129,7 @@ export default function LandingPage() {
       {/* ── Hero ── */}
       <section className="relative min-h-screen flex items-center pt-16 hero-gradient-animate overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-40" />
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-orb-1" />
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-orb-1" />
         <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-orb-2" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 text-center">
@@ -158,7 +158,7 @@ export default function LandingPage() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <Button variant="outline" size="lg" className="h-12 px-8 text-base rounded-xl w-full sm:w-auto border-border/60 hover:bg-accent" onClick={() => setView('login')}>
-                <Play className="w-4 h-4 mr-2 text-emerald-600" />
+                <Play className="w-4 h-4 mr-2 text-blue-600" />
                 Watch demo
               </Button>
             </motion.div>
@@ -206,7 +206,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Social Proof / Stats Banner ── */}
-      <section className="py-16 bg-emerald-600 dark:bg-emerald-900 relative overflow-hidden">
+      <section className="py-16 bg-blue-600 dark:bg-blue-900 relative overflow-hidden">
         <div className="absolute inset-0 dot-pattern opacity-10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center text-white">
@@ -219,7 +219,7 @@ export default function LandingPage() {
               <motion.div key={s.label} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="space-y-1">
                 <s.icon className="w-7 h-7 mx-auto mb-2 opacity-80" />
                 <div className="text-3xl font-bold">{s.value}</div>
-                <div className="text-emerald-100 text-sm">{s.label}</div>
+                <div className="text-blue-100 text-sm">{s.label}</div>
               </motion.div>
             ))}
           </div>
@@ -240,34 +240,34 @@ export default function LandingPage() {
               <motion.div key={plan.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                 <div className={`rounded-2xl p-7 h-full flex flex-col border transition-all duration-300 hover:shadow-xl ${
                   plan.popular
-                    ? 'bg-emerald-600 text-white border-transparent shadow-xl shadow-emerald-600/20'
-                    : 'bg-card border-border hover:border-emerald-200 dark:hover:border-emerald-800'
+                    ? 'bg-blue-600 text-white border-transparent shadow-xl shadow-blue-600/20'
+                    : 'bg-card border-border hover:border-blue-200 dark:hover:border-blue-800'
                 }`}>
                   {plan.popular && (
                     <Badge className="bg-white/20 text-white border-0 text-xs px-2.5 py-1 rounded-full w-fit mb-4">Most Popular</Badge>
                   )}
                   <div className="mb-6">
                     <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                    <p className={`text-sm mb-4 ${plan.popular ? 'text-emerald-100' : 'text-muted-foreground'}`}>{plan.desc}</p>
+                    <p className={`text-sm mb-4 ${plan.popular ? 'text-blue-100' : 'text-muted-foreground'}`}>{plan.desc}</p>
                     <div className="flex items-baseline gap-1">
                       <span className="text-4xl font-bold">{plan.price}</span>
-                      <span className={`text-sm ${plan.popular ? 'text-emerald-100' : 'text-muted-foreground'}`}>{plan.period}</span>
+                      <span className={`text-sm ${plan.popular ? 'text-blue-100' : 'text-muted-foreground'}`}>{plan.period}</span>
                     </div>
                   </div>
                   <ul className="space-y-3 flex-1 mb-7">
                     {plan.features.map(f => (
                       <li key={f} className="flex items-center gap-2.5 text-sm">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${plan.popular ? 'bg-white/20' : 'bg-emerald-100 dark:bg-emerald-900/40'}`}>
-                          <Check className={`w-3 h-3 ${plan.popular ? 'text-white' : 'text-emerald-600'}`} />
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${plan.popular ? 'bg-white/20' : 'bg-blue-100 dark:bg-blue-900/40'}`}>
+                          <Check className={`w-3 h-3 ${plan.popular ? 'text-white' : 'text-blue-600'}`} />
                         </div>
-                        <span className={plan.popular ? 'text-emerald-50' : ''}>{f}</span>
+                        <span className={plan.popular ? 'text-blue-50' : ''}>{f}</span>
                       </li>
                     ))}
                   </ul>
                   <Button
                     className={`w-full h-10 rounded-xl font-medium ${
                       plan.popular
-                        ? 'bg-white text-emerald-700 hover:bg-emerald-50'
+                        ? 'bg-white text-blue-700 hover:bg-blue-50'
                         : 'btn-premium btn-glow'
                     }`}
                     onClick={() => setView('register')}
@@ -301,7 +301,7 @@ export default function LandingPage() {
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-6">&ldquo;{t.text}&rdquo;</p>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-sm font-bold text-emerald-700 dark:text-emerald-300 shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-sm font-bold text-blue-700 dark:text-blue-300 shrink-0">
                       {t.avatar}
                     </div>
                     <div>
@@ -319,15 +319,15 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative bg-emerald-600 rounded-3xl p-12 sm:p-16 overflow-hidden">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative bg-blue-600 rounded-3xl p-12 sm:p-16 overflow-hidden">
             <div className="absolute inset-0 dot-pattern opacity-10" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
             <div className="relative">
               <Rocket className="w-12 h-12 text-white/80 mx-auto mb-6" />
               <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4 tracking-tight">Ready to start selling?</h2>
-              <p className="text-emerald-100 text-lg mb-8 max-w-xl mx-auto">Join 50,000+ merchants. Free 14-day trial. No credit card required.</p>
+              <p className="text-blue-100 text-lg mb-8 max-w-xl mx-auto">Join 50,000+ merchants. Free 14-day trial. No credit card required.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button size="lg" className="bg-white text-emerald-700 hover:bg-emerald-50 h-12 px-8 rounded-xl font-semibold text-base" onClick={() => setView('register')}>
+                <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50 h-12 px-8 rounded-xl font-semibold text-base" onClick={() => setView('register')}>
                   Start for free
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -345,7 +345,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Store className="w-4 h-4 text-white" />
               </div>
               <span className="font-bold">Online Vepar</span>
