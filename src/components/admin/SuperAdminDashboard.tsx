@@ -34,14 +34,24 @@ interface AdminUser {
   _count: { stores: number }
 }
 
-const NAV = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'users', label: 'Manage Users', icon: Users },
-  { id: 'stores', label: 'Manage Stores', icon: Store },
-  { id: 'payments', label: 'Payments & Plans', icon: CreditCard },
-  { id: 'offers', label: 'Platform Offers', icon: Tag },
-  { id: 'domains', label: 'Custom Domains', icon: Globe },
-  { id: 'settings', label: 'Platform Settings', icon: Settings },
+const NAVIGATION = [
+  { group: 'Platform', items: [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'analytics', label: 'Platform Analytics', icon: TrendingUp, badge: 'NEW' },
+  ]},
+  { group: 'Tenants', items: [
+    { id: 'stores', label: 'Manage Stores', icon: Store },
+    { id: 'users', label: 'User Accounts', icon: Users },
+    { id: 'domains', label: 'Custom Domains', icon: Globe },
+  ]},
+  { group: 'Revenue', items: [
+    { id: 'payments', label: 'Billing & Plans', icon: CreditCard },
+    { id: 'offers', label: 'Promotions', icon: Tag },
+  ]},
+  { group: 'System', items: [
+    { id: 'settings', label: 'Platform Settings', icon: Settings },
+    { id: 'security', label: 'Security Logs', icon: Shield },
+  ]}
 ]
 
 export default function SuperAdminDashboard() {
@@ -116,38 +126,66 @@ export default function SuperAdminDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B] text-slate-900 dark:text-slate-100 font-sans overflow-hidden">
-      {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-[70px]'} flex-shrink-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-r border-slate-200/60 dark:border-white/10 flex flex-col transition-all duration-300 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]`}>
-        <div className={`h-14 flex items-center shrink-0 border-b border-slate-200/60 dark:border-white/10 ${!sidebarOpen ? 'justify-center px-2' : 'gap-2.5 px-4'}`}>
-          <div className="w-8 h-8 bg-gradient-to-br from-[#0052FF] to-[#0039B3] rounded-lg flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(0,82,255,0.3)]">
-            <Shield size={16} className="text-white" />
+    <div className="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#0052FF]/30 overflow-hidden">
+      
+      {/* Sidebar - Matching Enterprise Style */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        ${sidebarOpen ? 'w-[280px] translate-x-0' : '-translate-x-full lg:w-[80px]'}
+        bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl border-r border-slate-200/60 dark:border-white/10
+        flex flex-col transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+      `}>
+        <div className={`h-20 flex items-center shrink-0 border-b border-slate-200/40 dark:border-white/5 ${!sidebarOpen ? 'justify-center px-0' : 'px-6'}`}>
+          <div className="w-9 h-9 bg-gradient-to-br from-slate-800 to-black dark:from-white dark:to-slate-200 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-black/10 dark:shadow-white/10">
+            <Shield size={18} className="text-white dark:text-black" />
           </div>
           {sidebarOpen && (
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-sm font-bold truncate">Super Admin</span>
-              <Badge className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-0 text-[9px] px-1.5 h-4 font-bold shrink-0">OS</Badge>
+            <div className="ml-3 flex flex-col items-start min-w-0">
+              <span className="font-bold tracking-tight text-slate-900 dark:text-white text-lg leading-tight">Super Admin</span>
+              <span className="text-[10px] font-bold tracking-widest text-[#0052FF] uppercase">OmniBuilder OS</span>
             </div>
           )}
         </div>
 
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {NAV.map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => setActiveTab(id)}
-              className={`w-full flex items-center gap-3 py-1.5 rounded-lg text-sm transition-all duration-150 group ${
-                activeTab === id
-                  ? 'bg-[#0052FF]/10 text-[#0052FF] dark:text-[#6699FF] font-semibold'
-                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 font-medium'
-              } ${!sidebarOpen ? 'justify-center px-2' : 'px-3'}`}>
-              <Icon size={16} className={`shrink-0 ${activeTab === id ? 'text-blue-600 dark:text-blue-400' : 'group-hover:scale-110'}`} />
-              {sidebarOpen && <span className="truncate">{label}</span>}
-            </button>
+        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-8 scrollbar-hide">
+          {NAVIGATION.map((group, idx) => (
+            <div key={idx} className="space-y-1.5">
+              {sidebarOpen && (
+                <p className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
+                  {group.group}
+                </p>
+              )}
+              {group.items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center gap-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative group
+                    ${!sidebarOpen ? 'justify-center px-0' : 'px-3'}
+                    ${activeTab === item.id 
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-black shadow-md' 
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
+                  `}
+                  title={!sidebarOpen ? item.label : undefined}
+                >
+                  {activeTab === item.id && sidebarOpen && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-white dark:bg-black rounded-r-full" />
+                  )}
+                  <item.icon size={18} className={`shrink-0 transition-transform duration-300 ${activeTab === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  {sidebarOpen && <span className="tracking-wide truncate">{item.label}</span>}
+                  {sidebarOpen && item.badge && (
+                    <Badge variant="secondary" className="ml-auto text-[9px] py-0 px-1.5 h-4 bg-[#0052FF]/10 text-[#0052FF] border-0 shadow-sm font-bold">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </button>
+              ))}
+            </div>
           ))}
-        </nav>
+        </div>
 
-        <div className="p-3 border-t border-slate-200/60 dark:border-white/10">
+        <div className="p-4 border-t border-slate-200/40 dark:border-white/5">
           <button onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="w-full flex items-center justify-center gap-3 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
+            className="w-full flex items-center justify-center gap-3 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
             {sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
         </div>
@@ -155,11 +193,12 @@ export default function SuperAdminDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Header */}
-        <header className="h-14 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-white/10 flex items-center justify-between px-6 z-10 sticky top-0 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+        
+        {/* Top Header - Floating Glassmorphism */}
+        <header className="h-20 px-6 sm:px-10 flex items-center justify-between shrink-0 z-30 transition-all border-b border-slate-200/40 dark:border-white/5 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl">
           <div className="flex items-center gap-4">
-            <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 capitalize">
-              {activeTab.replace('-', ' ')}
+            <h1 className="text-[1.75rem] font-bold tracking-tight text-slate-900 dark:text-white capitalize">
+              {NAVIGATION.flatMap(g => g.items).find(i => i.id === activeTab)?.label || activeTab.replace('-', ' ')}
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -436,6 +475,29 @@ export default function SuperAdminDashboard() {
 
           {/* SETTINGS */}
           {activeTab === 'settings' && <PlatformSettingsTab />}
+
+          {/* PLACEHOLDERS */}
+          {(activeTab === 'analytics' || activeTab === 'security') && (
+            <div className="h-[60vh] flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#0052FF]/10 blur-[80px] rounded-full" />
+                <div className="relative bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-slate-200/50 dark:border-white/10 p-12 rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.04)] text-center max-w-lg mx-auto">
+                  <div className="w-20 h-20 bg-gradient-to-tr from-[#0052FF] to-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/20">
+                    {activeTab === 'analytics' ? <TrendingUp size={36} className="text-white" /> : <Shield size={36} className="text-white" />}
+                  </div>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-3 capitalize">
+                    {activeTab === 'analytics' ? 'Platform Analytics' : 'Security Logs'}
+                  </h2>
+                  <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+                    This module is currently being built to international enterprise standards. It will be available in an upcoming OmniBuilder OS update.
+                  </p>
+                  <Button onClick={() => setActiveTab('overview')} className="bg-[#0052FF] text-white hover:bg-[#0052FF]/90 rounded-full px-8 py-6 shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all">
+                    Return to Overview
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
